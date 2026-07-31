@@ -115,7 +115,12 @@ export function Stack({
 /* ── Button ──────────────────────────────────────────────── */
 
 const BTN_BASE =
-  "inline-flex items-center justify-center gap-[var(--space-2)] type-emphasis " +
+  // `whitespace-nowrap` pairs with the fixed h-9/h-11 below. A control with a
+  // clamped height that is allowed to wrap will overflow its own box the
+  // moment a label gets long or a column gets narrow, and the result reads as
+  // broken padding rather than as a layout problem. If a label genuinely does
+  // not fit, the container is too narrow — fix the breakpoint, not the button.
+  "inline-flex items-center justify-center whitespace-nowrap gap-[var(--space-2)] type-emphasis " +
   "font-[family-name:var(--font-body)] cursor-pointer select-none " +
   "transition-[opacity,transform] duration-[var(--dur-fast)] " +
   "disabled:opacity-40 disabled:cursor-not-allowed";
@@ -491,7 +496,7 @@ export function Swatch({
       aria-label={color}
       aria-pressed={selected}
       className={cx(
-        "h-8 w-8 cursor-pointer rounded-[var(--radius-mark)] border-[length:var(--border-strong)]",
+        "h-8 w-8 shrink-0 cursor-pointer rounded-[var(--radius-mark)] border-[length:var(--border-strong)]",
         selected ? "border-fg" : "border-transparent",
         className,
       )}
@@ -529,8 +534,17 @@ export function Row({
 }: { cols: string } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cx("grid gap-[var(--space-4)]", className)}
-      style={{ gridTemplateColumns: cols }}
+      // ONE column until there is room for the template.
+      //
+      // `56px 1fr 170px 170px` has a hard floor of 396px before gaps, so on a
+      // 390px phone it pushed the page sideways — a horizontal scrollbar on a
+      // dashboard. A fixed template is a promise the container cannot always
+      // keep, so the promise is now conditional: stack below md, apply the
+      // template above it. Passing the template through a custom property is
+      // what lets a media query switch it off; an inline
+      // `grid-template-columns` would win over every class.
+      className={cx("grid gap-[var(--space-4)] md:[grid-template-columns:var(--row-cols)]", className)}
+      style={{ "--row-cols": cols } as React.CSSProperties}
       {...rest}
     />
   );

@@ -34,7 +34,7 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)]">
+      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] overflow-x-auto border-b border-line bg-bg-raise px-[var(--space-8)] [&>*]:shrink-0">
         <Text as="span" variant="h3">Ovation</Text>
         <span className="flex-1" />
         <a href="/app/plans"><Text as="span" variant="meta" tone="dim">Plans</Text></a>
@@ -50,7 +50,7 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
           a coin, made the same way yours are.
         </Text>
 
-        <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] text-left md:grid-cols-3">
+        <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] text-left lg:grid-cols-3">
           {view.plans.map((p) => {
             const featured = p.name === "Studio";
             const isCurrent = p.name === CURRENT;

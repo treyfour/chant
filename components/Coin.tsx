@@ -32,7 +32,13 @@ export function Coin({
   const isLetter = /^[A-Za-z0-9]{1,2}$/.test(glyph);
 
   const classes = [
-    "coin",
+    // `shrink-0` is not decoration — it is the whole contract of a component
+    // that sets its own width AND height. Default `flex-shrink: 1` compresses
+    // the MAIN axis only, so a 42px circle in a tight flex row becomes a 34x42
+    // ellipse: the height holds, the width gives. Nothing warns you. A shape
+    // with a fixed aspect ratio has to opt out of flex sizing here, in the
+    // component, so no call site can ever get it wrong.
+    "coin shrink-0",
     kind === "backed" ? "coin-backed" : "",
     retired ? "coin-retired" : "",
     missing ? "coin-missing" : "",

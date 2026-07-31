@@ -46,7 +46,7 @@ export function PlansClient({
 
   return (
     <>
-      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)]">
+      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] overflow-x-auto border-b border-line bg-bg-raise px-[var(--space-8)] [&>*]:shrink-0">
         <Text as="span" variant="h3">Ovation</Text>
         <Stack
           row gap={2} align="center"

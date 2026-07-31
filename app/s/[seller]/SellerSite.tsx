@@ -166,7 +166,7 @@ export function SellerSite({
             Usage-based after that. No seat pricing, no sales call.
           </Text>
 
-          <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] md:grid-cols-3">
+          <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] lg:grid-cols-3">
             {plans.map((p) => {
               const featured = p.name === "Pro";
               return (
