@@ -63,7 +63,7 @@ export function PlansClient({
           Team
         </a>
         <a href="/app/billing" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Billing</a>
-        <a href="/" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
+        <a href="/demo" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
       </nav>
 
       <main className="w-full mx-auto max-w-[940px] px-11 pb-20 pt-10">

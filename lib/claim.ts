@@ -93,22 +93,26 @@ export async function claimCoin(input: ClaimCoinInput): Promise<ClaimResult> {
   }
 }
 
-/** Collectors are created lazily by their first purchase; Auth0 links up in Slice 3. */
+/**
+ * Collectors are created by their first purchase, before any account exists.
+ *
+ * The handle carries a random suffix (`trey-8f2k`) until the collection is
+ * CLAIMED — i.e. until an Auth0 login attaches to it. Two reasons:
+ *
+ *   1. A bare `/@trey` derived from an email local part is guessable, and a
+ *      collection is somebody's purchase history. Unclaimed ones shouldn't be
+ *      discoverable by typing a name.
+ *   2. It makes the clean handle a reward. Signing in upgrades you to `/@trey`.
+ *
+ * `auth0_sub IS NOT NULL` is what "claimed" means — no extra column.
+ */
 async function upsertCollector(email: string): Promise<string> {
   const found = await sql`SELECT id FROM collectors WHERE email = ${email} LIMIT 1`;
   if (found.length > 0) return String(found[0].id);
 
   const base = (email.split("@")[0] || "collector").replace(/[^a-z0-9]/gi, "").toLowerCase();
   const id = rid("col");
-
-  // handle is UNIQUE and two emails can derive the same base, so find a free one.
-  // `ON CONFLICT (email)` does not cover a handle collision.
-  let handle = base || "collector";
-  for (let n = 0; n < 50; n++) {
-    const candidate = n === 0 ? handle : `${base}${n + 1}`;
-    const taken = await sql`SELECT 1 FROM collectors WHERE handle = ${candidate} LIMIT 1`;
-    if (taken.length === 0) { handle = candidate; break; }
-  }
+  const handle = await unclaimedHandle(base);
 
   const inserted = await sql`
     INSERT INTO collectors (id, email, handle, name)
@@ -116,4 +120,16 @@ async function upsertCollector(email: string): Promise<string> {
     ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
     RETURNING id`;
   return String(inserted[0].id);
+}
+
+/** `trey-8f2k` — recognisably theirs, not guessable from an email address. */
+async function unclaimedHandle(base: string): Promise<string> {
+  const seed = base || "collector";
+  for (let n = 0; n < 12; n++) {
+    const suffix = Math.random().toString(36).slice(2, 6);
+    const candidate = `${seed}-${suffix}`;
+    const taken = await sql`SELECT 1 FROM collectors WHERE handle = ${candidate} LIMIT 1`;
+    if (taken.length === 0) return candidate;
+  }
+  return `${seed}-${Date.now().toString(36).slice(-6)}`;
 }

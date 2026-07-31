@@ -9,6 +9,16 @@
     "projectName": "chant"
   },
   "providers": {
+    "agentmail": {
+      "accountRequestId": "facctrq_61V8TOvhoyohhO8Rp16PIsrVJOSQC4gS1YGQGCXIu42K",
+      "configuration": {},
+      "linkedAt": "2026-07-31T01:41:03.265Z",
+      "providerId": "prvdr_61UWNSVKoGlVDwbHX5IUK",
+      "providerName": "AgentMail",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-31T01:41:03.265Z",
+      "status": "complete"
+    },
     "auth0": {
       "accountRequestId": "fprvcnn_61V8R8ln3XzmZVmL316PIsrVJOSQC4gS1YGQGCXIuPom",
       "configuration": {},
@@ -31,6 +41,28 @@
     }
   },
   "resources": {
+    "agentmail-api": {
+      "configuration": {},
+      "createdAt": "2026-07-31T01:41:21.588Z",
+      "lastRevealedAt": "2026-07-31T01:41:21.968Z",
+      "lastStatus": "complete",
+      "name": "agentmail-api",
+      "providerId": "prvdr_61UWNSVKoGlVDwbHX5IUK",
+      "providerName": "AgentMail",
+      "resourceId": "fres_61V8TPDS73R8kLY8n16PIsrVJOSQC4gS1YGQGCXIuKY4",
+      "serviceId": "api"
+    },
+    "agentmail-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-31T01:41:08.576Z",
+      "lastRevealedAt": "2026-07-31T01:41:09.049Z",
+      "lastStatus": "complete",
+      "name": "agentmail-plan",
+      "providerId": "prvdr_61UWNSVKoGlVDwbHX5IUK",
+      "providerName": "AgentMail",
+      "resourceId": "fres_61V8TOySoFuRica6c16PIsrVJOSQC4gS1YGQGCXIu5JY",
+      "serviceId": "free"
+    },
     "auth0-plan": {
       "configuration": {},
       "createdAt": "2026-07-30T23:17:01.482Z",

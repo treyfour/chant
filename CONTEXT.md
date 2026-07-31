@@ -165,6 +165,28 @@ Note `pull` writes managed blocks into `AGENTS.md` and `CLAUDE.md` (between `str
 
 Side effect: merely running catalog commands creates `.projects/cache/` and appends `.env`, `.env.*`, `.projects/vault` etc. to `.gitignore`. Those additions are correct — keep them.
 
+### AgentMail — the third provider, and two traps
+
+Provisioned free (`agentmail/free` → `agentmail/api`). Chosen over Twilio, which
+is **$20 with auto-recharge** and has no free tier — check `stripe projects catalog
+<provider>` for a free parent plan BEFORE provisioning anything. customer.io's
+`builder:sandbox` is also free if AgentMail ever stops working.
+
+**Env var is `AGENTMAIL_AGENTMAIL_API_KEY`** — the provider prefix is doubled.
+Third provider, third unguessable variable name. Always read `stripe projects env`.
+
+**The inbox id IS an email address**, so it must be percent-encoded in the path:
+
+```
+POST /inboxes/{encodeURIComponent(inbox_id)}/messages/send     ✅
+POST /inboxes/stormywriter30@agentmail.to/messages/send        ❌ 404
+```
+
+Unencoded returns `404 "Inbox not found"` with a `fix` message about credential
+scope and read permissions — it reads like an auth problem and isn't. Base URL is
+`https://api.agentmail.to` (no `/v0`); create the inbox once with a `client_id`
+for idempotency, then reuse it.
+
 ### DONE — the verified working chain
 
 Completed 2026-07-30. Project `chant` (`project_61V8R8JqY0fW1o5eI16PIsrVJOSQC4gS1YGQGCXIu1cO`) on `acct_1M4KAZFLX7j6GBFO`.

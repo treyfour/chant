@@ -39,8 +39,21 @@ async function resolveCollector(): Promise<Collector | null> {
   // Claim an existing row created by a purchase made before first login.
   const byEmail = await sql`SELECT * FROM collectors WHERE email = ${email} LIMIT 1`;
   if (byEmail.length > 0) {
+    const current = String(byEmail[0].handle);
+
+    // Claiming upgrades `trey-8f2k` → `trey` if the clean name is free. This is
+    // the reward for signing in, and it's why unclaimed handles are suffixed.
+    let handle = current;
+    const stem = current.replace(/-[a-z0-9]{4,6}$/, "");
+    if (stem !== current) {
+      const taken = await sql`
+        SELECT 1 FROM collectors WHERE handle = ${stem} AND id <> ${byEmail[0].id} LIMIT 1`;
+      if (taken.length === 0) handle = stem;
+    }
+
     const linked = await sql`
-      UPDATE collectors SET auth0_sub = ${sub} WHERE id = ${byEmail[0].id} RETURNING *`;
+      UPDATE collectors SET auth0_sub = ${sub}, handle = ${handle}
+      WHERE id = ${byEmail[0].id} RETURNING *`;
     return toCollector(linked[0]);
   }
 

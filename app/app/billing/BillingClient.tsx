@@ -40,7 +40,7 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
         <span className="flex-1" />
         <a href="/app/plans" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Plans</a>
         <a href="/app/team" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Team</a>
-        <a href="/" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
+        <a href="/demo" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
       </nav>
 
       <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-14 text-center">

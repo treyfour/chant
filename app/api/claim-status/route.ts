@@ -21,7 +21,8 @@ export async function GET(req: Request) {
   if (!email) return NextResponse.json({ status: "pending" });
 
   const rows = await sql`
-    SELECT co.serial, r.name AS run_name, r.size, r.glyph, r.tint, s.name AS seller_name
+    SELECT co.serial, r.name AS run_name, r.size, r.glyph, r.tint, s.name AS seller_name,
+           c.handle, c.email, (c.auth0_sub IS NOT NULL) AS claimed
     FROM coins co
     JOIN runs r ON r.id = co.run_id
     JOIN sellers s ON s.id = co.seller_id
@@ -42,6 +43,11 @@ export async function GET(req: Request) {
       size: Number(r.size),
       glyph: String(r.glyph),
       tint: String(r.tint),
+      // The sheet shows the collection URL so a buyer with no account still
+      // leaves with a way back. `claimed` tells it whether to offer sign-in.
+      handle: String(r.handle),
+      email: String(r.email),
+      claimed: Boolean(r.claimed),
     },
   });
 }

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getSellerPublic } from "@/lib/queries";
-import { PricingClient } from "./PricingClient";
+import { SellerSite } from "./SellerSite";
 
 /**
  * The seller's OWN pricing page. Ovation is invisible here — no logo, no nav,
@@ -15,5 +15,5 @@ export default async function SellerPage({
   const { seller } = await params;
   const view = await getSellerPublic(seller);
   if (!view) notFound();
-  return <PricingClient view={view} />;
+  return <SellerSite view={view} />;
 }

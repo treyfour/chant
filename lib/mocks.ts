@@ -34,7 +34,7 @@ export const DANA: Collector = {
 
 export const WARRICK: Seller = {
   id: "sel_warrick", orgId: "org_warrick", slug: "warrick", name: "Warrick",
-  tagline: "Code review that reads your whole codebase, not just the diff.",
+  tagline: "The orchestration layer for AI agents. Durable runs, replay, and stall detection.",
   location: "San Francisco · three engineers", stage: "Pre-seed",
   mark: "▲", tint: "#C87137",
   stripeAccountId: "acct_1QxWarrick", ovationTier: "starter",

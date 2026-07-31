@@ -38,13 +38,41 @@ export function CollectionClient({
   const sellers = new Set(items.map((i) => i.sellerSlug)).size;
 
   return (
-    <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-16">
+    <>
+      {/* Ovation's own chrome. The collection is a different company's product
+          from whatever site you arrived from, and it should look like it. */}
+      <nav
+        className="sticky top-0 z-40 flex h-[58px] items-center gap-2.5 px-11"
+        style={{
+          background: "rgba(255,253,248,.92)",
+          borderBottom: "1px solid var(--rule)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <a href="/" className="flex items-center gap-2.5">
+          <span
+            className="grid h-6 w-6 place-items-center rounded-md text-[11px]"
+            style={{ background: "var(--ink)", color: "var(--ground)" }}
+          >
+            ◈
+          </span>
+          <span style={{ font: "400 17px/1 var(--display)", letterSpacing: "-.02em" }}>
+            Ovation
+          </span>
+        </a>
+        <span className="t-serial ml-2 hidden sm:inline">a receipt you&rsquo;d keep</span>
+        <span className="flex-1" />
+        {signedIn ? (
+          <a href="/auth/logout" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Sign out</a>
+        ) : (
+          <a href="/auth/login" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Sign in</a>
+        )}
+      </nav>
+
+    <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-14">
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <a href="/" className="t-eyebrow" style={{ color: "var(--accent)" }}>
-            ← Ovation
-          </a>
-          <div className="t-eyebrow mt-2">Collection</div>
+          <div className="t-eyebrow">Collection</div>
           <h1 className="t-display mt-3">
             <span style={{ color: "var(--faint)" }}>@</span>
             {view.collector.handle}
@@ -67,13 +95,6 @@ export function CollectionClient({
           {isOwner && privateCount > 0 && (
             <div className="t-serial mt-2">{privateCount} private</div>
           )}
-          <div className="mt-2 text-[12px]">
-            {signedIn ? (
-              <a href="/auth/logout" style={{ color: "var(--accent)" }}>Sign out</a>
-            ) : (
-              <a href="/auth/login" style={{ color: "var(--accent)" }}>Sign in</a>
-            )}
-          </div>
         </div>
       </header>
 
@@ -91,5 +112,6 @@ export function CollectionClient({
           : `Showing only the coins @${view.collector.handle} has made public.`}
       </p>
     </main>
+    </>
   );
 }

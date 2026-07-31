@@ -1,6 +1,9 @@
 {
   "version": 1,
   "providers": {
+    "agentmail": {
+      "name": "AgentMail"
+    },
     "auth0": {
       "name": "Auth0"
     },
@@ -9,6 +12,16 @@
     }
   },
   "resources": {
+    "agentmail-api": {
+      "name": "agentmail-api",
+      "providerName": "AgentMail",
+      "serviceId": "api"
+    },
+    "agentmail-plan": {
+      "name": "agentmail-plan",
+      "providerName": "AgentMail",
+      "serviceId": "free"
+    },
     "auth0-plan": {
       "name": "auth0-plan",
       "providerName": "Auth0",
@@ -36,6 +49,12 @@
       "resources": [
         {
           "resourceName": "Ovation Web"
+        },
+        {
+          "resourceName": "agentmail-api"
+        },
+        {
+          "resourceName": "agentmail-plan"
         },
         {
           "resourceName": "auth0-plan"
