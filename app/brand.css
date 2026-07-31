@@ -41,6 +41,8 @@
   --accent: #7c5cff;
   --accent-fg: #ffffff;
   --accent-soft: rgba(124, 92, 255, 0.14);
+  /* Violet on near-black is 4.53:1. Fine as ink. */
+  --accent-ink: var(--accent);
   --accent-2: #14adff;
   --accent-3: #b8f24a;
 

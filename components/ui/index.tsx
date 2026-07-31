@@ -61,7 +61,7 @@ const TONE = {
   default: "text-fg",
   dim: "text-fg-dim",
   faint: "text-fg-faint",
-  accent: "text-accent",
+  accent: "text-accent-ink",
   good: "text-good",
   warn: "text-warn",
   bad: "text-bad",
@@ -206,7 +206,7 @@ export function Badge({
 }: { tone?: "default" | "accent" | "good" | "warn" | "bad" } & React.HTMLAttributes<HTMLSpanElement>) {
   const tones = {
     default: "text-fg-dim border-line",
-    accent: "text-accent border-accent/35",
+    accent: "text-accent-ink border-accent-ink/40",
     good: "text-good border-good/35",
     warn: "text-warn border-warn/35",
     bad: "text-bad border-bad/35",

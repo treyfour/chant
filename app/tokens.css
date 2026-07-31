@@ -53,6 +53,12 @@
      need them just points them at --accent. */
   --color-accent-2: var(--accent-2);
   --color-accent-3: var(--accent-3);
+  /* The accent WHEN IT IS TEXT. Many brand accents work only as a ground —
+     mocha's lime is legible with black on top of it and invisible as ink on
+     cream (1.09:1). One token doing both jobs silently fails half the time,
+     and a specimen grid never shows it because the failure needs the accent
+     to land on the page background. */
+  --color-accent-ink: var(--accent-ink);
 
   /* ── status ──────────────────────────────── */
   --color-good: var(--good);
@@ -141,7 +147,7 @@
    --bg --bg-raise --bg-sink --bg-invert
    --fg --fg-dim --fg-faint --fg-invert
    --line --line-strong
-   --accent --accent-fg --accent-soft --accent-2 --accent-3
+   --accent --accent-fg --accent-soft --accent-ink --accent-2 --accent-3
    --good --warn --bad
 
    --font-display --font-body --font-mono

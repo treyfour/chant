@@ -182,7 +182,7 @@ export function PlansClient({
               are disabled by the permissions on the Auth0 token, not by a flag in our
               database. The API refuses them with 403 too; the button state is not the
               security boundary.{" "}
-              <a href="/auth/login" className="text-accent">Sign in</a> to act as Owner.
+              <a href="/auth/login" className="text-accent-ink">Sign in</a> to act as Owner.
             </Text>
           </div>
         )}

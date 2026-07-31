@@ -78,6 +78,8 @@
   /* A multi-hue system. The category pills run blue, the CTAs yellow, the
      progress green — one --accent could never describe this, which is why
      the first attempt read as monochrome-with-a-pixel-font. */
+  /* Yellow on #020617 is 13.17:1 — the easiest case in the set. */
+  --accent-ink: var(--accent);
   --accent-2: #14adff;
   --accent-3: #4ade80;
 

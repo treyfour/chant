@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { Coin } from "@/components/Coin";
 import { Avatar, AvatarRow, Badge, Button, ButtonLink, Card, Stack, Text } from "@/components/ui";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import type { SellerPublicView } from "@/lib/types";
 
 /**
@@ -24,7 +25,21 @@ const FEATURES: Record<string, string[]> = {
   Team: ["Everything in Pro", "Self-hosted workers", "SSO and SAML", "99.9% uptime SLA"],
 };
 
-export function SellerSite({ view }: { view: SellerPublicView }) {
+export function SellerSite({
+  view,
+  brand,
+  theme,
+  preview = null,
+  base = "",
+}: {
+  view: SellerPublicView;
+  /** The guest brand, unless a candidate theme has replaced it. */
+  brand?: string;
+  /** A candidate theme previewing over this page (?t=). */
+  theme?: string;
+  preview?: string | null;
+  base?: string;
+}) {
   const [busy, setBusy] = useState<string | null>(null);
   const { seller, plans, collectors, collectorCount } = view;
 
@@ -43,7 +58,8 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
   }
 
   return (
-    <div data-brand="warrick" className="min-h-screen bg-bg text-fg">
+    <div data-brand={brand} data-theme={theme} className="min-h-screen bg-bg text-fg">
+      {preview !== null && <ThemeSwitcher active={preview} base={base} />}
       {/* ---------- nav ---------- */}
       <nav className="sticky top-0 z-50 flex h-16 items-center gap-[var(--space-8)] border-b border-line bg-bg/85 px-[var(--space-6)] backdrop-blur md:px-[var(--space-12)]">
         <Stack row gap={3} align="center">
@@ -93,7 +109,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
             </Stack>
             <div><span className="text-fg-faint">$</span> npm i <span className="text-good">@warrick/sdk</span></div>
             <div className="mt-[var(--space-3)]">
-              <span className="text-accent">await</span> run(researchAgent, {"{"}
+              <span className="text-accent-ink">await</span> run(researchAgent, {"{"}
             </div>
             <div>&nbsp;&nbsp;retries: <span className="text-good">5</span>,</div>
             <div>&nbsp;&nbsp;checkpoint: <span className="text-good">&quot;each-step&quot;</span>,</div>

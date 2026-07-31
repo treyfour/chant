@@ -72,6 +72,11 @@
   --accent: #b5ff6b;
   --accent-fg: #212121;
   --accent-soft: rgba(181, 255, 107, 0.28);
+  /* THE LIME CANNOT BE INK. On this cream it measures 1.09:1 — invisible.
+     Deepened to 4.80:1 while staying recognisably the same hue. This is the
+     gap the in-context test found: on the specimen grid the accent badge sat
+     on a card and looked plausible; on a real hero it vanished. */
+  --accent-ink: #4c7a16;
   --accent-2: #61a8ff;
   --accent-3: #ff9db1;
 

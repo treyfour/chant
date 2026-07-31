@@ -115,7 +115,7 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
                   <span className="truncate">{item.sellerName}</span>
                   <span
                     aria-hidden="true"
-                    className="shrink-0 text-[length:var(--meta-size)] text-accent opacity-0 transition-opacity group-hover:opacity-100"
+                    className="shrink-0 text-[length:var(--meta-size)] text-accent-ink opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     ↗
                   </span>

@@ -44,6 +44,9 @@ const VALUE_FILES = [
   // The gallery's entire purpose is showing real brand hexes dyed by the
   // theme. Flagging it would be flagging the test itself.
   "app/dev/themes/",
+  // Chrome for JUDGING a theme. It must look identical no matter how radical
+  // the candidate underneath is, so fixed values are the requirement here.
+  "components/ThemeSwitcher.tsx",
 ];
 
 /**
@@ -57,6 +60,7 @@ const VALUE_FILES = [
  */
 const ALLOW_INLINE = [
   "components/ui/",               // the primitive layer — props in, style out
+  "components/ThemeSwitcher.tsx", // deliberately un-themed preview chrome
   "components/Coin.tsx",          // size is an input; the glyph scales from it
   "app/dev/themes/page.tsx",      // the gallery deliberately shows real hexes
 ];
