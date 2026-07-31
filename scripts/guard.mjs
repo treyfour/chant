@@ -37,6 +37,7 @@ const VALUE_FILES = [
   "app/tokens.css",
   "app/theme.css",
   "app/brand.css",
+  "app/theme-codedex.css",
   "lib/",
   "scripts/",
   // The gallery's entire purpose is showing real brand hexes dyed by the

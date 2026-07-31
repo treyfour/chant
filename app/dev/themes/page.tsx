@@ -3,7 +3,13 @@ import {
   Avatar, AvatarRow, Badge, Button, Card, Field, Input, Meter, Stack, Stat, Swatch, Text,
 } from "@/components/ui";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
+
+/** Candidate themes, previewable without replacing the real one. */
+const CANDIDATES = [
+  ["", "Ovation", "the shipping theme"],
+  ["codedex", "Codédex", "measured off codedex.io"],
+] as const;
 
 /**
  * /dev/themes — THE SPECIMEN.
@@ -44,18 +50,48 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   );
 }
 
-export default function SpecimenPage() {
+export default async function SpecimenPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ t?: string }>;
+}) {
+  const { t } = await searchParams;
+  const active = CANDIDATES.find((c) => c[0] === (t ?? "")) ?? CANDIDATES[0];
+  const themeFile = active[0] ? `app/theme-${active[0]}.css` : "app/theme.css";
+
   return (
-    <main className="min-h-screen bg-bg px-[var(--space-8)] py-[var(--space-12)] text-fg">
+    <main
+      data-theme={active[0] || undefined}
+      className="min-h-screen bg-bg px-[var(--space-8)] py-[var(--space-12)] text-fg"
+    >
       <div className="mx-auto max-w-[var(--w-app)]">
         <Text variant="eyebrow" tone="faint">Ovation · design system</Text>
         <Text as="h1" variant="h1" className="mt-[var(--space-3)]">The specimen</Text>
         <Text variant="lead" tone="dim" className="mt-[var(--space-4)] max-w-[var(--w-col)]">
-          One product, one theme. Everything below reads its values from{" "}
-          <span className="type-code">app/theme.css</span> — nothing is styled per
+          Everything below reads its values from{" "}
+          <span className="type-code">{themeFile}</span> — nothing is styled per
           screen. If a restyle looks wrong here it will look wrong everywhere,
           which is the entire reason this page exists.
         </Text>
+
+        {/* Candidates preview under data-theme, so trying one on never means
+            editing the theme the app actually ships. */}
+        <Stack row gap={2} wrap className="mt-[var(--space-6)]">
+          {CANDIDATES.map(([slug, name, note]) => (
+            <a key={name} href={slug ? `?t=${slug}` : "?"}>
+              <span
+                className={[
+                  "inline-flex items-center gap-[var(--space-2)] border px-[var(--space-4)] py-[var(--space-2)]",
+                  "rounded-[var(--radius-md)]",
+                  slug === active[0] ? "border-fg bg-bg-sink" : "border-line",
+                ].join(" ")}
+              >
+                <Text as="span" variant="meta" className="type-emphasis">{name}</Text>
+                <Text as="span" variant="meta" tone="faint">{note}</Text>
+              </span>
+            </a>
+          ))}
+        </Stack>
 
         {/* ── type roles ─────────────────────────────────────── */}
         <Section label="Type roles">

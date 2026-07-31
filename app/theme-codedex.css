@@ -1,0 +1,197 @@
+/* ============================================================
+   A CANDIDATE THEME — codedex.io
+   ============================================================
+
+   Not a direction for Ovation. Kept because it is the PROOF the contract
+   works: a reference sharing nothing with the current look, expressed by
+   filling in the same 101 tokens and editing no components.
+
+   View it at /dev/themes?t=codedex — scoped under [data-theme="codedex"] so
+   it previews without replacing the real theme. That is the only difference
+   from app/theme.css, which declares the identical keys on :root.
+
+   Every value here was MEASURED off codedex.io, not invented:
+
+     ground        rgb(2,6,23)     #020617   most-used background
+     raise         rgb(30,41,59)   #1e293b
+     accent        rgb(250,204,21) #facc15   the Sign up / Get started yellow
+     radius        0px on 713 elements, 4px on 9 — sharp, decisively
+     border        0px or 2px. Never 1px. Weight is doing real work.
+     display       Press Start 2P
+     body          Mulish, 14px / 500
+     eyebrow       12px / 600 / 1.68px tracking  (= 0.14em)
+     display trk   32px / 700 / 0.96px tracking  (= +0.03em, POSITIVE)
+
+   ── THE FINDING THAT SURPRISED ME ─────────────────────────────
+   Their display tracking is POSITIVE. theme.css states that letterspacing
+   runs inverse to size, and for a continuous typeface that holds — but Press
+   Start 2P is a bitmap face where every glyph already sits on a fixed grid,
+   and negative tracking collides the pixels. The rule inverts.
+
+   Exactly the kind of thing you cannot get from a mood board and get for free
+   from measuring: the reference disagreed with the house rule, and the
+   reference was right about its own typeface.
+
+   ── WHAT THIS THEME CANNOT REACH ──────────────────────────────
+   --border is 2px below and every button, card and input still renders at
+   1px, because components use Tailwind's bare `border` and nothing reads the
+   token. The chunky outline is half of codedex's identity and it never
+   arrives. That hole passes both halves of the guard — the theme defines the
+   token, no component leaks a raw value — which is why an unwired-token check
+   is the next thing this system needs.
+
+   The coin also stays leather. It is a material component, not a set of
+   values; under this direction it wants to be a sprite. That is the honest
+   boundary of what tokens can do.
+   ============================================================ */
+
+[data-theme="codedex"] {
+  /* ── colour ──────────────────────────────── */
+  --bg: #020617;
+  --bg-raise: #1e293b;
+  --bg-sink: #000000;
+  --bg-invert: #f8fafc;
+
+  --fg: #f8fafc;
+  --fg-dim: #cbd5e1;
+  --fg-faint: #94a3b8;
+  --fg-invert: #020617;
+
+  /* Lines are LOUD here — a border is a design element, not a hairline. */
+  --line: rgba(148, 163, 184, 0.35);
+  --line-strong: #f8fafc;
+
+  --accent: #facc15;
+  --accent-fg: #020617;
+  --accent-soft: rgba(250, 204, 21, 0.16);
+
+  --good: #4ade80;
+  --warn: #fb923c;
+  --bad: #f87171;
+
+  /* ── families ────────────────────────────── */
+  --font-display: var(--font-press-start), ui-monospace, monospace;
+  --font-body: var(--font-mulish), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+
+  /* ── type roles ──────────────────────────────
+     Press Start 2P is enormous per character and has no lowercase rhythm, so
+     every display size drops well below Ovation's — a 62px pixel headline is
+     unreadable where 30px reads as loud. Size is a function of the FACE, which
+     is the whole argument for size living in the theme. */
+
+  --display-font: var(--font-display);
+  --display-size: clamp(22px, 3.4vw, 34px);
+  --display-weight: 400;
+  --display-tracking: 0.02em;
+  --display-leading: 1.45;
+  --display-case: none;
+
+  --h1-font: var(--font-display);
+  --h1-size: 24px;
+  --h1-weight: 400;
+  --h1-tracking: 0.02em;
+  --h1-leading: 1.5;
+  --h1-case: none;
+
+  --h2-font: var(--font-display);
+  --h2-size: 18px;
+  --h2-weight: 400;
+  --h2-tracking: 0.02em;
+  --h2-leading: 1.55;
+  --h2-case: none;
+
+  --h3-font: var(--font-display);
+  --h3-size: 12px;
+  --h3-weight: 400;
+  --h3-tracking: 0.03em;
+  --h3-leading: 1.6;
+  --h3-case: none;
+
+  /* A nameplate in a pixel face stays small and sits on the grid. */
+  --name-font: var(--font-display);
+  --name-size: 10px;
+  --name-weight: 400;
+  --name-tracking: 0.04em;
+  --name-leading: 1.6;
+  --name-case: none;
+
+  --body-font: var(--font-body);
+  --body-size: 14px;
+  --body-weight: 500;
+  --body-tracking: 0em;
+  --body-leading: 1.6;
+  --body-case: none;
+
+  --lead-font: var(--font-body);
+  --lead-size: 17px;
+  --lead-weight: 500;
+  --lead-tracking: 0em;
+  --lead-leading: 1.55;
+  --lead-case: none;
+
+  --meta-font: var(--font-body);
+  --meta-size: 12px;
+  --meta-weight: 400;
+  --meta-tracking: 0em;
+  --meta-leading: 1.5;
+  --meta-case: none;
+
+  /* Measured: 12px / 600 / 1.68px. */
+  --eyebrow-font: var(--font-body);
+  --eyebrow-size: 12px;
+  --eyebrow-weight: 600;
+  --eyebrow-tracking: 0.14em;
+  --eyebrow-leading: 1;
+  --eyebrow-case: uppercase;
+
+  /* Data on an object goes pixel here — it is the arcade score line. */
+  --caption-font: var(--font-display);
+  --caption-size: 8px;
+  --caption-weight: 400;
+  --caption-tracking: 0.06em;
+  --caption-leading: 1.7;
+  --caption-case: none;
+
+  --code-font: var(--font-mono);
+  --code-size: 13px;
+  --code-weight: 400;
+  --code-tracking: 0em;
+  --code-leading: 1.7;
+  --code-case: none;
+
+  --weight-emphasis: 700;
+
+  /* Denser than Ovation — an arcade UI packs in. */
+  --space-unit: 3.5px;
+
+  /* ── shape ───────────────────────────────────
+     0px radius on 713 of their elements. Sharpness IS the identity. */
+  --border: 2px;
+  --border-strong: 3px;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  /* ── elevation ───────────────────────────────
+     Hard offset, zero blur. A blurred shadow is a lighting model; a pixel UI
+     has no lights, it has an outline and an offset block. Offset in the accent
+     rather than black, which would vanish on this ground. */
+  --shadow-sm: 3px 3px 0 0 rgba(250, 204, 21, 0.9);
+  --shadow-md: 5px 5px 0 0 rgba(250, 204, 21, 0.9);
+  --shadow-lg: 8px 8px 0 0 rgba(2, 6, 23, 0.9);
+
+  /* Snappy and mechanical — no curve that implies momentum. */
+  --ease: steps(4, end);
+
+  /* ── character ───────────────────────────── */
+  --texture: linear-gradient(rgba(148, 163, 184, 0.07) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.07) 2px, transparent 2px);
+  --texture-size: 24px 24px;
+  --mark-style: flat;
+  --surface-feel: flush;
+
+  color-scheme: dark;
+}
