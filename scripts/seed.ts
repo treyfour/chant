@@ -54,9 +54,15 @@ async function main() {
         priceId = found.data[0].id;
         productId = String(found.data[0].product);
       } else {
+        // Shown on the Stripe Checkout page under the price. Keep it in sync
+        // with the landing page — stale copy here is very visible mid-purchase.
+        const DESCRIPTIONS: Record<string, string> = {
+          Pro: "Unlimited concurrency, 50k agent steps/mo, 90-day traces and replay",
+          Team: "Everything in Pro, self-hosted workers, SSO and SAML, 99.9% SLA",
+        };
         const product = await stripe.products.create({
           name: `Warrick ${p.name}`,
-          description: p.name === "Pro" ? "Unlimited repositories, self-hosted runners" : undefined,
+          description: DESCRIPTIONS[p.name],
         });
         const price = await stripe.prices.create({
           product: product.id,
