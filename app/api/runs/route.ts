@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import { permissionsFor, viewerRole } from "@/lib/seller";
+import { SYSTEM_ACTOR } from "@/lib/palette";
 
 const rid = (p: string) => `${p}_${Math.random().toString(36).slice(2, 11)}`;
 
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
   await sql`
     INSERT INTO activity (id, seller_id, kind, text, actor_initial, actor_color)
     VALUES (${rid("ev")}, ${plans[0].seller_id}, 'coin_claimed',
-            ${`Run <b>${name}</b> attached · ${size} will ever exist`}, 'N', '#8f6a45')`;
+            ${`Run <b>${name}</b> attached · ${size} will ever exist`}, ${SYSTEM_ACTOR.initial}, ${SYSTEM_ACTOR.color})`;
 
   return NextResponse.json({ id: runId, name, size });
 }

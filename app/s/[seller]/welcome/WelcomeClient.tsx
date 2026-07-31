@@ -1,15 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Check } from "lucide-react";
 import { RevealSheet, type RevealPayload } from "@/components/RevealSheet";
 import { CollectionSheet } from "@/components/CollectionSheet";
+import { Button, ButtonLink, Card, Stack, Text } from "@/components/ui";
 
 /**
- * Warrick's own onboarding screen — still dark, still their brand.
+ * Warrick's own onboarding screen — still their theme, still their brand.
  *
- * Ovation arrives on top of it as a warm sheet from a different company. The
- * visual whiplash is the point: nothing about this page changed, a third party
- * just handed you something.
+ * Ovation arrives on top as a warm sheet from a different company. Nothing
+ * about this page changes; a third party just hands you something. The sheets
+ * force `theme="ovation"`, which is what produces the whiplash.
  */
 export function WelcomeClient({
   sellerName,
@@ -20,8 +22,8 @@ export function WelcomeClient({
 }) {
   const [payload, setPayload] = useState<RevealPayload | null>(null);
   const [open, setOpen] = useState(false);
-  const [waiting, setWaiting] = useState(Boolean(sessionId));
   const [collection, setCollection] = useState(false);
+  const [waiting, setWaiting] = useState(Boolean(sessionId));
 
   // Poll until the webhook has actually claimed a serial. We never invent one.
   useEffect(() => {
@@ -49,63 +51,60 @@ export function WelcomeClient({
   const reopen = useCallback(() => payload && setOpen(true), [payload]);
 
   return (
-    <div className="site">
-      <nav
-        className="flex h-16 items-center gap-2.5 px-6 md:px-12"
-        style={{ borderBottom: "1px solid var(--line)" }}
-      >
-        <span
-          className="grid h-7 w-7 place-items-center rounded-lg text-xs"
-          style={{ background: "var(--brand)", color: "#fff" }}
-        >
+    <div data-theme="warrick" className="min-h-screen bg-bg text-fg">
+      <nav className="flex h-[var(--h-nav)] items-center gap-[var(--space-3)] border-b border-line px-[var(--space-6)] md:px-[var(--space-12)]">
+        <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--text-xs)] text-accent-fg">
           ▲
         </span>
-        <span className="text-[17px] font-semibold tracking-tight">{sellerName}</span>
+        <Text as="span" variant="h3" className="text-[length:var(--text-md)] font-semibold">
+          {sellerName}
+        </Text>
       </nav>
 
-      <main className="site-grid" style={{ minHeight: "calc(100vh - 64px)" }}>
-        <div className="mx-auto max-w-[520px] px-6 py-24 text-center">
-          <div
-            className="mx-auto grid h-12 w-12 place-items-center rounded-full text-[20px]"
-            style={{ background: "rgba(184,242,74,.14)", color: "var(--lime)", border: "1px solid rgba(184,242,74,.3)" }}
-          >
-            ✓
+      <main className="surface-textured min-h-[calc(100vh-var(--h-nav))]">
+        <div className="mx-auto max-w-[var(--w-col-sm)] px-[var(--space-6)] py-[var(--space-20)] text-center">
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-good/30 bg-good/14 text-good">
+            <Check size={20} strokeWidth={1.5} />
           </div>
 
-          <h1 className="site-h2 mt-6">You&rsquo;re on Pro</h1>
-          <p className="mt-3 text-[16px]" style={{ color: "var(--fg-dim)" }}>
+          <Text as="h1" variant="h1" className="mt-[var(--space-6)] font-semibold">
+            You&rsquo;re on Pro
+          </Text>
+          <Text variant="body" tone="dim" className="mt-[var(--space-3)] text-[length:var(--text-md)]">
             Your workspace is ready. Install the SDK and your first run is on us.
-          </p>
+          </Text>
 
-          <div className="site-term mt-8 p-4 text-left">
-            <span className="c-dim">$</span> npm i <span className="c-str">@warrick/sdk</span>
-          </div>
+          <Card pad={4} className="mt-[var(--space-8)] bg-bg-sink text-left font-[family-name:var(--font-mono)] text-[length:var(--text-sm)]">
+            <span className="text-fg-faint">$</span> npm i <span className="text-good">@warrick/sdk</span>
+          </Card>
 
-          <div className="site-card mt-4 p-5 text-left">
+          <Card pad={5} className="mt-[var(--space-4)] text-left">
             {[
               ["Plan", "Pro · $20/mo"],
               ["Next invoice", "in 30 days"],
               ["Card", "•••• 4242"],
             ].map(([k, v]) => (
-              <div key={k} className="flex justify-between py-2 text-[13.5px]">
-                <span style={{ color: "var(--fg-dim)" }}>{k}</span>
-                <b>{v}</b>
-              </div>
+              <Stack key={k} row justify="between" className="py-[var(--space-2)]">
+                <Text as="span" variant="meta" tone="dim">{k}</Text>
+                <Text as="span" variant="meta" className="font-semibold">{v}</Text>
+              </Stack>
             ))}
-          </div>
+          </Card>
 
-          <a href="#" className="site-btn site-btn--brand mt-6">Open the dashboard</a>
+          <ButtonLink href="#" variant="accent" className="mt-[var(--space-6)]">
+            Open the dashboard
+          </ButtonLink>
 
           {waiting && (
-            <p className="mt-6 text-[12px]" style={{ color: "var(--fg-faint)" }}>
+            <Text variant="meta" tone="faint" className="mt-[var(--space-6)]">
               Waiting for Stripe to confirm…
-            </p>
+            </Text>
           )}
 
           {payload && !open && (
-            <button onClick={reopen} className="site-btn site-btn--ghost mt-6">
-              Show the coin again
-            </button>
+            <div className="mt-[var(--space-6)]">
+              <Button variant="ghost" size="sm" onClick={reopen}>Show the coin again</Button>
+            </div>
           )}
         </div>
       </main>

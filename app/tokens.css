@@ -1,0 +1,150 @@
+/* ============================================================
+   THE TOKEN CONTRACT
+   ============================================================
+
+   Every theme MUST define every variable in this file. That is what makes a
+   theme a file rather than a redesign — swap the values, the whole app changes.
+
+   Two rules, and the system dies without either:
+
+     1. Components reference ONLY these variables. Never a raw hex, px, or font
+        name. `npm run guard` fails the build if one slips in.
+     2. Adding a token means adding it to EVERY theme. A theme with a missing
+        key is a theme with a silent hole.
+
+   ~40 tokens on purpose. Semantic systems fail when nobody can remember the
+   vocabulary — 200 tokens is a dictionary, not a system.
+
+   The last group is the one most systems omit and the reason two themes here
+   read as different COMPANIES rather than light and dark mode.
+   ============================================================ */
+
+@theme inline {
+  /* ── surface ─────────────────────────────── */
+  --color-bg: var(--bg);
+  --color-bg-raise: var(--bg-raise);
+  --color-bg-sink: var(--bg-sink);
+  --color-bg-invert: var(--bg-invert);
+
+  /* ── ink ─────────────────────────────────── */
+  --color-fg: var(--fg);
+  --color-fg-dim: var(--fg-dim);
+  --color-fg-faint: var(--fg-faint);
+  --color-fg-invert: var(--fg-invert);
+
+  /* ── line ────────────────────────────────── */
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  /* ── accent ──────────────────────────────── */
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+
+  /* ── status ──────────────────────────────── */
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+
+  /* ── type ────────────────────────────────── */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  /* ── shape ───────────────────────────────── */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  /* ── motion ──────────────────────────────── */
+  --ease-brand: var(--ease);
+}
+
+:root {
+  /* ── type scale ──────────────────────────────
+     Shared across themes. A theme changes the FAMILY and the tracking, not
+     the ladder — otherwise every component needs per-theme sizing. */
+  --text-2xs: 10px;
+  --text-xs: 11.5px;
+  --text-sm: 13px;
+  --text-base: 14.5px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 26px;
+  --text-2xl: 32px;
+  --text-3xl: 44px;
+  --text-4xl: clamp(38px, 5.4vw, 62px);
+
+  /* ── space ───────────────────────────────────
+     4px base. Use these, never arbitrary padding. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ── layout constants ────────────────────────
+     Sheet widths and the coin stage are design decisions, not magic numbers.
+     A denser theme may legitimately want narrower sheets. */
+  --w-sheet-sm: 404px;
+  --w-sheet-md: 760px;
+  --w-sheet-lg: 880px;
+  --w-page: 1100px;
+  /* App chrome content column. There were four near-identical widths here
+     (940/960/1000/1100); four is drift, not a decision. */
+  --w-app: 960px;
+
+  /* Narrow columns for prose and set-pieces. */
+  --w-col-sm: 520px;
+  --w-col: 640px;
+  --w-col-lg: 720px;
+
+  --w-search: 210px;
+  --w-tooltip: 186px;
+  --blur-overlay: 7px;
+  /* Nav chrome. Two of them: the seller's own site and the Ovation app. */
+  --h-nav: 64px;
+  --h-nav-app: 60px;
+
+  /* One coin's cell on a shelf. The grid fits as many as it can. */
+  --w-coin-cell: 136px;
+  --w-coin-cell-sm: 124px;
+
+  --h-coin-stage: 112px;
+  --h-coin-stage-sm: 104px;
+
+  /* Derived: whatever the theme's inverted ground is, at 72%. */
+  --overlay: color-mix(in srgb, var(--bg-invert) 72%, transparent);
+
+  /* ── motion ────────────────────────────────── */
+  --dur-fast: 140ms;
+  --dur: 240ms;
+  --dur-slow: 500ms;
+}
+
+/* ============================================================
+   Every theme defines this exact key set. Copy the block, change values.
+   ============================================================
+
+   --bg --bg-raise --bg-sink --bg-invert
+   --fg --fg-dim --fg-faint --fg-invert
+   --line --line-strong
+   --accent --accent-fg --accent-soft
+   --good --warn --bad
+   --font-display --font-body --font-mono
+   --tracking-display --tracking-body
+   --radius-sm --radius-md --radius-lg --radius-xl
+   --shadow-sm --shadow-md --shadow-lg
+   --ease
+   --texture          background-image for surfaces, or `none`
+   --mark-style       emboss | flat
+   --surface-feel     lifted | flush
+   --density          compact | roomy
+*/

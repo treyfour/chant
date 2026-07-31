@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import { Coin } from "@/components/Coin";
 import { AttachCoinSheet } from "@/components/AttachCoinSheet";
+import {
+  Avatar, Badge, Button, ButtonLink, Card, Meter, Row, Sheet, SheetContent, SheetTitle,
+  Stack, Stat, Text,
+} from "@/components/ui";
 import type { MemberRole, Plan, CoinRun, SellerDashboardView } from "@/lib/types";
 
 type PlanWithRun = Plan & { run: CoinRun | null };
+
+/** Plan rows share a column template between header and body. One source. */
+const ROW = "56px 1fr 170px 170px";
 
 export function PlansClient({
   view,
@@ -38,176 +46,171 @@ export function PlansClient({
 
   return (
     <>
-      <nav
-        className="sticky top-0 z-40 flex h-[60px] items-center gap-3 px-8"
-        style={{ background: "var(--raise)", borderBottom: "1px solid var(--rule)" }}
-      >
-        <span style={{ font: "400 18px/1 var(--display)" }}>Ovation</span>
-        <span
-          className="ml-3 flex items-center gap-2 rounded-[9px] px-3 py-1.5 text-[12.5px] font-semibold"
-          style={{ border: "1px solid var(--rule)" }}
+      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)]">
+        <Text as="span" variant="h3">Ovation</Text>
+        <Stack
+          row gap={2} align="center"
+          className="ml-[var(--space-3)] rounded-[var(--radius-sm)] border border-line px-[var(--space-3)] py-[var(--space-2)]"
         >
-          <span
-            className="grid h-5 w-5 place-items-center rounded-md text-[10px] text-white"
-            style={{ background: "#8f6a45" }}
-          >
+          <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-accent text-[length:var(--text-2xs)] text-accent-fg">
             {view.seller.mark}
           </span>
-          {view.seller.name}
-          <small style={{ color: "var(--faint)", fontWeight: 400 }}>
+          <Text as="span" variant="meta" className="font-semibold">{view.seller.name}</Text>
+          <Text as="span" variant="meta" tone="faint">
             {role === "owner" ? "Owner" : "Member"}
-          </small>
-        </span>
+          </Text>
+        </Stack>
         <span className="flex-1" />
-        <a href={`/app/team${roleQS}`} className="text-[12.5px]" style={{ color: "var(--dim)" }}>
-          Team
-        </a>
-        <a href="/app/billing" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Billing</a>
-        <a href="/demo" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
+        <a href={`/app/team${roleQS}`}><Text as="span" variant="meta" tone="dim">Team</Text></a>
+        <a href="/app/billing"><Text as="span" variant="meta" tone="dim">Billing</Text></a>
+        <a href="/demo"><Text as="span" variant="meta" tone="accent">Demo home</Text></a>
       </nav>
 
-      <main className="w-full mx-auto max-w-[940px] px-11 pb-20 pt-10">
-        <div className="flex flex-wrap items-end justify-between gap-5">
+      <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-10)]">
+        <Stack row justify="between" align="end" wrap gap={5}>
           <div>
-            <div className="t-eyebrow">{view.seller.name}</div>
-            <h1 className="t-display mt-2.5">Plans</h1>
+            <Text variant="mono" tone="faint">{view.seller.name}</Text>
+            <Text as="h1" variant="h1" className="mt-[var(--space-3)]">Plans</Text>
           </div>
-          <span
-            className="rounded-full px-2.5 py-1.5 text-[9.5px] font-semibold uppercase tracking-[.12em]"
-            style={{ color: "var(--good)", border: "1px solid rgba(74,124,89,.35)" }}
-          >
-            ● Stripe connected
-          </span>
+          <Badge tone="good">● Stripe connected</Badge>
+        </Stack>
+
+        <div className="mt-[var(--space-8)] grid grid-cols-1 gap-[var(--space-4)] sm:grid-cols-3">
+          <Stat
+            label="Subscribers"
+            value={view.plans.reduce((a, p) => a + p.subscriberCount, 0)}
+            sub="across three plans"
+          />
+          <Stat
+            label="Coins claimed"
+            value={capacity ? `${claimed} / ${capacity}` : "0"}
+            sub={liveRuns.length ? `${liveRuns.length} run${liveRuns.length > 1 ? "s" : ""} live` : "no runs yet"}
+          />
+          <Stat label="Ovation plan" value="Starter" sub="1 run, 50 coins" />
         </div>
 
-        <div className="mt-7 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
-          {[
-            ["Subscribers", String(view.plans.reduce((a, p) => a + p.subscriberCount, 0)), "across three plans"],
-            ["Coins claimed", capacity ? `${claimed} / ${capacity}` : "0", liveRuns.length ? `${liveRuns.length} run${liveRuns.length > 1 ? "s" : ""} live` : "no runs yet"],
-            ["Ovation plan", "Starter", "1 run, 50 coins"],
-          ].map(([k, v, s]) => (
-            <div key={k} className="rounded-2xl px-5 py-[18px]"
-              style={{ background: "var(--raise)", border: "1px solid var(--rule)" }}>
-              <div className="t-eyebrow">{k}</div>
-              <div className="mt-2.5" style={{ font: "400 27px/1 var(--display)", letterSpacing: "-.025em" }}>{v}</div>
-              <div className="mt-1.5 text-[11.5px]" style={{ color: "var(--dim)" }}>{s}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <div className="mb-3 flex items-baseline justify-between">
-            <span className="t-eyebrow">Your Stripe products</span>
-            <span className="text-[11.5px]" style={{ color: "var(--faint)" }}>
+        <div className="mt-[var(--space-8)]">
+          <Stack row justify="between" align="baseline" className="mb-[var(--space-3)]">
+            <Text as="span" variant="mono" tone="faint">Your Stripe products</Text>
+            <Text as="span" variant="meta" tone="faint">
               Synced from {view.seller.stripeAccountId ?? "Stripe"}
-            </span>
-          </div>
+            </Text>
+          </Stack>
 
-          <div className="rounded-2xl" style={{ background: "var(--raise)", border: "1px solid var(--rule)" }}>
+          <Card pad={0}>
             {view.plans.map((p, i) => (
-              <div
+              <Row
                 key={p.id}
-                className="grid items-center gap-4 px-[22px] py-[18px]"
-                style={{
-                  gridTemplateColumns: "56px 1fr 170px 170px",
-                  borderBottom: i < view.plans.length - 1 ? "1px solid var(--rule)" : "none",
-                  background: p.run && !p.run.retired ? "rgba(138,106,59,.06)" : "transparent",
-                }}
+                cols={ROW}
+                className={[
+                  "items-center px-[var(--space-6)] py-[var(--space-5)]",
+                  i < view.plans.length - 1 ? "border-b border-line" : "",
+                  p.run && !p.run.retired ? "bg-accent-soft" : "",
+                ].join(" ")}
               >
                 {p.run ? (
                   <Coin glyph={p.run.glyph} tint={p.run.tint} size={44} retired={p.run.retired} />
                 ) : (
-                  <div className="grid h-11 w-11 place-items-center rounded-full text-[17px]"
-                    style={{ border: "1.5px dashed var(--rule)", color: "var(--faint)" }}>+</div>
+                  <div className="grid h-11 w-11 place-items-center rounded-full border border-dashed border-line text-fg-faint">
+                    <Plus size={16} strokeWidth={1.5} />
+                  </div>
                 )}
 
                 <div>
-                  <div className="text-[15px] font-semibold">{p.name}</div>
-                  <div className="mt-1 text-[12.5px]" style={{ color: "var(--dim)" }}>
+                  <Text variant="body" className="font-semibold">{p.name}</Text>
+                  <Text variant="meta" tone="dim" className="mt-[var(--space-1)]">
                     {p.priceLabel} · {p.subscriberCount} subscribers
-                  </div>
+                  </Text>
                 </div>
 
-                <div className="text-[12px]" style={{ color: "var(--dim)" }}>
+                <div>
                   {p.run ? (
                     <>
-                      <b style={{ color: "var(--ink)" }}>{p.run.name}</b> · {p.run.claimed} of {p.run.size}
+                      <Text as="span" variant="meta" tone="dim">
+                        <b className="text-fg">{p.run.name}</b> · {p.run.claimed} of {p.run.size}
+                      </Text>
                       {p.run.retired && (
-                        <span className="ml-1.5 rounded-full px-2 py-1 text-[9px] font-semibold uppercase"
-                          style={{ color: "#a1341f", border: "1px solid rgba(161,52,31,.3)" }}>Retired</span>
+                        <span className="ml-[var(--space-2)]">
+                          <Badge tone="bad">Retired</Badge>
+                        </span>
                       )}
-                      <div className="mt-2 h-1 overflow-hidden rounded-full" style={{ background: "rgba(33,31,27,.10)" }}>
-                        <i className="block h-full" style={{
-                          background: "var(--accent)", transformOrigin: "left",
-                          transform: `scaleX(${(p.run.claimed / p.run.size).toFixed(3)})`,
-                        }} />
-                      </div>
+                      <Meter value={p.run.claimed / p.run.size} className="mt-[var(--space-2)]" />
                     </>
                   ) : (
-                    <span style={{ color: "var(--faint)" }}>No coin attached</span>
+                    <Text as="span" variant="meta" tone="faint">No coin attached</Text>
                   )}
                 </div>
 
-                <div className="flex justify-end gap-2">
+                <Stack row gap={2} justify="end">
                   {p.run && !p.run.retired && (
-                    <button
+                    <Button
+                      size="sm"
+                      variant="ghost"
                       disabled={!can("coins:retire")}
                       title={can("coins:retire") ? undefined : "Members cannot retire runs"}
                       onClick={() => setConfirmRetire(p.run!)}
-                      className="rounded-[9px] px-4 py-2.5 text-xs disabled:opacity-30"
-                      style={{ border: "1px solid var(--rule)", color: "var(--dim)" }}
-                    >Retire</button>
+                    >
+                      Retire
+                    </Button>
                   )}
                   {!p.run && (
-                    <button
+                    <Button
+                      size="sm"
                       disabled={!can("coins:create")}
                       title={can("coins:create") ? undefined : "Members cannot attach coins"}
                       onClick={() => setAttaching(p)}
-                      className="rounded-[9px] px-4 py-2.5 text-xs font-semibold disabled:opacity-30"
-                      style={{ background: "var(--ink)", color: "var(--ground)" }}
-                    >Add coin</button>
+                    >
+                      Add coin
+                    </Button>
                   )}
-                </div>
-              </div>
+                </Stack>
+              </Row>
             ))}
-          </div>
+          </Card>
 
           {liveRuns.length === 0 && (
-            <p className="py-8 text-center text-[13.5px]" style={{ color: "var(--dim)" }}>
+            <Text variant="meta" tone="dim" className="py-[var(--space-8)] text-center">
               Pick a plan above and attach your first coin. Your checkout stays exactly as it is.
-            </p>
+            </Text>
           )}
         </div>
 
         {role === "member" && (
-          <div className="mt-6 rounded-[13px] px-5 py-4 text-[13px]"
-            style={{ background: "var(--paper)", color: "var(--dim)" }}>
-            Viewing as <b style={{ color: "var(--ink)" }}>Member</b> — read only. Add coin and
-            Retire are disabled by the permissions on the Auth0 token, not by a flag in our
-            database. The API refuses them with 403 too; the button state is not the security
-            boundary.{" "}
-            <a href="/auth/login" style={{ color: "var(--accent)" }}>Sign in</a> to act as Owner.
+          <div className="mt-[var(--space-6)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
+            <Text variant="meta" tone="dim">
+              Viewing as <b className="text-fg">Member</b> — read only. Add coin and Retire
+              are disabled by the permissions on the Auth0 token, not by a flag in our
+              database. The API refuses them with 403 too; the button state is not the
+              security boundary.{" "}
+              <a href="/auth/login" className="text-accent">Sign in</a> to act as Owner.
+            </Text>
           </div>
         )}
 
-        <div className="mt-5">
-          <div className="t-eyebrow mb-3">Recent</div>
-          <div className="rounded-2xl px-6 py-4" style={{ background: "var(--raise)", border: "1px solid var(--rule)" }}>
+        <div className="mt-[var(--space-5)]">
+          <Text variant="mono" tone="faint" className="mb-[var(--space-3)]">Recent</Text>
+          <Card>
             {view.activity.length === 0 && (
-              <p className="py-2 text-[13px]" style={{ color: "var(--faint)" }}>Nothing yet.</p>
+              <Text variant="meta" tone="faint" className="py-[var(--space-2)]">Nothing yet.</Text>
             )}
             {view.activity.map((a, i) => (
-              <div key={a.id} className="flex items-center gap-3 py-2.5 text-[13px]"
-                style={{ borderBottom: i < view.activity.length - 1 ? "1px solid var(--rule)" : "none" }}>
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-[9px] font-semibold text-white"
-                  style={{ background: a.actorColor }}>{a.actorInitial}</span>
-                <span dangerouslySetInnerHTML={{ __html: a.text }} />
-                <span className="ml-auto whitespace-nowrap text-[11.5px]" style={{ color: "var(--faint)" }}>
+              <Stack
+                key={a.id}
+                row gap={3} align="center"
+                className={[
+                  "py-[var(--space-3)]",
+                  i < view.activity.length - 1 ? "border-b border-line" : "",
+                ].join(" ")}
+              >
+                <Avatar color={a.actorColor} size="sm">{a.actorInitial}</Avatar>
+                <Text as="span" variant="meta" dangerouslySetInnerHTML={{ __html: a.text }} />
+                <span className="flex-1" />
+                <Text as="span" variant="meta" tone="faint" className="whitespace-nowrap">
                   {new Date(a.at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </span>
-              </div>
+                </Text>
+              </Stack>
             ))}
-          </div>
+          </Card>
         </div>
       </main>
 
@@ -221,29 +224,29 @@ export function PlansClient({
       )}
 
       {confirmRetire && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: "rgba(20,16,11,.7)", backdropFilter: "blur(6px)" }}
-          onClick={(e) => e.target === e.currentTarget && setConfirmRetire(null)}>
-          <div className="w-full max-w-[404px] rounded-[20px] p-9 text-center" style={{ background: "var(--ground)" }}>
-            <h2 className="t-h2">Retire this run?</h2>
-            <p className="mt-3 text-sm" style={{ color: "var(--dim)" }}>
-              <b style={{ color: "var(--ink)" }}>{confirmRetire.name}</b> has{" "}
-              {confirmRetire.size - confirmRetire.claimed} unclaimed coins. Retiring closes it
-              forever — those will never exist, and the {confirmRetire.claimed} already out there
-              become the only ones.
-            </p>
-            <div className="mt-6 flex gap-2.5">
-              <button onClick={() => setConfirmRetire(null)}
-                className="flex-1 rounded-[11px] px-6 py-3.5 text-[13.5px]"
-                style={{ border: "1px solid var(--rule)", color: "var(--dim)" }}>Keep it open</button>
-              <button onClick={retire} disabled={busy}
-                className="flex-1 rounded-[11px] px-6 py-3.5 text-[13.5px] font-semibold disabled:opacity-50"
-                style={{ color: "#a1341f", border: "1px solid rgba(161,52,31,.3)" }}>
-                {busy ? "Retiring…" : "Retire run"}
-              </button>
+        <Sheet open onOpenChange={(o) => !o && setConfirmRetire(null)}>
+          <SheetContent size="sm" theme="ovation">
+            <div className="p-[var(--space-10)] text-center">
+              <SheetTitle asChild>
+                <Text as="h2" variant="h2">Retire this run?</Text>
+              </SheetTitle>
+              <Text variant="body" tone="dim" className="mt-[var(--space-3)]">
+                <b className="text-fg">{confirmRetire.name}</b> has{" "}
+                {confirmRetire.size - confirmRetire.claimed} unclaimed coins. Retiring
+                closes it forever — those will never exist, and the {confirmRetire.claimed}{" "}
+                already out there become the only ones.
+              </Text>
+              <Stack row gap={3} className="mt-[var(--space-6)]">
+                <Button variant="ghost" full onClick={() => setConfirmRetire(null)}>
+                  Keep it open
+                </Button>
+                <Button variant="danger" full disabled={busy} onClick={retire}>
+                  {busy ? "Retiring…" : "Retire run"}
+                </Button>
+              </Stack>
             </div>
-          </div>
-        </div>
+          </SheetContent>
+        </Sheet>
       )}
     </>
   );

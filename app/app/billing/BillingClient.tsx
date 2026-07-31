@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Coin } from "@/components/Coin";
+import { Badge, Button, Card, Stack, Text } from "@/components/ui";
 import type { SellerPublicView } from "@/lib/types";
 
 const FEATURES: Record<string, string[]> = {
@@ -32,109 +34,101 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
 
   return (
     <>
-      <nav
-        className="sticky top-0 z-40 flex h-[60px] items-center gap-3 px-8"
-        style={{ background: "var(--raise)", borderBottom: "1px solid var(--rule)" }}
-      >
-        <span style={{ font: "400 18px/1 var(--display)" }}>Ovation</span>
+      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)]">
+        <Text as="span" variant="h3">Ovation</Text>
         <span className="flex-1" />
-        <a href="/app/plans" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Plans</a>
-        <a href="/app/team" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Team</a>
-        <a href="/demo" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Demo home</a>
+        <a href="/app/plans"><Text as="span" variant="meta" tone="dim">Plans</Text></a>
+        <a href="/app/team"><Text as="span" variant="meta" tone="dim">Team</Text></a>
+        <a href="/demo"><Text as="span" variant="meta" tone="accent">Demo home</Text></a>
       </nav>
 
-      <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-14 text-center">
-        <div className="t-eyebrow">Your Ovation plan</div>
-        <h1 className="t-display mt-3">We use it too.</h1>
-        <p className="mx-auto mt-3 max-w-[52ch] text-base" style={{ color: "var(--dim)" }}>
-          Ovation is a subscription like any other. Which means our paid plans come with a
-          coin, made the same way yours are.
-        </p>
+      <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-12)] text-center">
+        <Text variant="mono" tone="faint">Your Ovation plan</Text>
+        <Text as="h1" variant="h1" className="mt-[var(--space-3)]">We use it too.</Text>
+        <Text variant="body" tone="dim" className="mx-auto mt-[var(--space-3)] max-w-[52ch] text-[length:var(--text-md)]">
+          Ovation is a subscription like any other. Which means our paid plans come with
+          a coin, made the same way yours are.
+        </Text>
 
-        <div className="mt-11 grid grid-cols-1 items-stretch gap-[18px] text-left md:grid-cols-3">
+        <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] text-left md:grid-cols-3">
           {view.plans.map((p) => {
             const featured = p.name === "Studio";
             const isCurrent = p.name === CURRENT;
             return (
-              <div
+              <Card
                 key={p.id}
-                className="relative flex flex-col rounded-2xl px-[26px] py-7"
-                style={{
-                  background: "var(--raise)",
-                  border: `1px solid ${
-                    isCurrent ? "rgba(74,124,89,.45)" : featured ? "rgba(33,31,27,.26)" : "var(--rule)"
-                  }`,
-                  boxShadow: featured ? "var(--lift)" : "none",
-                }}
+                pad={0}
+                raised={featured}
+                className={[
+                  "relative flex flex-col p-[var(--space-8)]",
+                  isCurrent ? "border-good/45" : featured ? "border-line-strong" : "",
+                ].join(" ")}
               >
                 {(featured || isCurrent) && (
-                  <span
-                    className="absolute -top-[9px] left-[26px] rounded-full px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[.14em]"
-                    style={{
-                      background: isCurrent ? "var(--good)" : "var(--ink)",
-                      color: "var(--ground)",
-                    }}
-                  >
-                    {isCurrent ? "Current plan" : "Most popular"}
+                  <span className="absolute -top-2.5 left-[var(--space-8)]">
+                    <Badge tone={isCurrent ? "good" : "accent"}>
+                      {isCurrent ? "Current plan" : "Most popular"}
+                    </Badge>
                   </span>
                 )}
 
-                <div style={{ font: "400 22px/1 var(--display)", letterSpacing: "-.02em" }}>
-                  {p.name}
-                </div>
-                <div className="mt-3" style={{ font: "400 33px/1 var(--display)", letterSpacing: "-.03em" }}>
-                  {p.unitAmount === 0 ? "$0" : `$${p.unitAmount / 100}`}
+                <Text variant="h3">{p.name}</Text>
+                <Stack row gap={2} align="baseline" className="mt-[var(--space-3)]">
+                  <Text as="span" variant="h1">
+                    {p.unitAmount === 0 ? "$0" : `$${p.unitAmount / 100}`}
+                  </Text>
                   {p.unitAmount > 0 && (
-                    <small className="text-sm" style={{ color: "var(--faint)" }}> / month</small>
+                    <Text as="span" variant="body" tone="faint">/ month</Text>
                   )}
-                </div>
+                </Stack>
 
-                <ul className="mt-5 pt-[18px]" style={{ borderTop: "1px solid var(--rule)" }}>
+                <Stack gap={2} className="mt-[var(--space-5)] border-t border-line pt-[var(--space-5)]">
                   {(FEATURES[p.name] ?? []).map((f) => (
-                    <li key={f} className="flex gap-2.5 py-[5px] text-[13.5px]" style={{ color: "var(--dim)" }}>
-                      <span style={{ color: "var(--faint)" }}>·</span>{f}
-                    </li>
+                    <Stack key={f} row gap={2} align="start">
+                      <Check size={14} strokeWidth={1.5} className="mt-0.5 shrink-0 text-good" />
+                      <Text as="span" variant="meta" tone="dim">{f}</Text>
+                    </Stack>
                   ))}
-                </ul>
+                </Stack>
 
                 {p.run && (
-                  <div className="mt-[18px] flex items-center gap-3 pt-4" style={{ borderTop: "1px solid var(--rule)" }}>
+                  <Stack
+                    row gap={3} align="center"
+                    className="mt-[var(--space-5)] border-t border-line pt-[var(--space-4)]"
+                  >
                     <Coin glyph={p.run.glyph} tint={p.run.tint} size={40} />
                     <div>
-                      <div className="text-[12.5px] font-semibold capitalize">{p.run.name} coin</div>
-                      <div className="text-[11.5px]" style={{ color: "var(--faint)" }}>
+                      <Text variant="meta" className="font-semibold capitalize">
+                        {p.run.name} coin
+                      </Text>
+                      <Text variant="meta" tone="faint">
                         No. {p.run.claimed + 1} of {p.run.size} · {p.run.size - p.run.claimed} left
-                      </div>
+                      </Text>
                     </div>
-                  </div>
+                  </Stack>
                 )}
 
-                <div className="mt-auto pt-6">
-                  <button
+                <div className="mt-auto pt-[var(--space-6)]">
+                  <Button
+                    full
+                    variant={featured ? "primary" : "ghost"}
                     disabled={isCurrent || busy !== null}
                     onClick={() => subscribe(p.id)}
-                    className="w-full rounded-[11px] px-6 py-[14px] text-[13.5px] font-semibold disabled:opacity-40"
-                    style={
-                      featured
-                        ? { background: "var(--ink)", color: "var(--ground)" }
-                        : { background: "transparent", color: "var(--dim)", border: "1px solid var(--rule)" }
-                    }
                   >
                     {isCurrent ? "Your plan" : busy === p.id ? "Opening Stripe…" : "Subscribe"}
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>
 
-        <div
-          className="mx-auto mt-9 max-w-[640px] rounded-[13px] px-5 py-4 text-left text-[13px]"
-          style={{ background: "var(--paper)", color: "var(--dim)" }}
-        >
-          <b style={{ color: "var(--ink)" }}>The closer.</b> Warrick subscribes to Ovation through
-          Stripe and gets an Ovation coin in the same reveal their own subscribers get. Same
-          webhook, same run table, same object. We are our own first customer.
+        <div className="mx-auto mt-[var(--space-10)] max-w-[var(--w-col)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)] text-left">
+          <Text variant="meta" tone="dim">
+            <b className="text-fg">The closer.</b> Warrick subscribes to Ovation through
+            Stripe and gets an Ovation coin in the same reveal their own subscribers get.
+            Same webhook, same run table, same object. We are our own first customer.
+          </Text>
         </div>
       </main>
     </>

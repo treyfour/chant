@@ -222,3 +222,65 @@ export const MOCK_JUST_CLAIMED: Pick<Coin, "serial"> & {
   serial: 35, sellerName: "Warrick", runName: "founding user",
   size: 50, glyph: "▲", tint: "#C87137",
 };
+
+// ─────────────────────────────────────────────────────────────
+// Team roster (Auth0 Organizations)
+//
+// Pre-created in the Auth0 dashboard — creating members from the app needs
+// Management API (M2M) credentials we deliberately did not provision. The demo
+// needs org-scoped LOGIN and ROLE ENFORCEMENT, not live org creation.
+// ─────────────────────────────────────────────────────────────
+
+export const TEAM_ROSTER = [
+  { email: "nadia@warrick.dev", name: "Nadia Okonkwo", color: "#8f6a45", role: "Owner", status: "active" },
+  { email: "sam@warrick.dev", name: "Sam Reyes", color: "#4A7C59", role: "Member", status: "active" },
+  { email: "jo@warrick.dev", name: null, color: "#a29a8c", role: "Member", status: "pending" },
+];
+
+// ─────────────────────────────────────────────────────────────
+// The walkthrough. Each card carries a coin, and a coin's tint is its
+// leather — data the seller picked, not a theme colour.
+// ─────────────────────────────────────────────────────────────
+
+export const TOUR = [
+  {
+    step: "01",
+    href: "/s/warrick",
+    label: "Buy something",
+    title: "Warrick's pricing page",
+    body: "A pre-seed startup selling a $20/mo plan. Two of the three tiers include a coin. Nothing on this page mentions Ovation — that's the point.",
+    cta: "Start here →",
+    glyph: "▲",
+    tint: "#C87137",
+  },
+  {
+    step: "02",
+    href: "/@trey",
+    label: "See what you get",
+    title: "A collection",
+    body: "Numbered, limited-run leather coins from every company you've backed. Right-click one to hide it. Click a face on a seller's page to land in someone else's.",
+    cta: "Open a collection →",
+    glyph: "S",
+    tint: "#635BFF",
+  },
+  {
+    step: "03",
+    href: "/app/plans",
+    label: "The seller side",
+    title: "Where coins come from",
+    body: "A founder's Stripe plans, one with a run attached. Attach a coin, retire a run. Add ?role=member to watch permissions disable the buttons.",
+    cta: "Open the dashboard →",
+    glyph: "◆",
+    tint: "#3B5BA5",
+  },
+  {
+    step: "04",
+    href: "/app/billing",
+    label: "How it's paid for",
+    title: "Ovation's own plans",
+    body: "Ovation is a seller row in its own schema, so our paid tiers go through the same checkout and the same webhook. We are our own first customer.",
+    cta: "See the pricing →",
+    glyph: "◈",
+    tint: "#8a6a3b",
+  },
+];

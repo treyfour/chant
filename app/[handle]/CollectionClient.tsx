@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CoinGrid } from "@/components/CoinGrid";
+import { Text } from "@/components/ui";
 import type { CollectionView } from "@/lib/types";
 
 export function CollectionClient({
@@ -41,77 +42,72 @@ export function CollectionClient({
     <>
       {/* Ovation's own chrome. The collection is a different company's product
           from whatever site you arrived from, and it should look like it. */}
-      <nav
-        className="sticky top-0 z-40 flex h-[58px] items-center gap-2.5 px-11"
-        style={{
-          background: "rgba(255,253,248,.92)",
-          borderBottom: "1px solid var(--rule)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <a href="/" className="flex items-center gap-2.5">
-          <span
-            className="grid h-6 w-6 place-items-center rounded-md text-[11px]"
-            style={{ background: "var(--ink)", color: "var(--ground)" }}
-          >
+      <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg/92 px-[var(--space-12)] backdrop-blur">
+        <a href="/demo" className="flex items-center gap-[var(--space-3)]">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--text-xs)] text-fg-invert">
             ◈
           </span>
-          <span style={{ font: "400 17px/1 var(--display)", letterSpacing: "-.02em" }}>
-            Ovation
-          </span>
+          <Text as="span" variant="h3">Ovation</Text>
         </a>
-        <span className="t-serial ml-2 hidden sm:inline">a receipt you&rsquo;d keep</span>
+        <Text as="span" variant="mono" tone="faint" className="ml-[var(--space-2)] hidden sm:inline">
+          a receipt you&rsquo;d keep
+        </Text>
         <span className="flex-1" />
-        {signedIn ? (
-          <a href="/auth/logout" className="text-[12.5px]" style={{ color: "var(--dim)" }}>Sign out</a>
-        ) : (
-          <a href="/auth/login" className="text-[12.5px]" style={{ color: "var(--accent)" }}>Sign in</a>
-        )}
+        <a
+          href={signedIn ? "/auth/logout" : "/auth/login"}
+          className="font-[family-name:var(--font-body)] text-[length:var(--text-sm)] text-fg-dim hover:text-fg"
+        >
+          {signedIn ? "Sign out" : "Sign in"}
+        </a>
       </nav>
 
-    <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-14">
-      <header className="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <div className="t-eyebrow">Collection</div>
-          <h1 className="t-display mt-3">
-            <span style={{ color: "var(--faint)" }}>@</span>
-            {view.collector.handle}
-          </h1>
-        </div>
-        <div className="text-right text-[13px]" style={{ color: "var(--dim)" }}>
+      <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-12)]">
+        <header className="flex flex-wrap items-end justify-between gap-[var(--space-6)]">
           <div>
-            <b style={{ color: "var(--ink)", fontWeight: 600 }}>{items.length}</b> coins ·{" "}
-            <b style={{ color: "var(--ink)", fontWeight: 600 }}>{sellers}</b> sellers
+            <Text variant="mono" tone="faint">Collection</Text>
+            <Text as="h1" variant="h1" className="mt-[var(--space-3)]">
+              <span className="text-fg-faint">@</span>
+              {view.collector.handle}
+            </Text>
           </div>
-          <div>
-            since{" "}
-            <b style={{ color: "var(--ink)", fontWeight: 600 }}>
-              {new Date(view.collector.since).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-              })}
-            </b>
+          <div className="text-right">
+            <Text variant="body" tone="dim">
+              <b className="font-semibold text-fg">{items.length}</b> coins ·{" "}
+              <b className="font-semibold text-fg">{sellers}</b> sellers
+            </Text>
+            <Text variant="body" tone="dim">
+              since{" "}
+              <b className="font-semibold text-fg">
+                {new Date(view.collector.since).toLocaleDateString("en-US", {
+                  month: "short",
+                  year: "numeric",
+                })}
+              </b>
+            </Text>
+            {isOwner && privateCount > 0 && (
+              <Text variant="mono" tone="faint" className="mt-[var(--space-2)]">
+                {privateCount} private
+              </Text>
+            )}
           </div>
-          {isOwner && privateCount > 0 && (
-            <div className="t-serial mt-2">{privateCount} private</div>
-          )}
+        </header>
+
+        <div className="mt-[var(--space-10)] border-t border-line pt-[var(--space-10)]">
+          <CoinGrid items={items} owned={isOwner} onToggleVisibility={toggle} />
         </div>
-      </header>
 
-      <div className="mt-10 pt-10" style={{ borderTop: "1px solid var(--rule)" }}>
-        <CoinGrid items={items} owned={isOwner} onToggleVisibility={toggle} />
-      </div>
+        {error && (
+          <Text variant="meta" tone="bad" className="mt-[var(--space-6)]">
+            {error}
+          </Text>
+        )}
 
-      {error && (
-        <p className="mt-6 text-[12px]" style={{ color: "var(--warn)" }}>{error}</p>
-      )}
-
-      <p className="mt-10 text-[11.5px]" style={{ color: "var(--faint)" }}>
-        {isOwner
-          ? "Right-click any coin to hide it or make it public."
-          : `Showing only the coins @${view.collector.handle} has made public.`}
-      </p>
-    </main>
+        <Text variant="meta" tone="faint" className="mt-[var(--space-10)]">
+          {isOwner
+            ? "Right-click any coin to hide it or make it public."
+            : `Showing only the coins @${view.collector.handle} has made public.`}
+        </Text>
+      </main>
     </>
   );
 }

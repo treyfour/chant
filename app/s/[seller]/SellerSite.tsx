@@ -1,19 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Coin } from "@/components/Coin";
+import { Avatar, AvatarRow, Badge, Button, ButtonLink, Card, Stack, Text } from "@/components/ui";
 import type { SellerPublicView } from "@/lib/types";
 
 /**
  * Warrick's own marketing site.
  *
- * Deliberately looks nothing like Ovation. Dark, technical, monospace — a
- * generic YC infra startup. When the coin lands and you end up in Ovation's
- * warm leather world, the visual whiplash IS the story: you left one company
- * and arrived at another.
+ * Nothing here is bespoke any more — it's the same primitives as the wallet
+ * under `data-theme="warrick"`. Cold near-black, grotesque, flush surfaces,
+ * dot grid. That it looks nothing like Ovation is entirely a token file.
  *
- * Note the coin on the pricing cards looks like a foreign object here. Good.
- * It IS a foreign object — it belongs to a different company.
+ * The leather coin on these cold dark pricing cards looks like a foreign
+ * object. It is one. That visual whiplash is the product working: you left one
+ * company and arrived at another.
  */
 
 const FEATURES: Record<string, string[]> = {
@@ -41,227 +43,217 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
   }
 
   return (
-    <div className="site">
+    <div data-theme="warrick" className="min-h-screen bg-bg text-fg">
       {/* ---------- nav ---------- */}
-      <nav
-        className="sticky top-0 z-50 flex h-16 items-center gap-8 px-6 md:px-12"
-        style={{ borderBottom: "1px solid var(--line)", background: "rgba(10,11,13,.82)", backdropFilter: "blur(12px)" }}
-      >
-        <div className="flex items-center gap-2.5 text-[17px] font-semibold tracking-tight">
-          <span
-            className="grid h-7 w-7 place-items-center rounded-lg text-xs"
-            style={{ background: "var(--brand)", color: "#fff" }}
-          >
+      <nav className="sticky top-0 z-50 flex h-16 items-center gap-[var(--space-8)] border-b border-line bg-bg/85 px-[var(--space-6)] backdrop-blur md:px-[var(--space-12)]">
+        <Stack row gap={3} align="center">
+          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--text-xs)] text-accent-fg">
             ▲
           </span>
-          {seller.name}
-        </div>
-        <div className="hidden items-center gap-7 text-[14px] md:flex" style={{ color: "var(--fg-dim)" }}>
-          <span>Product</span><span>Docs</span><span>Changelog</span>
-          <a href="#pricing" style={{ color: "var(--fg)" }}>Pricing</a>
-        </div>
+          <Text as="span" variant="h3" className="text-[length:var(--text-md)] font-semibold">
+            {seller.name}
+          </Text>
+        </Stack>
+        <Stack row gap={6} align="center" className="hidden md:flex">
+          <Text as="span" variant="body" tone="dim">Product</Text>
+          <Text as="span" variant="body" tone="dim">Docs</Text>
+          <Text as="span" variant="body" tone="dim">Changelog</Text>
+          <a href="#pricing"><Text as="span" variant="body">Pricing</Text></a>
+        </Stack>
         <span className="flex-1" />
-        <span className="hidden text-[14px] sm:inline" style={{ color: "var(--fg-dim)" }}>Sign in</span>
-        <a href="#pricing" className="site-btn">Start free</a>
+        <Text as="span" variant="body" tone="dim" className="hidden sm:inline">Sign in</Text>
+        <ButtonLink href="#pricing" size="sm">Start free</ButtonLink>
       </nav>
 
       {/* ---------- hero ---------- */}
-      <header className="site-grid px-6 pb-24 pt-20 md:px-12 md:pt-28">
-        <div className="mx-auto max-w-[1100px]">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px]"
-            style={{ background: "var(--brand-soft)", color: "#c4b5ff", border: "1px solid rgba(124,92,255,.28)" }}
-          >
-            <span style={{ width: 6, height: 6, borderRadius: 99, background: "var(--brand)" }} />
-            Durable runs are now GA
-          </div>
+      <header className="surface-textured px-[var(--space-6)] pb-[var(--space-20)] pt-[var(--space-20)] md:px-[var(--space-12)]">
+        <div className="mx-auto max-w-[var(--w-page)]">
+          <Badge tone="accent">Durable runs are now GA</Badge>
 
-          <h1 className="site-h1 mt-6 max-w-[15ch]">Agents that don&rsquo;t stall.</h1>
+          <Text as="h1" variant="display" className="mt-[var(--space-6)] max-w-[15ch] font-semibold">
+            Agents that don&rsquo;t stall.
+          </Text>
 
-          <p className="mt-5 max-w-[54ch] text-[18px] leading-relaxed" style={{ color: "var(--fg-dim)" }}>
+          <Text variant="body" tone="dim" className="mt-[var(--space-5)] max-w-[54ch] text-[length:var(--text-md)]">
             {seller.name} is the orchestration layer for AI agents. Durable runs, automatic
             retries, step-level replay, and a trace for every decision your agent made — so
             you stop rebuilding the same scaffolding on every project.
-          </p>
+          </Text>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#pricing" className="site-btn site-btn--brand">Start building free</a>
-            <a href="#pricing" className="site-btn site-btn--ghost">See pricing</a>
-          </div>
+          <Stack row gap={3} wrap align="center" className="mt-[var(--space-8)]">
+            <ButtonLink href="#pricing" variant="accent">Start building free</ButtonLink>
+            <ButtonLink href="#pricing" variant="ghost">See pricing</ButtonLink>
+          </Stack>
 
-          <div className="site-term mt-12 max-w-[720px] p-5">
-            <div className="mb-3 flex gap-1.5">
-              {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-                <span key={c} style={{ width: 10, height: 10, borderRadius: 99, background: c }} />
+          <Card pad={5} className="mt-[var(--space-12)] max-w-[var(--w-col-lg)] bg-bg-sink font-[family-name:var(--font-mono)] text-[length:var(--text-sm)] leading-[1.85]">
+            <Stack row gap={2} className="mb-[var(--space-3)]">
+              {["bad", "warn", "good"].map((t) => (
+                <span key={t} className={`h-2.5 w-2.5 rounded-full bg-${t}`} />
               ))}
+            </Stack>
+            <div><span className="text-fg-faint">$</span> npm i <span className="text-good">@warrick/sdk</span></div>
+            <div className="mt-[var(--space-3)]">
+              <span className="text-accent">await</span> run(researchAgent, {"{"}
             </div>
-            <div>
-              <span className="c-dim">$</span> npm i <span className="c-str">@warrick/sdk</span>
-            </div>
-            <div className="mt-3">
-              <span className="c-key">import</span> {"{ run }"} <span className="c-key">from</span>{" "}
-              <span className="c-str">&quot;@warrick/sdk&quot;</span>
-            </div>
-            <div className="mt-3">
-              <span className="c-key">await</span> <span className="c-fn">run</span>(researchAgent, {"{"}
-            </div>
-            <div>&nbsp;&nbsp;retries: <span className="c-str">5</span>,</div>
-            <div>&nbsp;&nbsp;checkpoint: <span className="c-str">&quot;each-step&quot;</span>,</div>
-            <div>&nbsp;&nbsp;onStall: <span className="c-str">&quot;resume&quot;</span></div>
+            <div>&nbsp;&nbsp;retries: <span className="text-good">5</span>,</div>
+            <div>&nbsp;&nbsp;checkpoint: <span className="text-good">&quot;each-step&quot;</span>,</div>
+            <div>&nbsp;&nbsp;onStall: <span className="text-good">&quot;resume&quot;</span></div>
             <div>{"})"}</div>
-            <div className="mt-3 c-dim">→ run_8fk2 · 41 steps · 2 retries · resumed once ✓</div>
-          </div>
+            <div className="mt-[var(--space-3)] text-fg-faint">
+              → run_8fk2 · 41 steps · 2 retries · resumed once ✓
+            </div>
+          </Card>
         </div>
       </header>
 
       {/* ---------- logo strip ---------- */}
-      <section className="px-6 py-10 md:px-12" style={{ borderTop: "1px solid var(--line)", borderBottom: "1px solid var(--line)" }}>
-        <div className="mx-auto flex max-w-[1100px] flex-wrap items-center gap-x-10 gap-y-4">
-          <span className="site-mono">Orchestrating agents at</span>
+      <section className="border-y border-line px-[var(--space-6)] py-[var(--space-10)] md:px-[var(--space-12)]">
+        <Stack row gap={10} wrap align="center" className="mx-auto max-w-[var(--w-page)]">
+          <Text as="span" variant="mono" tone="faint">Orchestrating agents at</Text>
           {["Cinder", "Halyard", "Parity", "Thresher", "Roost"].map((n) => (
-            <span key={n} className="text-[15px] font-semibold" style={{ color: "var(--fg-faint)" }}>{n}</span>
+            <Text key={n} as="span" variant="body" tone="faint" className="font-semibold">{n}</Text>
           ))}
-        </div>
+        </Stack>
       </section>
 
       {/* ---------- features ---------- */}
-      <section className="px-6 py-20 md:px-12">
-        <div className="mx-auto max-w-[1100px]">
-          <span className="site-mono">Why teams switch</span>
-          <h2 className="site-h2 mt-4 max-w-[20ch]">Your agent framework stops at the happy path.</h2>
+      <section className="px-[var(--space-6)] py-[var(--space-20)] md:px-[var(--space-12)]">
+        <div className="mx-auto max-w-[var(--w-page)]">
+          <Text variant="mono" tone="faint">Why teams switch</Text>
+          <Text as="h2" variant="h1" className="mt-[var(--space-4)] max-w-[20ch] font-semibold">
+            Your agent framework stops at the happy path.
+          </Text>
 
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
+          <div className="mt-[var(--space-12)] grid gap-[var(--space-4)] md:grid-cols-3">
             {[
               ["Durable by default", "Every step is checkpointed. A crashed worker, a rate limit, a 3am deploy — the run picks up where it stopped instead of starting over."],
               ["Replay any decision", "Step-level traces with the exact prompt, tool call, and response. Scrub back to step 14 and re-run it against a different model."],
               ["Stall detection", "Agents don't crash, they loop. Warrick notices when yours is going in circles and resumes, escalates, or halts on your rules."],
             ].map(([t, b]) => (
-              <div key={t} className="site-card p-6">
-                <div className="text-[16px] font-semibold">{t}</div>
-                <p className="mt-2.5 text-[14px] leading-relaxed" style={{ color: "var(--fg-dim)" }}>{b}</p>
-              </div>
+              <Card key={t}>
+                <Text variant="h3" className="text-[length:var(--text-md)] font-semibold">{t}</Text>
+                <Text variant="body" tone="dim" className="mt-[var(--space-3)]">{b}</Text>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* ---------- pricing ---------- */}
-      <section id="pricing" className="px-6 py-20 md:px-12" style={{ borderTop: "1px solid var(--line)" }}>
-        <div className="mx-auto max-w-[1100px]">
-          <span className="site-mono">Pricing</span>
-          <h2 className="site-h2 mt-4">Free while you&rsquo;re figuring it out.</h2>
-          <p className="mt-3 max-w-[52ch] text-[16px]" style={{ color: "var(--fg-dim)" }}>
+      <section id="pricing" className="border-t border-line px-[var(--space-6)] py-[var(--space-20)] md:px-[var(--space-12)]">
+        <div className="mx-auto max-w-[var(--w-page)]">
+          <Text variant="mono" tone="faint">Pricing</Text>
+          <Text as="h2" variant="h1" className="mt-[var(--space-4)] font-semibold">
+            Free while you&rsquo;re figuring it out.
+          </Text>
+          <Text variant="body" tone="dim" className="mt-[var(--space-3)] max-w-[52ch]">
             Usage-based after that. No seat pricing, no sales call.
-          </p>
+          </Text>
 
-          <div className="mt-12 grid items-stretch gap-4 md:grid-cols-3">
+          <div className="mt-[var(--space-12)] grid items-stretch gap-[var(--space-4)] md:grid-cols-3">
             {plans.map((p) => {
               const featured = p.name === "Pro";
               return (
-                <div
+                <Card
                   key={p.id}
-                  className="site-card relative flex flex-col p-7"
-                  style={
-                    featured
-                      ? { borderColor: "rgba(124,92,255,.5)", background: "var(--bg-lift)" }
-                      : undefined
-                  }
+                  pad={0}
+                  className={`relative flex flex-col p-[var(--space-8)] ${featured ? "border-accent/50 bg-bg-raise" : ""}`}
                 >
                   {featured && (
-                    <span
-                      className="absolute -top-2.5 left-7 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[.12em]"
-                      style={{ background: "var(--brand)", color: "#fff" }}
-                    >
-                      Most popular
+                    <span className="absolute -top-2.5 left-[var(--space-8)]">
+                      <Badge tone="accent" className="bg-accent text-accent-fg">Most popular</Badge>
                     </span>
                   )}
 
-                  <div className="text-[15px] font-semibold">{p.name}</div>
-                  <div className="mt-3 flex items-baseline gap-1.5">
-                    <span className="text-[38px] font-semibold tracking-tight">
+                  <Text variant="body" className="font-semibold">{p.name}</Text>
+                  <Stack row gap={2} align="baseline" className="mt-[var(--space-3)]">
+                    <Text as="span" variant="h1" className="font-semibold">
                       {p.unitAmount === 0 ? "$0" : `$${p.unitAmount / 100}`}
-                    </span>
+                    </Text>
                     {p.unitAmount > 0 && (
-                      <span className="text-[14px]" style={{ color: "var(--fg-faint)" }}>/ month</span>
+                      <Text as="span" variant="body" tone="faint">/ month</Text>
                     )}
-                  </div>
+                  </Stack>
 
-                  <ul className="mt-6 space-y-2.5 pt-5" style={{ borderTop: "1px solid var(--line)" }}>
+                  <Stack gap={3} className="mt-[var(--space-6)] border-t border-line pt-[var(--space-5)]">
                     {(FEATURES[p.name] ?? []).map((f) => (
-                      <li key={f} className="flex gap-2.5 text-[13.5px]" style={{ color: "var(--fg-dim)" }}>
-                        <span style={{ color: "var(--lime)" }}>✓</span>{f}
-                      </li>
+                      <Stack key={f} row gap={2} align="start">
+                        <Check size={14} strokeWidth={1.5} className="mt-0.5 shrink-0 text-good" />
+                        <Text as="span" variant="meta" tone="dim">{f}</Text>
+                      </Stack>
                     ))}
-                  </ul>
+                  </Stack>
 
-                  {/* The coin. A warm leather object on a cold dark site — it
-                      visibly belongs to somebody else, which is accurate. */}
                   {p.run && !p.run.retired && (
-                    <div
-                      className="mt-6 flex items-center gap-3 rounded-xl p-3"
-                      style={{ background: "rgba(255,255,255,.035)", border: "1px solid var(--line)" }}
+                    <Stack
+                      row gap={3} align="center"
+                      className="mt-[var(--space-6)] rounded-[var(--radius-md)] border border-line bg-fg/4 p-[var(--space-3)]"
                     >
                       <Coin glyph={p.run.glyph} tint={p.run.tint} size={42} />
                       <div>
-                        <div className="text-[12.5px] font-semibold capitalize">
+                        <Text variant="meta" className="font-semibold capitalize">
                           {p.run.name} coin included
-                        </div>
-                        <div className="text-[11.5px]" style={{ color: "var(--fg-faint)" }}>
+                        </Text>
+                        <Text variant="meta" tone="faint">
                           No. {p.run.claimed + 1} of {p.run.size} · {p.run.size - p.run.claimed} left
-                        </div>
+                        </Text>
                       </div>
-                    </div>
+                    </Stack>
                   )}
 
-                  <div className="mt-auto pt-6">
-                    <button
+                  <div className="mt-auto pt-[var(--space-6)]">
+                    <Button
+                      full
+                      variant={featured ? "accent" : "ghost"}
                       disabled={p.unitAmount === 0 || busy !== null}
                       onClick={() => subscribe(p.id)}
-                      className={`site-btn w-full ${featured ? "site-btn--brand" : "site-btn--ghost"} disabled:opacity-40`}
                     >
                       {busy === p.id
                         ? "Opening Stripe…"
                         : p.unitAmount === 0
                           ? "Start free"
                           : `Subscribe to ${p.name}`}
-                    </button>
+                    </Button>
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
 
           {collectors.length > 0 && (
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <div className="flex">
-                {collectors.map((c, i) => (
-                  <a
+            <Stack row gap={3} wrap align="center" className="mt-[var(--space-10)]">
+              <AvatarRow>
+                {collectors.map((c) => (
+                  <Avatar
                     key={c.handle}
+                    as="a"
+                    color={c.avatarColor}
                     href={`/@${c.handle}`}
                     title={`${c.name} — open their collection`}
-                    className="grid h-7 w-7 place-items-center rounded-full text-[10px] font-semibold text-white transition-transform hover:-translate-y-0.5"
-                    style={{ background: c.avatarColor, border: "2px solid var(--bg)", marginLeft: i === 0 ? 0 : -8 }}
+                    className="border-2 border-bg transition-transform hover:-translate-y-0.5"
                   >
                     {c.name[0]?.toUpperCase()}
-                  </a>
+                  </Avatar>
                 ))}
-              </div>
-              <span className="text-[13px]" style={{ color: "var(--fg-faint)" }}>
+              </AvatarRow>
+              <Text as="span" variant="meta" tone="faint">
                 {collectorCount} developers subscribe to {seller.name}
-              </span>
-            </div>
+              </Text>
+            </Stack>
           )}
         </div>
       </section>
 
-      <footer className="px-6 py-10 md:px-12" style={{ borderTop: "1px solid var(--line)" }}>
-        <div className="mx-auto flex max-w-[1100px] flex-wrap items-center gap-4">
-          <span className="text-[13px]" style={{ color: "var(--fg-faint)" }}>
+      <footer className="border-t border-line px-[var(--space-6)] py-[var(--space-10)] md:px-[var(--space-12)]">
+        <Stack row gap={4} wrap align="center" className="mx-auto max-w-[var(--w-page)]">
+          <Text as="span" variant="meta" tone="faint">
             © {seller.name} · {seller.location}
-          </span>
+          </Text>
           <span className="flex-1" />
-          <a href="/demo" className="text-[12px]" style={{ color: "var(--fg-faint)" }}>Ovation demo ↗</a>
-        </div>
+          <a href="/demo">
+            <Text as="span" variant="meta" tone="faint">Ovation demo ↗</Text>
+          </a>
+        </Stack>
       </footer>
     </div>
   );

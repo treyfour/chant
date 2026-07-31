@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { Coin } from "./Coin";
+import { Button, Field, Input, Sheet, SheetContent, SheetTitle, Stack, Swatch, Text } from "./ui";
+import { COIN_GLYPHS as GLYPHS, COIN_TINTS as TINTS } from "@/lib/palette";
 import type { Plan } from "@/lib/types";
-
-const TINTS = ["#C87137", "#3B5BA5", "#4A7C59", "#A8324A", "#7B4B94", "#2E7D7B", "#B7410E", "#6F4E37"];
-const GLYPHS = ["▲", "◆", "⬡", "❈", "✦", "◐", "⬮", "≈"];
 
 export function AttachCoinSheet({
   plan,
@@ -18,10 +17,10 @@ export function AttachCoinSheet({
   onClose: () => void;
   onCreated: () => void;
 }) {
-  const [name, setName] = useState("founding user");
+  const [name, setName] = useState("first 50 pro");
   const [size, setSize] = useState("50");
-  const [tint, setTint] = useState(TINTS[0]);
-  const [glyph, setGlyph] = useState(GLYPHS[0]);
+  const [tint, setTint] = useState<string>(TINTS[0]);
+  const [glyph, setGlyph] = useState<string>(GLYPHS[0]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,85 +41,85 @@ export function AttachCoinSheet({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6"
-      style={{ background: "rgba(20,16,11,.72)", backdropFilter: "blur(6px)" }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div className="grid w-full max-w-[760px] overflow-hidden rounded-[20px] md:grid-cols-[1fr_286px]"
-        style={{ background: "var(--ground)" }}>
-        <div className="px-9 py-8">
-          <div className="t-eyebrow">Attach a coin</div>
-          <h2 className="t-h2 mt-2">{plan.name} · {plan.priceLabel}</h2>
-          <p className="mt-2 text-[13.5px]" style={{ color: "var(--dim)" }}>
-            Everyone who subscribes to this plan gets one, free, at checkout. You don&rsquo;t
-            change anything on your side.
-          </p>
+    <Sheet open onOpenChange={(o) => !o && onClose()}>
+      <SheetContent size="md" theme="ovation">
+        <div className="grid md:grid-cols-[1fr_286px]">
+          <div className="p-[var(--space-8)]">
+            <Text variant="mono" tone="faint">Attach a coin</Text>
+            <SheetTitle asChild>
+              <Text as="h2" variant="h2" className="mt-[var(--space-2)]">
+                {plan.name} · {plan.priceLabel}
+              </Text>
+            </SheetTitle>
+            <Text variant="meta" tone="dim" className="mt-[var(--space-2)]">
+              Everyone who subscribes to this plan gets one, free, at checkout. You
+              don&rsquo;t change anything on your side.
+            </Text>
 
-          <div className="mt-5 grid gap-3" style={{ gridTemplateColumns: "1fr 112px" }}>
-            <div>
-              <label className="t-eyebrow mb-1.5 block">Run name</label>
-              <input value={name} onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-[10px] px-3.5 py-3 text-sm outline-none"
-                style={{ background: "var(--raise)", border: "1px solid var(--rule)" }} />
+            <div className="mt-[var(--space-5)] grid gap-[var(--space-3)] [grid-template-columns:1fr_112px]">
+              <Field label="Run name">
+                <Input value={name} onChange={(e) => setName(e.target.value)} />
+              </Field>
+              <Field label="How many">
+                <Input
+                  value={size}
+                  inputMode="numeric"
+                  onChange={(e) => setSize(e.target.value.replace(/\D/g, ""))}
+                />
+              </Field>
             </div>
-            <div>
-              <label className="t-eyebrow mb-1.5 block">How many</label>
-              <input value={size} onChange={(e) => setSize(e.target.value.replace(/\D/g, ""))}
-                inputMode="numeric"
-                className="w-full rounded-[10px] px-3.5 py-3 text-sm outline-none"
-                style={{ background: "var(--raise)", border: "1px solid var(--rule)" }} />
+            <Text variant="meta" tone="warn" className="mt-[var(--space-2)]">
+              Permanent. When the last one is claimed the run closes and no more can ever exist.
+            </Text>
+
+            <Text variant="mono" tone="faint" className="mt-[var(--space-4)]">Mark</Text>
+            <Stack row gap={2} wrap className="mt-[var(--space-2)]">
+              {GLYPHS.map((g) => (
+                <button
+                  key={g}
+                  onClick={() => setGlyph(g)}
+                  className={[
+                    "grid h-9 w-9 place-items-center rounded-[var(--radius-sm)] border text-[length:var(--text-md)]",
+                    g === glyph
+                      ? "border-fg bg-bg-sink text-fg"
+                      : "border-line bg-bg-raise text-fg-dim",
+                  ].join(" ")}
+                >
+                  {g}
+                </button>
+              ))}
+            </Stack>
+
+            <Text variant="mono" tone="faint" className="mt-[var(--space-4)]">Leather</Text>
+            <Stack row gap={2} wrap className="mt-[var(--space-2)]">
+              {TINTS.map((t) => (
+                <Swatch key={t} color={t} selected={t === tint} onClick={() => setTint(t)} />
+              ))}
+            </Stack>
+
+            {error && (
+              <Text variant="meta" tone="bad" className="mt-[var(--space-3)]">{error}</Text>
+            )}
+
+            <Stack row gap={3} className="mt-[var(--space-6)]">
+              <Button onClick={create} disabled={busy || !name || !size}>
+                {busy ? "Attaching…" : "Attach to plan"}
+              </Button>
+              <Button variant="ghost" onClick={onClose}>Cancel</Button>
+            </Stack>
+          </div>
+
+          <div className="flex flex-col items-center justify-center border-l border-line bg-bg-sink p-[var(--space-8)] text-center">
+            <div className="mb-[var(--space-5)] grid place-items-center">
+              <Coin glyph={glyph} tint={tint} size={152} />
             </div>
-          </div>
-          <p className="mt-2 text-[11.5px]" style={{ color: "var(--warn)" }}>
-            Permanent. When the last one is claimed the run closes and no more can ever exist.
-          </p>
-
-          <label className="t-eyebrow mb-1.5 mt-4 block">Mark</label>
-          <div className="flex flex-wrap gap-2">
-            {GLYPHS.map((g) => (
-              <button key={g} onClick={() => setGlyph(g)}
-                className="grid h-[34px] w-[34px] place-items-center rounded-[9px] text-[15px]"
-                style={{
-                  background: g === glyph ? "var(--paper)" : "var(--raise)",
-                  border: `1px solid ${g === glyph ? "var(--ink)" : "var(--rule)"}`,
-                  color: g === glyph ? "var(--ink)" : "var(--dim)",
-                }}>{g}</button>
-            ))}
-          </div>
-
-          <label className="t-eyebrow mb-1.5 mt-4 block">Leather</label>
-          <div className="flex flex-wrap gap-2">
-            {TINTS.map((t) => (
-              <button key={t} onClick={() => setTint(t)} aria-label={t}
-                className="h-8 w-8 rounded-[9px]"
-                style={{ background: t, border: `2.5px solid ${t === tint ? "var(--ink)" : "transparent"}` }} />
-            ))}
-          </div>
-
-          {error && <p className="mt-3 text-[12px]" style={{ color: "var(--warn)" }}>{error}</p>}
-
-          <div className="mt-6 flex gap-2.5">
-            <button onClick={create} disabled={busy || !name || !size}
-              className="rounded-[11px] px-6 py-3.5 text-[13.5px] font-semibold disabled:opacity-40"
-              style={{ background: "var(--ink)", color: "var(--ground)" }}>
-              {busy ? "Attaching…" : "Attach to plan"}
-            </button>
-            <button onClick={onClose}
-              className="rounded-[11px] px-6 py-3.5 text-[13.5px]"
-              style={{ border: "1px solid var(--rule)", color: "var(--dim)" }}>Cancel</button>
+            <Text variant="h3">{plan.name}</Text>
+            <Text variant="mono" tone="faint" className="mt-[var(--space-2)]">
+              {name || "untitled"} · 1 of {size || "—"}
+            </Text>
           </div>
         </div>
-
-        <div className="flex flex-col items-center justify-center px-8 py-8 text-center"
-          style={{ background: "var(--paper)", borderLeft: "1px solid var(--rule)" }}>
-          <div className="mb-5 grid place-items-center">
-            <Coin glyph={glyph} tint={tint} size={152} />
-          </div>
-          <div style={{ font: "400 19px/1.2 var(--display)" }}>{plan.name}</div>
-          <div className="t-serial mt-2">{name || "untitled"} · 1 of {size || "—"}</div>
-        </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }

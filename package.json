@@ -6,11 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "guard": "node scripts/guard.mjs"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.26.0",
     "@neondatabase/serverless": "^1.1.0",
+    "@radix-ui/react-context-menu": "^2.3.7",
+    "@radix-ui/react-dialog": "^1.1.23",
+    "@radix-ui/react-tooltip": "^1.2.16",
+    "lucide-react": "^1.28.0",
     "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",

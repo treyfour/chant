@@ -1,339 +1,186 @@
 @import "tailwindcss";
+@import "./tokens.css";
+@import "./themes.css";
 
 /* ============================================================
-   BONE — the only design tokens. Change the look here, nowhere else.
+   Everything below is STRUCTURE and MATERIAL. No values.
+   Colours, type, space, radius and elevation all come from the token
+   contract, so a theme swap changes this file's output without editing it.
+
+   Do NOT add a `* { margin:0; padding:0 }` reset. Tailwind v4 ships its
+   utilities inside @layer, and UNLAYERED css beats LAYERED css regardless of
+   specificity — one bare `*` rule silently kills every p-*, m-*, px-* utility
+   in the app. Preflight already zeroes margins.
    ============================================================ */
-:root {
-  --ground: #f7f4ed;
-  --raise: #fffdf8;
-  --paper: #efe9dc;
-  --ink: #211f1b;
-  --dim: #6d675d;
-  --faint: #a29a8c;
-  --rule: rgba(33, 31, 27, 0.11);
-  --accent: #8a6a3b;
-  --good: #4a7c59;
-  --warn: #b5651d;
-
-  --display: "Iowan Old Style", Georgia, "Times New Roman", serif;
-  --body: "Avenir Next", "Segoe UI", -apple-system, sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-
-  --lift: 0 18px 34px -20px rgba(60, 48, 30, 0.42);
-}
-
-/* NOTE: do NOT add a `* { margin:0; padding:0 }` reset here.
-   Tailwind v4 ships its utilities inside @layer, and UNLAYERED css beats
-   LAYERED css in the cascade no matter the specificity — so a bare `*` rule
-   silently kills every p-*, m-*, px-* utility in the app. Preflight already
-   zeroes margins. Everything below stays inside a layer for the same reason. */
 
 @layer base {
   body {
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--body);
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    letter-spacing: var(--tracking-body);
     -webkit-font-smoothing: antialiased;
   }
 }
 
-/* ---------- type roles ---------- */
 @layer components {
-  .t-eyebrow {
-    font: 600 10px/1 var(--body);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--faint);
+  /* ── grid surface ────────────────────────────
+     Uses the theme's --texture, so Warrick gets a dot grid and Ovation gets
+     nothing. One class, two completely different backgrounds. */
+  .surface-textured {
+    background-image: var(--texture);
+    background-size: 64px 64px;
   }
-  .t-display { font: 400 44px/1.05 var(--display); letter-spacing: -0.03em; }
-  .t-h2 { font: 400 32px/1.12 var(--display); letter-spacing: -0.025em; }
-  .t-name { font: 400 14.5px/1.25 var(--display); letter-spacing: -0.01em; }
 
-  /* Weight is the hover signal on the name. Higher specificity than `.t-name`,
-     which sets weight via the `font` shorthand. */
-  .group:hover .t-name { font-weight: 600; }
+  /* ============================================================
+     THE COIN — the one bespoke material in the system.
 
-  /* Delayed tooltip. Appears only on sustained hover so it never flickers while
-     you sweep across a grid, and disappears instantly on leave. */
-  .coin-tip {
+     Kept as a component class rather than utilities because it is a physical
+     material, not a layout: grain, stitching and a blind-embossed mark. It
+     reads its dye from --lt/--md/--dk (computed per seller by lib/leather.ts)
+     and its finish from the theme's --texture and --mark-style.
+
+     This is the part of the app that already passed the swap test: it went
+     from polished chrome to dyed leather in a single edit because exactly one
+     place computes it.
+     ============================================================ */
+  .coin {
+    position: relative;
+  }
+
+  .side {
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(2px);
-    margin-bottom: 7px;
-    padding: 5px 9px;
-    border-radius: 7px;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 20;
-    background: var(--ink);
-    color: var(--ground);
-    font: 500 10.5px/1 var(--mono);
-    letter-spacing: 0.02em;
-    opacity: 0;
-    transition: opacity 0.14s ease, transform 0.14s ease;
-    transition-delay: 0s;
+    inset: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
   }
-  .coin-tip::after {
+
+  .coin-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 42%, var(--lt) 0%, var(--md) 54%, var(--dk) 100%);
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.26),
+      inset 0 3px 5px rgb(255 255 255 / 0.09),
+      inset 0 -10px 20px rgb(0 0 0 / 0.3),
+      0 10px 20px -10px rgb(48 34 18 / 0.42);
+  }
+
+  /* grain — from the theme, so a flat theme gets a flat coin */
+  .coin-face::before {
     content: "";
     position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-top-color: var(--ink);
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.42;
+    mix-blend-mode: overlay;
+    background-image: var(--texture);
+    background-size: 120px 120px;
   }
-  .group:hover .coin-tip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-    transition-delay: 0.5s;
+
+  /* stitch ring */
+  .coin-face::after {
+    content: "";
+    position: absolute;
+    inset: 9%;
+    border-radius: 50%;
+    z-index: 3;
+    pointer-events: none;
+    border: 1.5px dashed rgb(255 255 255 / 0.2);
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.14), 0 0 0 1px rgb(0 0 0 / 0.1);
   }
-  .t-serial {
-    font: 400 9.5px/1.3 var(--mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--faint);
+
+  /* blind emboss — pressed in, never printed on */
+  .coin-glyph {
+    position: relative;
+    z-index: 4;
+    line-height: 1;
+    color: rgb(0 0 0 / 0.34);
+    text-shadow: 0 1.5px 0 rgb(255 255 255 / 0.2), 0 -1px 1px rgb(0 0 0 / 0.22);
+  }
+
+  /* backed = supported with nothing to sell yet: a tooled outline */
+  .coin-backed .coin-face {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--md);
+  }
+  .coin-backed .coin-face::before,
+  .coin-backed .coin-face::after {
+    display: none;
+  }
+  .coin-backed .coin-glyph {
+    color: var(--md);
+    text-shadow: none;
+    opacity: 0.85;
+  }
+
+  /* not yours — the "new to you" cells on someone else's collection */
+  .coin-missing {
+    opacity: 0.5;
+  }
+  .coin-missing .coin-face {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--line);
+  }
+  .coin-missing .coin-face::before,
+  .coin-missing .coin-face::after {
+    display: none;
+  }
+  .coin-missing .coin-glyph {
+    color: var(--fg-faint);
+    text-shadow: none;
+  }
+
+  .coin-retired .coin-face {
+    filter: grayscale(0.55) brightness(0.88);
+  }
+
+  .coin-private-dot {
+    position: absolute;
+    top: var(--space-1);
+    right: 14px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--line);
+    background-image: radial-gradient(circle, var(--fg-faint) 1.6px, transparent 1.7px);
+  }
+
+  /* ── the reveal ──────────────────────────────
+     Leather doesn't glint, so no sweep. A warm light blooms behind it. */
+  .reveal-coin {
+    animation: coin-land 1.25s cubic-bezier(0.14, 0.85, 0.25, 1) both;
+  }
+
+  @keyframes coin-land {
+    0% { opacity: 0; transform: translateY(30px) scale(0.86); }
+    55% { opacity: 1; transform: translateY(-5px) scale(1.015); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  .reveal-stage::after {
+    content: "";
+    position: absolute;
+    inset: -14%;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 34%, transparent), transparent 70%);
+    animation: coin-warm 2.4s 0.55s cubic-bezier(0.3, 0, 0.35, 1) both;
+  }
+
+  @keyframes coin-warm {
+    0% { opacity: 0; transform: scale(0.82); }
+    38% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.34; transform: scale(1.04); }
   }
 }
-
-/* ============================================================
-   DYED LEATHER — matte, grained, stitched, blind-embossed.
-   NO conic gradients. Those read as chrome, and chrome reads as crypto.
-   ============================================================ */
-@layer components {
-
-.coin { position: relative; }
-
-.coin-face {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 42%, var(--lt) 0%, var(--md) 54%, var(--dk) 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.26),
-    inset 0 3px 5px rgba(255, 255, 255, 0.09),
-    inset 0 -10px 20px rgba(0, 0, 0, 0.3),
-    0 10px 20px -10px rgba(48, 34, 18, 0.42);
-}
-
-/* grain */
-.coin-face::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.42;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 120px 120px;
-}
-
-/* stitch ring */
-.coin-face::after {
-  content: "";
-  position: absolute;
-  inset: 9%;
-  border-radius: 50%;
-  z-index: 3;
-  pointer-events: none;
-  border: 1.5px dashed rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.1);
-}
-
-/* blind emboss — pressed in, never printed on */
-.coin-glyph {
-  position: relative;
-  z-index: 4;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.34);
-  text-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.2), 0 -1px 1px rgba(0, 0, 0, 0.22);
-}
-
-/* backed = supported with nothing to sell yet: a tooled outline, not a filled disc */
-.coin-backed .coin-face {
-  background: transparent;
-  box-shadow: inset 0 0 0 2px var(--md);
-}
-.coin-backed .coin-face::before,
-.coin-backed .coin-face::after { display: none; }
-.coin-backed .coin-glyph {
-  color: var(--md);
-  text-shadow: none;
-  opacity: 0.85;
-}
-
-/* not yours — the "new to you" cells on someone else's collection */
-.coin-missing { opacity: 0.5; }
-.coin-missing .coin-face {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--rule);
-}
-.coin-missing .coin-face::before,
-.coin-missing .coin-face::after { display: none; }
-.coin-missing .coin-glyph { color: var(--faint); text-shadow: none; }
-
-.coin-retired .coin-face { filter: grayscale(0.55) brightness(0.88); }
-
-/* ---------- private marker ---------- */
-.coin-private-dot {
-  position: absolute;
-  top: 4px;
-  right: 14px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--ground);
-  box-shadow: inset 0 0 0 1px var(--rule);
-  background-image: radial-gradient(circle, var(--faint) 1.6px, transparent 1.7px);
-}
-
-/* ============================================================
-   WARRICK — a seller's own site. Deliberately NOTHING like Ovation.
-   Dark, technical, high-contrast: it should read as a YC infra startup.
-   The jarring shift when you land in Ovation's warm leather world is the
-   whole point — you left one company and arrived at another.
-   ============================================================ */
-.site {
-  --bg: #0a0b0d;
-  --bg-soft: #121418;
-  --bg-lift: #171a1f;
-  --line: rgba(255, 255, 255, 0.09);
-  --line-hi: rgba(255, 255, 255, 0.16);
-  --fg: #f2f4f7;
-  --fg-dim: #9aa3ae;
-  --fg-faint: #626b76;
-  --brand: #7c5cff;
-  --brand-soft: rgba(124, 92, 255, 0.14);
-  --lime: #b8f24a;
-  --sans: ui-sans-serif, -apple-system, "Segoe UI", Inter, sans-serif;
-  --code: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--sans);
-  min-height: 100vh;
-}
-
-.site ::selection { background: var(--brand); color: #fff; }
-
-.site-grid {
-  background-image:
-    radial-gradient(60% 50% at 50% 0%, rgba(124, 92, 255, 0.16), transparent 70%),
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 100% 100%, 64px 64px, 64px 64px;
-  background-position: 0 0, 0 0, 0 0;
-}
-
-.site-mono {
-  font-family: var(--code);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--fg-faint);
-}
-
-.site-h1 {
-  font-size: clamp(38px, 5.4vw, 62px);
-  line-height: 1.03;
-  letter-spacing: -0.035em;
-  font-weight: 600;
-}
-
-.site-h2 {
-  font-size: clamp(26px, 3vw, 38px);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  font-weight: 600;
-}
-
-.site-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 42px;
-  padding: 0 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  background: var(--fg);
-  color: var(--bg);
-  border: 0;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.site-btn:hover { opacity: 0.88; }
-.site-btn--brand { background: var(--brand); color: #fff; }
-.site-btn--ghost {
-  background: transparent;
-  color: var(--fg-dim);
-  border: 1px solid var(--line-hi);
-}
-.site-btn--ghost:hover { color: var(--fg); }
-
-.site-card {
-  background: var(--bg-soft);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-}
-
-.site-term {
-  background: #08090b;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  font-family: var(--code);
-  font-size: 12.5px;
-  line-height: 1.85;
-  overflow-x: auto;
-}
-.site-term .c-key { color: #c4a6ff; }
-.site-term .c-str { color: var(--lime); }
-.site-term .c-dim { color: var(--fg-faint); }
-.site-term .c-fn  { color: #6cc6ff; }
-
-/* ---------- the reveal ---------- */
-/* Leather doesn't glint, so no sweep. A warm light blooms behind it instead. */
-.reveal-sheet::before {
-  content: "";
-  position: absolute;
-  top: -30%;
-  left: 50%;
-  width: 150%;
-  height: 88%;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(200, 113, 55, 0.14), transparent 72%);
-  pointer-events: none;
-}
-
-.reveal-coin { animation: coin-land 1.25s cubic-bezier(0.14, 0.85, 0.25, 1) both; }
-
-@keyframes coin-land {
-  0%   { opacity: 0; transform: translateY(30px) scale(0.86); }
-  55%  { opacity: 1; transform: translateY(-5px) scale(1.015); }
-  100% { opacity: 1; transform: none; }
-}
-
-.reveal-stage::after {
-  content: "";
-  position: absolute;
-  inset: -14%;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(closest-side, rgba(214, 150, 90, 0.34), transparent 70%);
-  animation: coin-warm 2.4s 0.55s cubic-bezier(0.3, 0, 0.35, 1) both;
-}
-
-@keyframes coin-warm {
-  0%   { opacity: 0; transform: scale(0.82); }
-  38%  { opacity: 1; transform: scale(1); }
-  100% { opacity: 0.34; transform: scale(1.04); }
-}
-
-} /* end @layer components */

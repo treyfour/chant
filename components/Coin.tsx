@@ -4,7 +4,7 @@ import type { CoinKind, Glyph, Hex } from "@/lib/types";
 export interface CoinProps {
   glyph: Glyph;
   tint: Hex | string;
-  /** Diameter in px. Glyph scales to ~1/3 of it. */
+  /** Diameter in px. The mark scales optically from it. */
   size: number;
   kind?: CoinKind;
   retired?: boolean;
@@ -14,8 +14,15 @@ export interface CoinProps {
 }
 
 /**
- * A single dyed-leather coin. The only place coin material is expressed.
- * Material lives in globals.css so a skin change never touches a component.
+ * A single dyed-leather coin.
+ *
+ * The only component allowed to carry a bespoke material, because it IS one —
+ * grain, stitching, and a blind-embossed mark. All of that lives in
+ * `globals.css` under `.coin-*`, so the component holds structure only.
+ *
+ * `size` is the one legitimate raw number here: it's an input, not a style
+ * decision, and the glyph scales optically from it. Everything else resolves
+ * through tokens.
  */
 export function Coin({
   glyph, tint, size, kind = "owned", retired = false, missing = false, className = "",
@@ -44,11 +51,8 @@ export function Coin({
           style={
             isLetter
               ? {
-                  // Letterforms need different treatment from symbols: heavier,
-                  // tighter, and smaller relative to the coin, or they read as
-                  // a typo rather than a mark.
                   fontSize: Math.round(size * (glyph.length > 1 ? 0.24 : 0.34)),
-                  fontFamily: "var(--body)",
+                  fontFamily: "var(--font-body)",
                   fontWeight: 700,
                   letterSpacing: glyph.length > 1 ? "-0.04em" : "-0.02em",
                 }
