@@ -59,6 +59,10 @@
         {
           "variableName": "stripe_secret_key",
           "envKey": "STRIPE_SECRET_KEY"
+        },
+        {
+          "variableName": "stripe_webhook_secret",
+          "envKey": "STRIPE_WEBHOOK_SECRET"
         }
       ]
     }
@@ -75,6 +79,10 @@
     "stripe_secret_key": {
       "name": "stripe_secret_key",
       "backendId": "fprjvar_61V8RYPP73afQE00B16PIsrVJOSQC4gS1YGQGCXIuQxk"
+    },
+    "stripe_webhook_secret": {
+      "name": "stripe_webhook_secret",
+      "backendId": "fprjvar_61V8SAkriV6t2IdIx16PIsrVJOSQC4gS1YGQGCXIuDPs"
     }
   }
 }

@@ -69,17 +69,20 @@
         "name": "Ovation Web",
         "app_type": "regular_web",
         "callbacks": [
-          "http://localhost:3000/auth/callback"
+          "http://localhost:3000/auth/callback",
+          "https://chant-trevors-projects.vercel.app/auth/callback"
         ],
         "allowed_logout_urls": [
-          "http://localhost:3000"
+          "http://localhost:3000",
+          "https://chant-trevors-projects.vercel.app"
         ],
         "web_origins": [
-          "http://localhost:3000"
+          "http://localhost:3000",
+          "https://chant-trevors-projects.vercel.app"
         ]
       },
       "createdAt": "2026-07-30T23:17:16.945Z",
-      "lastRevealedAt": "2026-07-30T23:20:32.639Z",
+      "lastRevealedAt": "2026-07-31T00:21:24.102Z",
       "lastStatus": "complete",
       "name": "Ovation Web",
       "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
@@ -92,7 +95,8 @@
     ".env": [
       "APP_BASE_URL",
       "AUTH0_SECRET",
-      "STRIPE_SECRET_KEY"
+      "STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET"
     ]
   }
 }
