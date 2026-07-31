@@ -7,7 +7,7 @@ import "./globals.css";
  *
  * This is the fix for "what font?" reopening on every project. A theme picks a
  * ROLE (`--font-display`), the role resolves to one of these variables, and the
- * fallback chain is already written down in themes.css. There is no third place
+ * fallback chain is already written down in theme.css. There is no third place
  * to decide, and nothing to re-derive.
  *
  * Self-hosted by next/font: no CDN request, no FOUT, no offline failure.
@@ -47,7 +47,6 @@ export default function RootLayout({
       lang="en"
       // `data-theme` cascades. Any subtree can override it, which is how an
       // Ovation sheet renders warm on top of a cold Warrick page.
-      data-theme="ovation"
       className={`${instrumentSans.variable} ${instrumentSerif.variable} ${plexMono.variable} h-full antialiased`}
     >
       {/* No flex here: `mx-auto` on a flex child beats align-items:stretch and

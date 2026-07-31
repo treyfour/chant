@@ -10,7 +10,7 @@ import type { SellerPublicView } from "@/lib/types";
  * Warrick's own marketing site.
  *
  * Nothing here is bespoke any more — it's the same primitives as the wallet
- * under `data-theme="warrick"`. Cold near-black, grotesque, flush surfaces,
+ * under `data-brand="warrick"`. Cold near-black, grotesque, flush surfaces,
  * dot grid. That it looks nothing like Ovation is entirely a token file.
  *
  * The leather coin on these cold dark pricing cards looks like a foreign
@@ -43,14 +43,14 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
   }
 
   return (
-    <div data-theme="warrick" className="min-h-screen bg-bg text-fg">
+    <div data-brand="warrick" className="min-h-screen bg-bg text-fg">
       {/* ---------- nav ---------- */}
       <nav className="sticky top-0 z-50 flex h-16 items-center gap-[var(--space-8)] border-b border-line bg-bg/85 px-[var(--space-6)] backdrop-blur md:px-[var(--space-12)]">
         <Stack row gap={3} align="center">
-          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--text-xs)] text-accent-fg">
+          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
             ▲
           </span>
-          <Text as="span" variant="h3" className="text-[length:var(--text-md)] font-semibold">
+          <Text as="span" variant="h3" className="type-emphasis">
             {seller.name}
           </Text>
         </Stack>
@@ -70,11 +70,11 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
         <div className="mx-auto max-w-[var(--w-page)]">
           <Badge tone="accent">Durable runs are now GA</Badge>
 
-          <Text as="h1" variant="display" className="mt-[var(--space-6)] max-w-[15ch] font-semibold">
+          <Text as="h1" variant="display" className="mt-[var(--space-6)] max-w-[15ch] type-emphasis">
             Agents that don&rsquo;t stall.
           </Text>
 
-          <Text variant="body" tone="dim" className="mt-[var(--space-5)] max-w-[54ch] text-[length:var(--text-md)]">
+          <Text variant="lead" tone="dim" className="mt-[var(--space-5)] max-w-[54ch] ">
             {seller.name} is the orchestration layer for AI agents. Durable runs, automatic
             retries, step-level replay, and a trace for every decision your agent made — so
             you stop rebuilding the same scaffolding on every project.
@@ -85,7 +85,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
             <ButtonLink href="#pricing" variant="ghost">See pricing</ButtonLink>
           </Stack>
 
-          <Card pad={5} className="mt-[var(--space-12)] max-w-[var(--w-col-lg)] bg-bg-sink font-[family-name:var(--font-mono)] text-[length:var(--text-sm)] leading-[1.85]">
+          <Card pad={5} className="mt-[var(--space-12)] max-w-[var(--w-col-lg)] bg-bg-sink font-[family-name:var(--font-mono)] text-[length:var(--meta-size)] leading-[1.85]">
             <Stack row gap={2} className="mb-[var(--space-3)]">
               {["bad", "warn", "good"].map((t) => (
                 <span key={t} className={`h-2.5 w-2.5 rounded-full bg-${t}`} />
@@ -109,9 +109,9 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
       {/* ---------- logo strip ---------- */}
       <section className="border-y border-line px-[var(--space-6)] py-[var(--space-10)] md:px-[var(--space-12)]">
         <Stack row gap={10} wrap align="center" className="mx-auto max-w-[var(--w-page)]">
-          <Text as="span" variant="mono" tone="faint">Orchestrating agents at</Text>
+          <Text as="span" variant="eyebrow" tone="faint">Orchestrating agents at</Text>
           {["Cinder", "Halyard", "Parity", "Thresher", "Roost"].map((n) => (
-            <Text key={n} as="span" variant="body" tone="faint" className="font-semibold">{n}</Text>
+            <Text key={n} as="span" variant="body" tone="faint" className="type-emphasis">{n}</Text>
           ))}
         </Stack>
       </section>
@@ -119,8 +119,8 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
       {/* ---------- features ---------- */}
       <section className="px-[var(--space-6)] py-[var(--space-20)] md:px-[var(--space-12)]">
         <div className="mx-auto max-w-[var(--w-page)]">
-          <Text variant="mono" tone="faint">Why teams switch</Text>
-          <Text as="h2" variant="h1" className="mt-[var(--space-4)] max-w-[20ch] font-semibold">
+          <Text variant="eyebrow" tone="faint">Why teams switch</Text>
+          <Text as="h2" variant="h1" className="mt-[var(--space-4)] max-w-[20ch] type-emphasis">
             Your agent framework stops at the happy path.
           </Text>
 
@@ -131,7 +131,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
               ["Stall detection", "Agents don't crash, they loop. Warrick notices when yours is going in circles and resumes, escalates, or halts on your rules."],
             ].map(([t, b]) => (
               <Card key={t}>
-                <Text variant="h3" className="text-[length:var(--text-md)] font-semibold">{t}</Text>
+                <Text variant="h3" className="type-emphasis">{t}</Text>
                 <Text variant="body" tone="dim" className="mt-[var(--space-3)]">{b}</Text>
               </Card>
             ))}
@@ -142,8 +142,8 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
       {/* ---------- pricing ---------- */}
       <section id="pricing" className="border-t border-line px-[var(--space-6)] py-[var(--space-20)] md:px-[var(--space-12)]">
         <div className="mx-auto max-w-[var(--w-page)]">
-          <Text variant="mono" tone="faint">Pricing</Text>
-          <Text as="h2" variant="h1" className="mt-[var(--space-4)] font-semibold">
+          <Text variant="eyebrow" tone="faint">Pricing</Text>
+          <Text as="h2" variant="h1" className="mt-[var(--space-4)] type-emphasis">
             Free while you&rsquo;re figuring it out.
           </Text>
           <Text variant="body" tone="dim" className="mt-[var(--space-3)] max-w-[52ch]">
@@ -165,9 +165,9 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
                     </span>
                   )}
 
-                  <Text variant="body" className="font-semibold">{p.name}</Text>
+                  <Text variant="body" className="type-emphasis">{p.name}</Text>
                   <Stack row gap={2} align="baseline" className="mt-[var(--space-3)]">
-                    <Text as="span" variant="h1" className="font-semibold">
+                    <Text as="span" variant="h1" className="type-emphasis">
                       {p.unitAmount === 0 ? "$0" : `$${p.unitAmount / 100}`}
                     </Text>
                     {p.unitAmount > 0 && (
@@ -191,7 +191,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
                     >
                       <Coin glyph={p.run.glyph} tint={p.run.tint} size={42} />
                       <div>
-                        <Text variant="meta" className="font-semibold capitalize">
+                        <Text variant="meta" className="type-emphasis capitalize">
                           {p.run.name} coin included
                         </Text>
                         <Text variant="meta" tone="faint">

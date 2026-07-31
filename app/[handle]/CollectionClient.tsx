@@ -44,18 +44,18 @@ export function CollectionClient({
           from whatever site you arrived from, and it should look like it. */}
       <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg/92 px-[var(--space-12)] backdrop-blur">
         <a href="/demo" className="flex items-center gap-[var(--space-3)]">
-          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--text-xs)] text-fg-invert">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--meta-size)] text-fg-invert">
             ◈
           </span>
           <Text as="span" variant="h3">Ovation</Text>
         </a>
-        <Text as="span" variant="mono" tone="faint" className="ml-[var(--space-2)] hidden sm:inline">
+        <Text as="span" variant="eyebrow" tone="faint" className="ml-[var(--space-2)] hidden sm:inline">
           a receipt you&rsquo;d keep
         </Text>
         <span className="flex-1" />
         <a
           href={signedIn ? "/auth/logout" : "/auth/login"}
-          className="font-[family-name:var(--font-body)] text-[length:var(--text-sm)] text-fg-dim hover:text-fg"
+          className="font-[family-name:var(--font-body)] text-[length:var(--meta-size)] text-fg-dim hover:text-fg"
         >
           {signedIn ? "Sign out" : "Sign in"}
         </a>
@@ -64,7 +64,7 @@ export function CollectionClient({
       <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-12)]">
         <header className="flex flex-wrap items-end justify-between gap-[var(--space-6)]">
           <div>
-            <Text variant="mono" tone="faint">Collection</Text>
+            <Text variant="eyebrow" tone="faint">Collection</Text>
             <Text as="h1" variant="h1" className="mt-[var(--space-3)]">
               <span className="text-fg-faint">@</span>
               {view.collector.handle}
@@ -72,12 +72,12 @@ export function CollectionClient({
           </div>
           <div className="text-right">
             <Text variant="body" tone="dim">
-              <b className="font-semibold text-fg">{items.length}</b> coins ·{" "}
-              <b className="font-semibold text-fg">{sellers}</b> sellers
+              <b className="type-emphasis text-fg">{items.length}</b> coins ·{" "}
+              <b className="type-emphasis text-fg">{sellers}</b> sellers
             </Text>
             <Text variant="body" tone="dim">
               since{" "}
-              <b className="font-semibold text-fg">
+              <b className="type-emphasis text-fg">
                 {new Date(view.collector.since).toLocaleDateString("en-US", {
                   month: "short",
                   year: "numeric",
@@ -85,7 +85,7 @@ export function CollectionClient({
               </b>
             </Text>
             {isOwner && privateCount > 0 && (
-              <Text variant="mono" tone="faint" className="mt-[var(--space-2)]">
+              <Text variant="eyebrow" tone="faint" className="mt-[var(--space-2)]">
                 {privateCount} private
               </Text>
             )}

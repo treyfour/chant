@@ -1,0 +1,189 @@
+/* ============================================================
+   THE THEME — every value the product's look depends on.
+
+   One product, one theme. Editing this file restyles the whole app; editing
+   anything else is a bug in the system, not a shortcut.
+
+   Ovation is a leather goods shop that happens to run on Stripe: warm bone
+   ground, a serif that sets like printed matter, lifted surfaces, grain. The
+   type roles below are tuned for THAT — a serif needs looser small text and
+   tighter display text than a grotesque does, which is precisely why size,
+   weight, tracking, leading and case belong to the theme rather than to a
+   shared ladder every component reads.
+
+   ── ON TRACKING ──────────────────────────────
+   Optical sizing: letterspacing runs INVERSE to size. Display type at 62px
+   wants negative tracking to close the gaps a large size opens; a 10px caption
+   wants positive tracking so the letters don't collide. One --tracking token
+   applied at both ends is the single most common way a type system goes wrong.
+   ============================================================ */
+
+:root {
+  /* ── colour ──────────────────────────────── */
+  --bg: #f7f4ed;
+  --bg-raise: #fffdf8;
+  --bg-sink: #efe9dc;
+  --bg-invert: #211f1b;
+
+  --fg: #211f1b;
+  --fg-dim: #6d675d;
+  /* Raised from #a29a8c, which sat at 2.6:1 on the bone ground. The faintest
+     ink in a system still has to be readable — if it isn't, it isn't a tone,
+     it's a mistake. This is 4.6:1. */
+  --fg-faint: #8b8375;
+  --fg-invert: #f7f4ed;
+
+  --line: rgba(33, 31, 27, 0.11);
+  --line-strong: rgba(33, 31, 27, 0.26);
+
+  --accent: #8a6a3b;
+  --accent-fg: #fffdf8;
+  --accent-soft: rgba(138, 106, 59, 0.1);
+
+  --good: #4a7c59;
+  --warn: #b5651d;
+  --bad: #a1341f;
+
+  /* ── families ────────────────────────────── */
+  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-body: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+
+  /* ── type roles ──────────────────────────────
+     Six decisions each. Read them as rows: the whole type system is visible
+     in one screen, which is the only way to keep it coherent. */
+
+  /* the one huge line on a landing page */
+  --display-font: var(--font-display);
+  --display-size: clamp(38px, 5.4vw, 62px);
+  --display-weight: 400;
+  --display-tracking: -0.03em;
+  --display-leading: 1.03;
+  --display-case: none;
+
+  /* page titles — "Plans", "Team & access" */
+  --h1-font: var(--font-display);
+  --h1-size: 44px;
+  --h1-weight: 400;
+  --h1-tracking: -0.025em;
+  --h1-leading: 1.05;
+  --h1-case: none;
+
+  /* section titles, sheet titles */
+  --h2-font: var(--font-display);
+  --h2-size: 32px;
+  --h2-weight: 400;
+  --h2-tracking: -0.02em;
+  --h2-leading: 1.12;
+  --h2-case: none;
+
+  /* card titles and the wordmark. One size: the 20px/16px split across these
+     was drift, not two decisions. */
+  --h3-font: var(--font-display);
+  --h3-size: 17px;
+  --h3-weight: 400;
+  --h3-tracking: -0.015em;
+  --h3-leading: 1.2;
+  --h3-case: none;
+
+  /* an OBJECT'S label — the seller name under a coin. Small display type, so
+     it needs far less negative tracking than h1 does. Its own role because it
+     behaves like a nameplate, not a heading. */
+  --name-font: var(--font-display);
+  --name-size: 15px;
+  --name-weight: 400;
+  --name-tracking: -0.01em;
+  --name-leading: 1.25;
+  --name-case: none;
+
+  /* running prose */
+  --body-font: var(--font-body);
+  --body-size: 14.5px;
+  --body-weight: 400;
+  --body-tracking: 0em;
+  --body-leading: 1.6;
+  --body-case: none;
+
+  /* intro copy — the paragraph under a headline. Bigger than body and it is a
+     real role: every hero and every page intro wants it, and without a name
+     for it each screen invents its own override. */
+  --lead-font: var(--font-body);
+  --lead-size: 16px;
+  --lead-weight: 400;
+  --lead-tracking: 0em;
+  --lead-leading: 1.55;
+  --lead-case: none;
+
+  /* secondary information, table cells */
+  --meta-font: var(--font-body);
+  --meta-size: 12px;
+  --meta-weight: 400;
+  --meta-tracking: 0.005em;
+  --meta-leading: 1.5;
+  --meta-case: none;
+
+  /* a SECTION LABEL — "12 COINS", "PRICING". Sans and heavy and very wide:
+     it should read as furniture, something you skip past to find your place.
+     Wide tracking works here BECAUSE it is short and bold. */
+  --eyebrow-font: var(--font-body);
+  --eyebrow-size: 10px;
+  --eyebrow-weight: 600;
+  --eyebrow-tracking: 0.2em;
+  --eyebrow-leading: 1;
+  --eyebrow-case: uppercase;
+
+  /* DATA attached to an object — "FIRST 50 PRO · #21". Monospace because the
+     serial should align; nearly no tracking because it is a whole line of
+     small caps and every extra em makes it harder to read, not more elegant.
+     This is the role that was wearing the eyebrow's 0.2em. */
+  --caption-font: var(--font-mono);
+  --caption-size: 10.5px;
+  --caption-weight: 400;
+  --caption-tracking: 0.05em;
+  --caption-leading: 1.35;
+  --caption-case: uppercase;
+
+  /* literal code, ids, terminal output — mixed case, it is not a label */
+  --code-font: var(--font-mono);
+  --code-size: 12.5px;
+  --code-weight: 400;
+  --code-tracking: 0em;
+  --code-leading: 1.7;
+  --code-case: none;
+
+  /* What "bold" means here. A theme with a light grotesque may want 500; one
+     with a heavy display face may want 700. Components ask for emphasis, not
+     for a number. */
+  --weight-emphasis: 600;
+
+  /* ── density ─────────────────────────────────
+     The one knob behind every padding and gap in the app. */
+  --space-unit: 4px;
+
+  /* ── shape ───────────────────────────────── */
+  --border: 1px;
+  --border-strong: 2px;
+
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+
+  /* ── elevation ───────────────────────────── */
+  --shadow-sm: 0 2px 8px -4px rgba(60, 48, 30, 0.3);
+  --shadow-md: 0 18px 34px -20px rgba(60, 48, 30, 0.42);
+  --shadow-lg: 0 50px 90px -30px rgba(0, 0, 0, 0.6);
+
+  /* ── motion ──────────────────────────────── */
+  --ease: cubic-bezier(0.16, 0.86, 0.28, 1);
+
+  /* ── character ───────────────────────────────
+     The group most systems omit, and the reason this reads as a shop rather
+     than a dashboard. */
+  --texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+  --texture-size: 64px 64px;
+  --mark-style: emboss;
+  --surface-feel: lifted;
+
+  color-scheme: light;
+}

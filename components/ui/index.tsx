@@ -9,7 +9,7 @@
  * "suggestions" looks like six hours in.
  *
  * Rules enforced by `npm run guard`:
- *   - no raw hex, px, or font names anywhere outside tokens.css / themes.css
+ *   - no raw hex, px, or font names anywhere outside tokens.css / theme.css
  *   - anything not on this list is COMPOSED, never invented
  *
  * Behaviour (focus traps, escape, portals, aria) comes from Radix so we never
@@ -27,16 +27,34 @@ const cx = (...parts: Array<string | false | null | undefined>) =>
 
 /* ── Text ────────────────────────────────────────────────── */
 
-type TextVariant = "display" | "h1" | "h2" | "h3" | "body" | "meta" | "mono";
+/**
+ * Type ROLES, not sizes.
+ *
+ * `eyebrow` is a section label — short, bold, very wide, furniture you skip
+ * past. `caption` is data attached to an object — a serial under a coin, set
+ * tight because it is a whole line of small caps. They were one variant once,
+ * and the caption wore the eyebrow's tracking; that is what made small text
+ * read as crunchy. Two roles, because they are two jobs.
+ *
+ * Each class reads all six of its properties from the theme (see
+ * app/globals.css), so restyling the app never means editing this file.
+ */
+type TextVariant =
+  | "display" | "h1" | "h2" | "h3"
+  | "name" | "body" | "lead" | "meta" | "eyebrow" | "caption" | "code";
 
 const TEXT: Record<TextVariant, string> = {
-  display: "font-[family-name:var(--font-display)] text-[length:var(--text-4xl)] leading-[1.03] tracking-[var(--tracking-display)]",
-  h1: "font-[family-name:var(--font-display)] text-[length:var(--text-3xl)] leading-[1.05] tracking-[var(--tracking-display)]",
-  h2: "font-[family-name:var(--font-display)] text-[length:var(--text-2xl)] leading-[1.12] tracking-[var(--tracking-display)]",
-  h3: "font-[family-name:var(--font-display)] text-[length:var(--text-lg)] leading-[1.2] tracking-[var(--tracking-display)]",
-  body: "font-[family-name:var(--font-body)] text-[length:var(--text-base)] leading-[1.6]",
-  meta: "font-[family-name:var(--font-body)] text-[length:var(--text-xs)] leading-[1.5]",
-  mono: "font-[family-name:var(--font-mono)] text-[length:var(--text-2xs)] uppercase tracking-[0.14em]",
+  display: "type-display",
+  h1: "type-h1",
+  h2: "type-h2",
+  h3: "type-h3",
+  name: "type-name",
+  body: "type-body",
+  lead: "type-lead",
+  meta: "type-meta",
+  eyebrow: "type-eyebrow",
+  caption: "type-caption",
+  code: "type-code",
 };
 
 const TONE = {
@@ -97,7 +115,7 @@ export function Stack({
 /* ── Button ──────────────────────────────────────────────── */
 
 const BTN_BASE =
-  "inline-flex items-center justify-center gap-[var(--space-2)] font-semibold " +
+  "inline-flex items-center justify-center gap-[var(--space-2)] type-emphasis " +
   "font-[family-name:var(--font-body)] cursor-pointer select-none " +
   "transition-[opacity,transform] duration-[var(--dur-fast)] " +
   "disabled:opacity-40 disabled:cursor-not-allowed";
@@ -110,8 +128,8 @@ const BTN_VARIANT = {
 } as const;
 
 const BTN_SIZE = {
-  sm: "h-9 px-[var(--space-4)] text-[length:var(--text-sm)] rounded-[var(--radius-sm)]",
-  md: "h-11 px-[var(--space-6)] text-[length:var(--text-base)] rounded-[var(--radius-md)]",
+  sm: "h-9 px-[var(--space-4)] text-[length:var(--meta-size)] rounded-[var(--radius-sm)]",
+  md: "h-11 px-[var(--space-6)] text-[length:var(--body-size)] rounded-[var(--radius-md)]",
 } as const;
 
 export function Button({
@@ -195,7 +213,7 @@ export function Badge({
     <span
       className={cx(
         "inline-flex items-center rounded-full border px-[var(--space-2)] py-[var(--space-1)]",
-        "font-[family-name:var(--font-body)] text-[length:var(--text-2xs)] font-semibold uppercase tracking-[0.12em]",
+        "font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.12em]",
         tones[tone],
         className,
       )}
@@ -240,7 +258,7 @@ export function Input({ className, ...rest }: React.InputHTMLAttributes<HTMLInpu
       className={cx(
         "w-full bg-bg-raise border border-line rounded-[var(--radius-sm)] outline-none",
         "px-[var(--space-3)] py-[var(--space-3)]",
-        "font-[family-name:var(--font-body)] text-[length:var(--text-base)] text-fg",
+        "font-[family-name:var(--font-body)] text-[length:var(--body-size)] text-fg",
         "placeholder:text-fg-faint focus:border-line-strong",
         "transition-colors duration-[var(--dur-fast)]",
         className,
@@ -265,7 +283,7 @@ export function Stat({
 }) {
   return (
     <Card className={className}>
-      <Text variant="mono" tone="faint">
+      <Text variant="eyebrow" tone="faint">
         {label}
       </Text>
       <Text as="div" variant="h2" className="mt-[var(--space-3)]">
@@ -288,13 +306,10 @@ export const SheetTrigger = DialogPrimitive.Trigger;
 export function SheetContent({
   children,
   size = "md",
-  theme,
   className,
 }: {
   children: React.ReactNode;
   size?: "sm" | "md" | "lg";
-  /** Render the sheet under a different theme than the page beneath it. */
-  theme?: "ovation" | "warrick";
   className?: string;
 }) {
   const widths = {
@@ -307,8 +322,10 @@ export function SheetContent({
       <DialogPrimitive.Overlay
         className="fixed inset-0 z-50 bg-[var(--overlay)] backdrop-blur-[var(--blur-overlay)] data-[state=open]:animate-in data-[state=open]:fade-in"
       />
+      {/* Portals to <body>, which sits outside every [data-brand] scope — so a
+          sheet opened over a customer's page always arrives in OUR voice.
+          That is the product: you left their site holding our object. */}
       <DialogPrimitive.Content
-        data-theme={theme}
         className={cx(
           "fixed left-1/2 top-1/2 z-50 w-[calc(100%-var(--space-8))] -translate-x-1/2 -translate-y-1/2",
           "bg-bg rounded-[var(--radius-xl)] shadow-[var(--shadow-lg)] overflow-hidden",
@@ -350,7 +367,7 @@ export function MenuContent({ children }: { children: React.ReactNode }) {
 
 export function MenuLabel({ children }: { children: React.ReactNode }) {
   return (
-    <ContextMenuPrimitive.Label className="border-b border-line px-[var(--space-3)] pb-[var(--space-2)] pt-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--text-2xs)] font-semibold uppercase tracking-[0.13em] text-fg-faint">
+    <ContextMenuPrimitive.Label className="border-b border-line px-[var(--space-3)] pb-[var(--space-2)] pt-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.13em] text-fg-faint">
       {children}
     </ContextMenuPrimitive.Label>
   );
@@ -366,7 +383,7 @@ export function MenuItem({
   return (
     <ContextMenuPrimitive.Item
       onSelect={onSelect}
-      className="mt-[var(--space-1)] flex cursor-pointer items-center gap-[var(--space-2)] rounded-[var(--radius-sm)] px-[var(--space-3)] py-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--text-sm)] text-fg outline-none data-[highlighted]:bg-fg/6"
+      className="mt-[var(--space-1)] flex cursor-pointer items-center gap-[var(--space-2)] rounded-[var(--radius-sm)] px-[var(--space-3)] py-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--meta-size)] text-fg outline-none data-[highlighted]:bg-fg/6"
     >
       {children}
     </ContextMenuPrimitive.Item>
@@ -392,7 +409,7 @@ export function Tooltip({
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content
           sideOffset={6}
-          className="z-50 rounded-[var(--radius-sm)] bg-fg px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--text-2xs)] text-fg-invert"
+          className="z-50 rounded-[var(--radius-sm)] bg-fg px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-invert"
         >
           {label}
           <TooltipPrimitive.Arrow className="fill-fg" />
@@ -405,9 +422,9 @@ export function Tooltip({
 /* ── Avatar ──────────────────────────────────────────────── */
 
 const AVATAR_SIZE = {
-  sm: "h-5 w-5 text-[length:var(--text-2xs)]",
-  md: "h-7 w-7 text-[length:var(--text-2xs)]",
-  lg: "h-9 w-9 text-[length:var(--text-sm)]",
+  sm: "h-5 w-5 text-[length:var(--eyebrow-size)]",
+  md: "h-7 w-7 text-[length:var(--eyebrow-size)]",
+  lg: "h-9 w-9 text-[length:var(--meta-size)]",
 } as const;
 
 /**
@@ -434,7 +451,7 @@ export function Avatar({
     <Tag
       className={cx(
         "grid shrink-0 place-items-center rounded-full text-white",
-        "font-[family-name:var(--font-body)] font-semibold",
+        "font-[family-name:var(--font-body)] type-emphasis",
         AVATAR_SIZE[size],
         className,
       )}

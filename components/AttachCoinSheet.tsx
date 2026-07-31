@@ -42,10 +42,10 @@ export function AttachCoinSheet({
 
   return (
     <Sheet open onOpenChange={(o) => !o && onClose()}>
-      <SheetContent size="md" theme="ovation">
+      <SheetContent size="md">
         <div className="grid md:grid-cols-[1fr_286px]">
           <div className="p-[var(--space-8)]">
-            <Text variant="mono" tone="faint">Attach a coin</Text>
+            <Text variant="eyebrow" tone="faint">Attach a coin</Text>
             <SheetTitle asChild>
               <Text as="h2" variant="h2" className="mt-[var(--space-2)]">
                 {plan.name} · {plan.priceLabel}
@@ -72,14 +72,14 @@ export function AttachCoinSheet({
               Permanent. When the last one is claimed the run closes and no more can ever exist.
             </Text>
 
-            <Text variant="mono" tone="faint" className="mt-[var(--space-4)]">Mark</Text>
+            <Text variant="eyebrow" tone="faint" className="mt-[var(--space-4)]">Mark</Text>
             <Stack row gap={2} wrap className="mt-[var(--space-2)]">
               {GLYPHS.map((g) => (
                 <button
                   key={g}
                   onClick={() => setGlyph(g)}
                   className={[
-                    "grid h-9 w-9 place-items-center rounded-[var(--radius-sm)] border text-[length:var(--text-md)]",
+                    "grid h-9 w-9 place-items-center rounded-[var(--radius-sm)] border text-[length:var(--lead-size)]",
                     g === glyph
                       ? "border-fg bg-bg-sink text-fg"
                       : "border-line bg-bg-raise text-fg-dim",
@@ -90,7 +90,7 @@ export function AttachCoinSheet({
               ))}
             </Stack>
 
-            <Text variant="mono" tone="faint" className="mt-[var(--space-4)]">Leather</Text>
+            <Text variant="eyebrow" tone="faint" className="mt-[var(--space-4)]">Leather</Text>
             <Stack row gap={2} wrap className="mt-[var(--space-2)]">
               {TINTS.map((t) => (
                 <Swatch key={t} color={t} selected={t === tint} onClick={() => setTint(t)} />
@@ -114,7 +114,7 @@ export function AttachCoinSheet({
               <Coin glyph={glyph} tint={tint} size={152} />
             </div>
             <Text variant="h3">{plan.name}</Text>
-            <Text variant="mono" tone="faint" className="mt-[var(--space-2)]">
+            <Text variant="caption" tone="faint" className="mt-[var(--space-2)]">
               {name || "untitled"} · 1 of {size || "—"}
             </Text>
           </div>

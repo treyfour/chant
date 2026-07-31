@@ -2,21 +2,29 @@
    THE TOKEN CONTRACT
    ============================================================
 
-   Every theme MUST define every variable in this file. That is what makes a
-   theme a file rather than a redesign — swap the values, the whole app changes.
+   ONE product, ONE theme. This file names every decision the theme is allowed
+   to make; app/theme.css supplies the values. Components reference these names
+   and nothing else — `npm run guard` fails the build on a raw hex, px or font
+   name, and fails on a theme that leaves any name below undefined.
 
-   Two rules, and the system dies without either:
+   The contract is deliberately WIDER than most token files, because the
+   decisions that make two designs feel different are mostly the ones systems
+   leave hardcoded in components: weight, tracking, case, leading, density,
+   border weight. If the theme can't set them, adopting a new style means
+   editing components — and then it isn't a theme any more, it's a rewrite.
 
-     1. Components reference ONLY these variables. Never a raw hex, px, or font
-        name. `npm run guard` fails the build if one slips in.
-     2. Adding a token means adding it to EVERY theme. A theme with a missing
-        key is a theme with a silent hole.
+   The test for whether this file is complete:
+     Could you express a reference site you admire by editing ONLY theme.css?
+   Anything you had to reach into a component for is a missing token.
 
-   ~40 tokens on purpose. Semantic systems fail when nobody can remember the
-   vocabulary — 200 tokens is a dictionary, not a system.
+   ── TYPE IS ORGANISED BY ROLE, NOT BY SIZE ────────────────────
+   A component asks for `eyebrow` or `caption`, never for `10px`. Each role
+   owns its full set: font, size, weight, tracking, leading, case. That is six
+   decisions per role and there is no way around it — collapsing roles onto a
+   shared ladder is exactly how a caption ends up wearing a label's tracking.
 
-   The last group is the one most systems omit and the reason two themes here
-   read as different COMPANIES rather than light and dark mode.
+   The vocabulary stays small because every role takes the same six suffixes.
+   You learn `role × property`, not fifty names.
    ============================================================ */
 
 @theme inline {
@@ -46,7 +54,7 @@
   --color-warn: var(--warn);
   --color-bad: var(--bad);
 
-  /* ── type ────────────────────────────────── */
+  /* ── families ────────────────────────────── */
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
@@ -62,46 +70,32 @@
 }
 
 :root {
-  /* ── type scale ──────────────────────────────
-     Shared across themes. A theme changes the FAMILY and the tracking, not
-     the ladder — otherwise every component needs per-theme sizing. */
-  --text-2xs: 10px;
-  --text-xs: 11.5px;
-  --text-sm: 13px;
-  --text-base: 14.5px;
-  --text-md: 16px;
-  --text-lg: 20px;
-  --text-xl: 26px;
-  --text-2xl: 32px;
-  --text-3xl: 44px;
-  --text-4xl: clamp(38px, 5.4vw, 62px);
-
   /* ── space ───────────────────────────────────
-     4px base. Use these, never arbitrary padding. */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
+     Derived from ONE knob. A theme sets --space-unit and the whole rhythm of
+     the app moves with it: 4px is the default, 3px reads dense and technical,
+     5px reads generous and editorial. Padding decisions stop being per-screen
+     guesses and become one decision made once. */
+  --space-1: calc(var(--space-unit) * 1);
+  --space-2: calc(var(--space-unit) * 2);
+  --space-3: calc(var(--space-unit) * 3);
+  --space-4: calc(var(--space-unit) * 4);
+  --space-5: calc(var(--space-unit) * 5);
+  --space-6: calc(var(--space-unit) * 6);
+  --space-8: calc(var(--space-unit) * 8);
+  --space-10: calc(var(--space-unit) * 10);
+  --space-12: calc(var(--space-unit) * 12);
+  --space-16: calc(var(--space-unit) * 16);
+  --space-20: calc(var(--space-unit) * 20);
 
   /* ── layout constants ────────────────────────
-     Sheet widths and the coin stage are design decisions, not magic numbers.
-     A denser theme may legitimately want narrower sheets. */
+     Structure, not style. These describe the shape of the app — how wide a
+     sheet is, how tall a coin's stage is — and stay put across restyles. */
   --w-sheet-sm: 404px;
   --w-sheet-md: 760px;
   --w-sheet-lg: 880px;
   --w-page: 1100px;
-  /* App chrome content column. There were four near-identical widths here
-     (940/960/1000/1100); four is drift, not a decision. */
   --w-app: 960px;
 
-  /* Narrow columns for prose and set-pieces. */
   --w-col-sm: 520px;
   --w-col: 640px;
   --w-col-lg: 720px;
@@ -109,14 +103,12 @@
   --w-search: 210px;
   --w-tooltip: 186px;
   --blur-overlay: 7px;
-  /* Nav chrome. Two of them: the seller's own site and the Ovation app. */
+
   --h-nav: 64px;
   --h-nav-app: 60px;
 
-  /* One coin's cell on a shelf. The grid fits as many as it can. */
   --w-coin-cell: 136px;
   --w-coin-cell-sm: 124px;
-
   --h-coin-stage: 112px;
   --h-coin-stage-sm: 104px;
 
@@ -130,21 +122,42 @@
 }
 
 /* ============================================================
-   Every theme defines this exact key set. Copy the block, change values.
-   ============================================================
+   THE COMPLETE KEY SET
 
+   app/theme.css defines every name below. scripts/guard.mjs parses this list
+   and fails if the theme is missing one, so a half-finished restyle cannot
+   ship looking fine on the three screens you happened to open.
+
+   Names are listed one per line between the markers — the guard reads them.
+
+   ── BEGIN CONTRACT ──
    --bg --bg-raise --bg-sink --bg-invert
    --fg --fg-dim --fg-faint --fg-invert
    --line --line-strong
    --accent --accent-fg --accent-soft
    --good --warn --bad
+
    --font-display --font-body --font-mono
-   --tracking-display --tracking-body
+
+   --display-font --display-size --display-weight --display-tracking --display-leading --display-case
+   --h1-font --h1-size --h1-weight --h1-tracking --h1-leading --h1-case
+   --h2-font --h2-size --h2-weight --h2-tracking --h2-leading --h2-case
+   --h3-font --h3-size --h3-weight --h3-tracking --h3-leading --h3-case
+   --name-font --name-size --name-weight --name-tracking --name-leading --name-case
+   --body-font --body-size --body-weight --body-tracking --body-leading --body-case
+   --lead-font --lead-size --lead-weight --lead-tracking --lead-leading --lead-case
+   --meta-font --meta-size --meta-weight --meta-tracking --meta-leading --meta-case
+   --eyebrow-font --eyebrow-size --eyebrow-weight --eyebrow-tracking --eyebrow-leading --eyebrow-case
+   --caption-font --caption-size --caption-weight --caption-tracking --caption-leading --caption-case
+   --code-font --code-size --code-weight --code-tracking --code-leading --code-case
+
+   --weight-emphasis
+   --space-unit
+   --border --border-strong
    --radius-sm --radius-md --radius-lg --radius-xl
    --shadow-sm --shadow-md --shadow-lg
    --ease
-   --texture          background-image for surfaces, or `none`
-   --mark-style       emboss | flat
-   --surface-feel     lifted | flush
-   --density          compact | roomy
-*/
+   --texture --texture-size
+   --mark-style --surface-feel
+   ── END CONTRACT ──
+   ============================================================ */

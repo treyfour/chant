@@ -35,7 +35,7 @@ export default async function TeamPage({
       </nav>
 
       <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-10)]">
-        <Text variant="mono" tone="faint">Warrick</Text>
+        <Text variant="eyebrow" tone="faint">Warrick</Text>
         <Text as="h1" variant="h1" className="mt-[var(--space-3)]">Team &amp; access</Text>
         <Text variant="body" tone="dim" className="mt-[var(--space-3)] max-w-[56ch]">
           Members of <b className="text-fg">org_warrick</b>. Roles come from Auth0 and
@@ -44,8 +44,8 @@ export default async function TeamPage({
 
         <Card pad={0} className="mt-[var(--space-6)] pb-[var(--space-2)] pt-[var(--space-5)]">
           <Row cols={ROW} className="px-[var(--space-6)] pb-[var(--space-3)]">
-            <Text as="span" variant="mono" tone="faint">Member</Text>
-            <Text as="span" variant="mono" tone="faint">Role</Text>
+            <Text as="span" variant="eyebrow" tone="faint">Member</Text>
+            <Text as="span" variant="eyebrow" tone="faint">Role</Text>
             <span />
           </Row>
 
@@ -61,7 +61,7 @@ export default async function TeamPage({
               <Stack row gap={3} align="center">
                 <Avatar color={m.color} size="lg">{m.name ? m.name[0] : "?"}</Avatar>
                 <div>
-                  <Text variant="meta" tone={m.name ? "default" : "dim"} className="font-semibold">
+                  <Text variant="meta" tone={m.name ? "default" : "dim"} className="type-emphasis">
                     {m.name ?? m.email}
                   </Text>
                   <Text variant="meta" tone="dim" className="mt-[var(--space-1)]">
@@ -89,7 +89,7 @@ export default async function TeamPage({
                 {ROLE_PERMISSIONS[r].map((p) => (
                   <span
                     key={p}
-                    className="rounded-[var(--radius-sm)] border border-line bg-fg/5 px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--text-2xs)] text-fg-dim"
+                    className="rounded-[var(--radius-sm)] border border-line bg-fg/5 px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-dim"
                   >
                     {p}
                   </span>

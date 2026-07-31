@@ -46,7 +46,7 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
   return (
     <div>
       <div className="mb-[var(--space-6)] flex flex-wrap items-baseline justify-between gap-[var(--space-4)]">
-        <Text variant="mono" tone="faint">{heading}</Text>
+        <Text variant="eyebrow" tone="faint">{heading}</Text>
         <div className="relative">
           <Search
             size={14}
@@ -107,16 +107,15 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
                     arrow appears beside it. Nothing below moves. */}
                 <span
                   className={[
-                    "mt-[var(--space-4)] inline-flex max-w-full items-center justify-center gap-1",
-                    "font-[family-name:var(--font-display)] text-[length:var(--text-base)]",
-                    "tracking-[var(--tracking-display)] group-hover:font-semibold",
+                    "type-name mt-[var(--space-4)] inline-flex max-w-full items-center justify-center gap-1",
+                    "group-hover:[font-weight:var(--weight-emphasis)]",
                     item.isPublic ? "text-fg" : "text-fg-dim",
                   ].join(" ")}
                 >
                   <span className="truncate">{item.sellerName}</span>
                   <span
                     aria-hidden="true"
-                    className="shrink-0 text-[length:var(--text-xs)] text-accent opacity-0 transition-opacity group-hover:opacity-100"
+                    className="shrink-0 text-[length:var(--meta-size)] text-accent opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     ↗
                   </span>
@@ -124,7 +123,7 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
 
                 <Text
                   as="span"
-                  variant="mono"
+                  variant="caption"
                   tone={isLead ? "accent" : "faint"}
                   className="mt-[var(--space-1)] block"
                 >

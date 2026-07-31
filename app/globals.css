@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./tokens.css";
-@import "./themes.css";
+@import "./theme.css";
+@import "./brand.css";
 
 /* ============================================================
    Everything below is STRUCTURE and MATERIAL. No values.
@@ -17,9 +18,115 @@
   body {
     background: var(--bg);
     color: var(--fg);
-    font-family: var(--font-body);
-    letter-spacing: var(--tracking-body);
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    line-height: var(--body-leading);
+    letter-spacing: var(--body-tracking);
     -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer components {
+  /* ── THE TYPE ROLES ──────────────────────────
+     One class per role, every property read from the theme. A component names
+     the role it wants and never a size — which is what lets the theme change
+     the whole voice of the app without a single component edit.
+
+     Nine classes, generated from the same six tokens each. If you are adding a
+     tenth, first check it is a genuinely new ROLE and not an existing one at a
+     different size — that mistake is how systems end up with forty. */
+  .type-display {
+    font-family: var(--display-font);
+    font-size: var(--display-size);
+    font-weight: var(--display-weight);
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
+    text-transform: var(--display-case);
+  }
+  .type-h1 {
+    font-family: var(--h1-font);
+    font-size: var(--h1-size);
+    font-weight: var(--h1-weight);
+    letter-spacing: var(--h1-tracking);
+    line-height: var(--h1-leading);
+    text-transform: var(--h1-case);
+  }
+  .type-h2 {
+    font-family: var(--h2-font);
+    font-size: var(--h2-size);
+    font-weight: var(--h2-weight);
+    letter-spacing: var(--h2-tracking);
+    line-height: var(--h2-leading);
+    text-transform: var(--h2-case);
+  }
+  .type-h3 {
+    font-family: var(--h3-font);
+    font-size: var(--h3-size);
+    font-weight: var(--h3-weight);
+    letter-spacing: var(--h3-tracking);
+    line-height: var(--h3-leading);
+    text-transform: var(--h3-case);
+  }
+  .type-name {
+    font-family: var(--name-font);
+    font-size: var(--name-size);
+    font-weight: var(--name-weight);
+    letter-spacing: var(--name-tracking);
+    line-height: var(--name-leading);
+    text-transform: var(--name-case);
+  }
+  .type-body {
+    font-family: var(--body-font);
+    font-size: var(--body-size);
+    font-weight: var(--body-weight);
+    letter-spacing: var(--body-tracking);
+    line-height: var(--body-leading);
+    text-transform: var(--body-case);
+  }
+  .type-lead {
+    font-family: var(--lead-font);
+    font-size: var(--lead-size);
+    font-weight: var(--lead-weight);
+    letter-spacing: var(--lead-tracking);
+    line-height: var(--lead-leading);
+    text-transform: var(--lead-case);
+  }
+  .type-meta {
+    font-family: var(--meta-font);
+    font-size: var(--meta-size);
+    font-weight: var(--meta-weight);
+    letter-spacing: var(--meta-tracking);
+    line-height: var(--meta-leading);
+    text-transform: var(--meta-case);
+  }
+  .type-eyebrow {
+    font-family: var(--eyebrow-font);
+    font-size: var(--eyebrow-size);
+    font-weight: var(--eyebrow-weight);
+    letter-spacing: var(--eyebrow-tracking);
+    line-height: var(--eyebrow-leading);
+    text-transform: var(--eyebrow-case);
+  }
+  .type-caption {
+    font-family: var(--caption-font);
+    font-size: var(--caption-size);
+    font-weight: var(--caption-weight);
+    letter-spacing: var(--caption-tracking);
+    line-height: var(--caption-leading);
+    text-transform: var(--caption-case);
+  }
+  .type-code {
+    font-family: var(--code-font);
+    font-size: var(--code-size);
+    font-weight: var(--code-weight);
+    letter-spacing: var(--code-tracking);
+    line-height: var(--code-leading);
+    text-transform: var(--code-case);
+  }
+
+  /* "Bold" as a role rather than a number. */
+  .type-emphasis {
+    font-weight: var(--weight-emphasis);
   }
 }
 
@@ -29,7 +136,7 @@
      nothing. One class, two completely different backgrounds. */
   .surface-textured {
     background-image: var(--texture);
-    background-size: 64px 64px;
+    background-size: var(--texture-size);
   }
 
   /* ============================================================

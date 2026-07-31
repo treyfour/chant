@@ -51,12 +51,12 @@ export function WelcomeClient({
   const reopen = useCallback(() => payload && setOpen(true), [payload]);
 
   return (
-    <div data-theme="warrick" className="min-h-screen bg-bg text-fg">
+    <div data-brand="warrick" className="min-h-screen bg-bg text-fg">
       <nav className="flex h-[var(--h-nav)] items-center gap-[var(--space-3)] border-b border-line px-[var(--space-6)] md:px-[var(--space-12)]">
-        <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--text-xs)] text-accent-fg">
+        <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
           ▲
         </span>
-        <Text as="span" variant="h3" className="text-[length:var(--text-md)] font-semibold">
+        <Text as="span" variant="h3" className="type-emphasis">
           {sellerName}
         </Text>
       </nav>
@@ -67,14 +67,14 @@ export function WelcomeClient({
             <Check size={20} strokeWidth={1.5} />
           </div>
 
-          <Text as="h1" variant="h1" className="mt-[var(--space-6)] font-semibold">
+          <Text as="h1" variant="h1" className="mt-[var(--space-6)] type-emphasis">
             You&rsquo;re on Pro
           </Text>
-          <Text variant="body" tone="dim" className="mt-[var(--space-3)] text-[length:var(--text-md)]">
+          <Text variant="lead" tone="dim" className="mt-[var(--space-3)] ">
             Your workspace is ready. Install the SDK and your first run is on us.
           </Text>
 
-          <Card pad={4} className="mt-[var(--space-8)] bg-bg-sink text-left font-[family-name:var(--font-mono)] text-[length:var(--text-sm)]">
+          <Card pad={4} className="mt-[var(--space-8)] bg-bg-sink text-left font-[family-name:var(--font-mono)] text-[length:var(--meta-size)]">
             <span className="text-fg-faint">$</span> npm i <span className="text-good">@warrick/sdk</span>
           </Card>
 
@@ -86,7 +86,7 @@ export function WelcomeClient({
             ].map(([k, v]) => (
               <Stack key={k} row justify="between" className="py-[var(--space-2)]">
                 <Text as="span" variant="meta" tone="dim">{k}</Text>
-                <Text as="span" variant="meta" className="font-semibold">{v}</Text>
+                <Text as="span" variant="meta" className="type-emphasis">{v}</Text>
               </Stack>
             ))}
           </Card>

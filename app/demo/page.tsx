@@ -20,11 +20,11 @@ const STACK: Array<[string, string]> = [
 export default function DemoIndex() {
   return (
     <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-20)]">
-      <Text variant="mono" tone="faint">Ovation</Text>
+      <Text variant="eyebrow" tone="faint">Ovation</Text>
       <Text as="h1" variant="display" className="mt-[var(--space-4)] max-w-[16ch]">
         A receipt you&rsquo;d actually keep.
       </Text>
-      <Text variant="body" tone="dim" className="mt-[var(--space-4)] max-w-[58ch] text-[length:var(--text-md)]">
+      <Text variant="lead" tone="dim" className="mt-[var(--space-4)] max-w-[58ch] ">
         Every subscription you start generates a receipt you never look at again.
         Subscribe to an early-stage company through Ovation and you get a numbered,
         limited-run coin instead. Collections are browsable, which is how the next
@@ -47,7 +47,7 @@ export default function DemoIndex() {
               <Stack row gap={4} align="center">
                 <Coin glyph={r.glyph} tint={r.tint} size={52} />
                 <div>
-                  <Text variant="mono" tone="faint">
+                  <Text variant="eyebrow" tone="faint">
                     {r.step} · {r.label}
                   </Text>
                   <Text variant="h3" className="mt-[var(--space-2)]">{r.title}</Text>
@@ -56,7 +56,7 @@ export default function DemoIndex() {
               <Text variant="meta" tone="dim" className="mt-[var(--space-4)] flex-1">
                 {r.body}
               </Text>
-              <Text variant="meta" tone="accent" className="mt-[var(--space-4)] font-semibold">
+              <Text variant="meta" tone="accent" className="mt-[var(--space-4)] type-emphasis">
                 {r.cta}
               </Text>
             </Card>
@@ -67,7 +67,7 @@ export default function DemoIndex() {
       <div className="mt-[var(--space-10)] grid grid-cols-1 gap-[var(--space-6)] border-t border-line pt-[var(--space-8)] sm:grid-cols-3">
         {STACK.map(([k, v]) => (
           <div key={k}>
-            <Text variant="mono" tone="faint" className="mb-[var(--space-2)]">{k}</Text>
+            <Text variant="eyebrow" tone="faint" className="mb-[var(--space-2)]">{k}</Text>
             <Text variant="meta" tone="dim">{v}</Text>
           </div>
         ))}

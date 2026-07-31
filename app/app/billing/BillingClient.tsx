@@ -43,9 +43,9 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
       </nav>
 
       <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-12)] text-center">
-        <Text variant="mono" tone="faint">Your Ovation plan</Text>
+        <Text variant="eyebrow" tone="faint">Your Ovation plan</Text>
         <Text as="h1" variant="h1" className="mt-[var(--space-3)]">We use it too.</Text>
-        <Text variant="body" tone="dim" className="mx-auto mt-[var(--space-3)] max-w-[52ch] text-[length:var(--text-md)]">
+        <Text variant="lead" tone="dim" className="mx-auto mt-[var(--space-3)] max-w-[52ch] ">
           Ovation is a subscription like any other. Which means our paid plans come with
           a coin, made the same way yours are.
         </Text>
@@ -98,7 +98,7 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
                   >
                     <Coin glyph={p.run.glyph} tint={p.run.tint} size={40} />
                     <div>
-                      <Text variant="meta" className="font-semibold capitalize">
+                      <Text variant="meta" className="type-emphasis capitalize">
                         {p.run.name} coin
                       </Text>
                       <Text variant="meta" tone="faint">

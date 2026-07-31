@@ -1,0 +1,78 @@
+/* ============================================================
+   GUEST BRANDS — a customer's own surface, not a second theme.
+
+   Warrick is one of Ovation's customers. Their pricing page has to look like
+   THEIR company, because the whole product is the moment you leave their site
+   and arrive somewhere else holding an object. That whiplash is the demo.
+
+   But this is NOT a theme, and the distinction matters:
+
+     the theme    one product's complete design decisions. Owns type roles,
+                  density, weight, case — everything. Lives in theme.css.
+     a guest      a customer's colours and shapes, painted over the theme's
+                  structure. Owns ~15 values and inherits every type role,
+                  every space, every layout decision underneath.
+
+   Trying to make these the same thing is what flattened the typography here
+   earlier: supporting two full themes on one page forced size, weight, case
+   and tracking OUT of the theme layer and into hardcoded component strings,
+   where one value had to serve every context. A guest brand overrides colour,
+   shape and elevation — the things that read as "a different company" at a
+   glance — and leaves the type system alone.
+
+   Adding a customer means adding a block here. It does not mean satisfying
+   the full contract in tokens.css, and the guard does not ask it to.
+   ============================================================ */
+
+[data-brand="warrick"] {
+  --bg: #0a0b0d;
+  --bg-raise: #121418;
+  --bg-sink: #08090b;
+  --bg-invert: #f2f4f7;
+
+  --fg: #f2f4f7;
+  --fg-dim: #9aa3ae;
+  --fg-faint: #7c8590;
+  --fg-invert: #0a0b0d;
+
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  --accent: #7c5cff;
+  --accent-fg: #ffffff;
+  --accent-soft: rgba(124, 92, 255, 0.14);
+
+  --good: #b8f24a;
+  --warn: #ffb454;
+  --bad: #ff6b5f;
+
+  /* A grotesque wordmark and headline — the one type decision a guest gets,
+     because a serif headline would read as Ovation's voice on their page. */
+  --display-font: var(--font-body);
+  --h1-font: var(--font-body);
+  --h2-font: var(--font-body);
+  --h3-font: var(--font-body);
+  --display-weight: var(--weight-emphasis);
+  --h1-weight: var(--weight-emphasis);
+  --h3-weight: var(--weight-emphasis);
+  --display-tracking: -0.035em;
+  --h1-tracking: -0.03em;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --texture: linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  --mark-style: flat;
+  --surface-feel: flush;
+
+  color-scheme: dark;
+}

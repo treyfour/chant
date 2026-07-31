@@ -76,15 +76,15 @@ export function RevealSheet({
 
   return (
     <Sheet open onOpenChange={(o) => !o && onClose()}>
-      <SheetContent size="sm" theme="ovation" className="text-center">
+      <SheetContent size="sm" className="text-center">
         <div className="px-[var(--space-12)] pb-[var(--space-10)] pt-[var(--space-12)]">
           {/* A DIFFERENT company is talking. Warrick's checkout didn't change;
               Ovation was listening to the webhook and showed up. */}
           <div className="flex items-center justify-center gap-[var(--space-2)]">
-            <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--text-2xs)] text-fg-invert">
+            <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
               ◈
             </span>
-            <Text as="span" variant="mono" tone="faint">Ovation</Text>
+            <Text as="span" variant="eyebrow" tone="faint">Ovation</Text>
           </div>
           <Text variant="meta" tone="faint" className="mt-[var(--space-2)]">
             {payload.sellerName} included this with your subscription
@@ -99,7 +99,7 @@ export function RevealSheet({
           <SheetTitle asChild>
             <Text as="h2" variant="h2">{payload.sellerName}</Text>
           </SheetTitle>
-          <Text variant="mono" tone="faint" className="mt-[var(--space-3)]">
+          <Text variant="eyebrow" tone="faint" className="mt-[var(--space-3)]">
             {payload.runName} · {payload.serial} of {payload.size}
           </Text>
 
@@ -115,7 +115,7 @@ export function RevealSheet({
                 It&rsquo;s already yours. No account needed — keep the link.
               </Text>
               <div className="mt-[var(--space-3)] flex items-center gap-[var(--space-2)] rounded-[var(--radius-sm)] bg-bg-sink px-[var(--space-3)] py-[var(--space-2)]">
-                <Text as="span" variant="mono" tone="dim" className="flex-1 truncate text-left normal-case tracking-normal">
+                <Text as="span" variant="eyebrow" tone="dim" className="flex-1 truncate text-left normal-case tracking-normal">
                   /@{payload.handle}
                 </Text>
                 <Button size="sm" onClick={copy}>
@@ -140,7 +140,7 @@ export function RevealSheet({
 
           <button
             onClick={onClose}
-            className="mx-auto mt-[var(--space-4)] block bg-transparent font-[family-name:var(--font-body)] text-[length:var(--text-xs)] text-fg-faint hover:text-fg-dim"
+            className="mx-auto mt-[var(--space-4)] block bg-transparent font-[family-name:var(--font-body)] text-[length:var(--meta-size)] text-fg-faint hover:text-fg-dim"
           >
             No thanks
           </button>

@@ -52,10 +52,10 @@ export function PlansClient({
           row gap={2} align="center"
           className="ml-[var(--space-3)] rounded-[var(--radius-sm)] border border-line px-[var(--space-3)] py-[var(--space-2)]"
         >
-          <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-accent text-[length:var(--text-2xs)] text-accent-fg">
+          <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-accent text-[length:var(--eyebrow-size)] text-accent-fg">
             {view.seller.mark}
           </span>
-          <Text as="span" variant="meta" className="font-semibold">{view.seller.name}</Text>
+          <Text as="span" variant="meta" className="type-emphasis">{view.seller.name}</Text>
           <Text as="span" variant="meta" tone="faint">
             {role === "owner" ? "Owner" : "Member"}
           </Text>
@@ -69,7 +69,7 @@ export function PlansClient({
       <main className="mx-auto w-full max-w-[var(--w-app)] px-[var(--space-12)] pb-[var(--space-20)] pt-[var(--space-10)]">
         <Stack row justify="between" align="end" wrap gap={5}>
           <div>
-            <Text variant="mono" tone="faint">{view.seller.name}</Text>
+            <Text variant="eyebrow" tone="faint">{view.seller.name}</Text>
             <Text as="h1" variant="h1" className="mt-[var(--space-3)]">Plans</Text>
           </div>
           <Badge tone="good">● Stripe connected</Badge>
@@ -91,7 +91,7 @@ export function PlansClient({
 
         <div className="mt-[var(--space-8)]">
           <Stack row justify="between" align="baseline" className="mb-[var(--space-3)]">
-            <Text as="span" variant="mono" tone="faint">Your Stripe products</Text>
+            <Text as="span" variant="eyebrow" tone="faint">Your Stripe products</Text>
             <Text as="span" variant="meta" tone="faint">
               Synced from {view.seller.stripeAccountId ?? "Stripe"}
             </Text>
@@ -117,7 +117,7 @@ export function PlansClient({
                 )}
 
                 <div>
-                  <Text variant="body" className="font-semibold">{p.name}</Text>
+                  <Text variant="body" className="type-emphasis">{p.name}</Text>
                   <Text variant="meta" tone="dim" className="mt-[var(--space-1)]">
                     {p.priceLabel} · {p.subscriberCount} subscribers
                   </Text>
@@ -188,7 +188,7 @@ export function PlansClient({
         )}
 
         <div className="mt-[var(--space-5)]">
-          <Text variant="mono" tone="faint" className="mb-[var(--space-3)]">Recent</Text>
+          <Text variant="eyebrow" tone="faint" className="mb-[var(--space-3)]">Recent</Text>
           <Card>
             {view.activity.length === 0 && (
               <Text variant="meta" tone="faint" className="py-[var(--space-2)]">Nothing yet.</Text>
@@ -225,7 +225,7 @@ export function PlansClient({
 
       {confirmRetire && (
         <Sheet open onOpenChange={(o) => !o && setConfirmRetire(null)}>
-          <SheetContent size="sm" theme="ovation">
+          <SheetContent size="sm">
             <div className="p-[var(--space-10)] text-center">
               <SheetTitle asChild>
                 <Text as="h2" variant="h2">Retire this run?</Text>

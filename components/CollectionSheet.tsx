@@ -38,21 +38,21 @@ export function CollectionSheet({
 
   return (
     <Sheet open onOpenChange={(o) => !o && onClose()}>
-      <SheetContent size="lg" theme="ovation">
+      <SheetContent size="lg">
         {/* Ovation's own header — a different company's chrome */}
         <div className="flex flex-wrap items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)] py-[var(--space-5)]">
-          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--text-2xs)] text-fg-invert">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
             ◈
           </span>
           <SheetTitle asChild>
             <Text as="span" variant="h3">Ovation</Text>
           </SheetTitle>
-          <Text as="span" variant="mono" tone="faint">your collection</Text>
+          <Text as="span" variant="eyebrow" tone="faint">your collection</Text>
           <span className="flex-1" />
           {data && (
             <Text as="span" variant="meta" tone="dim" className="mr-[var(--space-8)]">
-              <b className="font-semibold text-fg">{data.stats.coins}</b> coins ·{" "}
-              <b className="font-semibold text-fg">{data.stats.sellers}</b> companies
+              <b className="type-emphasis text-fg">{data.stats.coins}</b> coins ·{" "}
+              <b className="type-emphasis text-fg">{data.stats.sellers}</b> companies
             </Text>
           )}
         </div>
@@ -69,7 +69,7 @@ export function CollectionSheet({
                 return (
                   <div key={item.coinId} className="relative text-center">
                     {isNew && (
-                      <span className="absolute -top-1 left-1/2 z-10 -translate-x-1/2 rounded-full bg-accent px-[var(--space-2)] py-0.5 font-[family-name:var(--font-body)] text-[length:var(--text-2xs)] font-semibold uppercase tracking-[0.12em] text-accent-fg">
+                      <span className="absolute -top-1 left-1/2 z-10 -translate-x-1/2 rounded-full bg-accent px-[var(--space-2)] py-0.5 font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.12em] text-accent-fg">
                         new
                       </span>
                     )}
@@ -84,12 +84,12 @@ export function CollectionSheet({
                     </div>
                     <Text
                       as="span"
-                      variant="h3"
-                      className="mt-[var(--space-3)] block truncate text-[length:var(--text-base)]"
+                      variant="name"
+                      className="mt-[var(--space-3)] block truncate"
                     >
                       {item.sellerName}
                     </Text>
-                    <Text as="span" variant="mono" tone="faint" className="mt-[var(--space-1)] block">
+                    <Text as="span" variant="caption" tone="faint" className="mt-[var(--space-1)] block">
                       {item.runName} · #{item.serial}
                     </Text>
                   </div>
