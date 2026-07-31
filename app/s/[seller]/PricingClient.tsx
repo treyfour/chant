@@ -56,6 +56,8 @@ export function PricingClient({ view }: { view: SellerPublicView }) {
         <span className="text-[13px]" style={{ color: "var(--dim)" }}>Product</span>
         <span className="text-[13px]" style={{ color: "var(--dim)" }}>Docs</span>
         <span className="text-[13px]" style={{ color: "var(--ink)" }}>Pricing</span>
+        <span className="flex-1" />
+        <a href="/" className="text-[12px]" style={{ color: "var(--faint)" }}>Ovation demo ↗</a>
       </nav>
 
       <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-16 text-center">

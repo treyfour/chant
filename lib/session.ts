@@ -15,6 +15,17 @@ const AVATAR_COLORS = ["#8f6a45", "#3B5BA5", "#4A7C59", "#A8324A", "#2E7D7B", "#
  * in still belongs to them once they do.
  */
 export async function currentCollector(): Promise<Collector | null> {
+  try {
+    return await resolveCollector();
+  } catch (err) {
+    // A collection page must never 500 because identity resolution failed —
+    // it's the hero screen. Degrade to signed-out and keep the page up.
+    console.error("currentCollector failed, treating as signed out:", err);
+    return null;
+  }
+}
+
+async function resolveCollector(): Promise<Collector | null> {
   const session = await auth0.getSession();
   if (!session?.user) return null;
 
@@ -35,13 +46,32 @@ export async function currentCollector(): Promise<Collector | null> {
 
   const base = (email.split("@")[0] || "collector").replace(/[^a-z0-9]/gi, "").toLowerCase();
   const color = AVATAR_COLORS[base.length % AVATAR_COLORS.length];
+  const handle = await freeHandle(base);
+
   const created = await sql`
     INSERT INTO collectors (id, auth0_sub, email, handle, name, avatar_color)
     VALUES (${`col_${sub.replace(/[^a-z0-9]/gi, "").slice(-10)}`}, ${sub}, ${email},
-            ${base}, ${session.user.name ?? base}, ${color})
+            ${handle}, ${session.user.name ?? base}, ${color})
     ON CONFLICT (email) DO UPDATE SET auth0_sub = EXCLUDED.auth0_sub
     RETURNING *`;
   return toCollector(created[0]);
+}
+
+/**
+ * Handles are UNIQUE, and two different people can easily derive the same one
+ * (trey@a.com and trey@b.com both want "trey"). `ON CONFLICT (email)` does NOT
+ * cover that — a handle collision threw a 500 on /[handle] in production.
+ *
+ * Take the base if free, otherwise append the smallest free suffix.
+ */
+async function freeHandle(base: string): Promise<string> {
+  const seed = base || "collector";
+  for (let n = 0; n < 50; n++) {
+    const candidate = n === 0 ? seed : `${seed}${n + 1}`;
+    const taken = await sql`SELECT 1 FROM collectors WHERE handle = ${candidate} LIMIT 1`;
+    if (taken.length === 0) return candidate;
+  }
+  return `${seed}${Math.floor(Math.random() * 90000 + 10000)}`;
 }
 
 function toCollector(r: Record<string, unknown>): Collector {

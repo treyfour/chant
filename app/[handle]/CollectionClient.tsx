@@ -41,7 +41,10 @@ export function CollectionClient({
     <main className="w-full mx-auto max-w-[1000px] px-11 pb-24 pt-16">
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <div className="t-eyebrow">Collection</div>
+          <a href="/" className="t-eyebrow" style={{ color: "var(--accent)" }}>
+            ← Ovation
+          </a>
+          <div className="t-eyebrow mt-2">Collection</div>
           <h1 className="t-display mt-3">
             <span style={{ color: "var(--faint)" }}>@</span>
             {view.collector.handle}

@@ -100,9 +100,19 @@ async function upsertCollector(email: string): Promise<string> {
 
   const base = (email.split("@")[0] || "collector").replace(/[^a-z0-9]/gi, "").toLowerCase();
   const id = rid("col");
+
+  // handle is UNIQUE and two emails can derive the same base, so find a free one.
+  // `ON CONFLICT (email)` does not cover a handle collision.
+  let handle = base || "collector";
+  for (let n = 0; n < 50; n++) {
+    const candidate = n === 0 ? handle : `${base}${n + 1}`;
+    const taken = await sql`SELECT 1 FROM collectors WHERE handle = ${candidate} LIMIT 1`;
+    if (taken.length === 0) { handle = candidate; break; }
+  }
+
   const inserted = await sql`
     INSERT INTO collectors (id, email, handle, name)
-    VALUES (${id}, ${email}, ${base + Math.floor(Math.random() * 900 + 100)}, ${base})
+    VALUES (${id}, ${email}, ${handle}, ${base})
     ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
     RETURNING id`;
   return String(inserted[0].id);
