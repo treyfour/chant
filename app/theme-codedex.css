@@ -188,11 +188,22 @@
   --border: 2px;
   --border-strong: 3px;
 
-  /* The finding that broke the old model: codedex is sharp AND round at the
-     same time. Cards sit at 0px, pills at 200px. A t-shirt ramp (sm/md/lg/xl)
-     cannot express that — set them all to 0 and the pills die, set them all
-     round and the cards do. Shape has to be a ROLE. */
-  --radius-button: 999px;
+  /* Codedex is sharp AND round at the same time. A t-shirt ramp (sm/md/lg/xl)
+     cannot express that — set it to 0 and the pills die, set it round and the
+     buttons do. Shape has to be a ROLE.
+
+     First pass put 999px here and it was wrong. I measured the FILTER PILLS
+     ("Popular", "Web Development" — 2px border, 200px radius) and assigned
+     their radius to the button role. Their actual buttons are 0px:
+
+       <button>                        200x50, radius 0, padding 8px 16px 12px
+         <span class="before">         the face      #facc15
+         <span class="btn-content">    the label     PixelGridS 18px
+         <span class="after">          the lip       #ca8a04, sat 4px lower
+
+     Roles only help if you measure the right exemplar FOR EACH ROLE. Splitting
+     button from pill was correct; reading one off the other was not. */
+  --radius-button: 0px;
   --radius-input: 4px;
   --radius-card: 0px;
   --radius-pill: 999px;
@@ -200,11 +211,19 @@
   --radius-mark: 0px;
 
   /* ── elevation ───────────────────────────────
-     Hard offset, zero blur. A blurred shadow is a lighting model; a pixel UI
-     has no lights, it has an outline and an offset block. Offset in the accent
-     rather than black, which would vanish on this ground. */
-  --shadow-sm: 3px 3px 0 0 rgba(250, 204, 21, 0.9);
-  --shadow-md: 5px 5px 0 0 rgba(250, 204, 21, 0.9);
+     Hard offset, zero blur, straight down. A blurred shadow is a lighting
+     model; a pixel UI has no lights, it has a face and a lip.
+
+     Codedex builds that lip as a real element — a darker shade of each
+     button's OWN colour, stacked underneath. One --shadow token cannot vary
+     per variant, so this approximates it with a single dark drop: right for
+     the light and yellow buttons, invisible under the dark ones, which is
+     roughly what their outline buttons do anyway.
+
+     Per-variant elevation is a real gap. Worth a --shadow-accent /
+     --shadow-primary pair if this direction is ever pursued. */
+  --shadow-sm: 0 4px 0 0 rgba(2, 6, 23, 0.85);
+  --shadow-md: 0 6px 0 0 rgba(2, 6, 23, 0.85);
   --shadow-lg: 8px 8px 0 0 rgba(2, 6, 23, 0.9);
 
   /* Snappy and mechanical — no curve that implies momentum. */
