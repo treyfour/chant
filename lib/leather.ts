@@ -30,11 +30,21 @@ const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v
 const hsl = (h: number, s: number, l: number) =>
   `hsl(${h.toFixed(0)} ${clamp(s, 0, 100).toFixed(0)}% ${clamp(l, 2, 96).toFixed(0)}%)`;
 
-/** CSS custom properties consumed by `.coin-face` in globals.css. */
+/**
+ * CSS custom properties consumed by `.coin-face` in globals.css.
+ *
+ * Saturation is CAPPED, not just scaled. Scaling alone leaves brand colours
+ * that start near 100% (Brex, DoorDash, Zapier, Stripe) sitting around 52,
+ * which reads as plastic or rubber. Real dyed leather lives around 30–34 —
+ * roughly where a mid-saturation colour like #C87137 already lands, which is
+ * why that one looked right and the vivid ones didn't.
+ *
+ * Lightness is capped too: a saturated colour held bright reads as enamel.
+ */
 export function leather(hex: Hex | string): React.CSSProperties {
   const [h, s0, l0] = toHsl(hex);
-  const s = s0 * 0.52;
-  const l = Math.min(l0 * 0.78, 42);
+  const s = Math.min(s0 * 0.52, 34);
+  const l = Math.min(l0 * 0.72, 38);
   return {
     ["--lt" as string]: hsl(h, s * 0.9, l + 12),
     ["--md" as string]: hsl(h, s, l),

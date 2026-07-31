@@ -14,6 +14,7 @@ import "dotenv/config";
 import { migrate, sql } from "../lib/db";
 import { TREY, TREY_ITEMS, WARRICK, WARRICK_PLANS, WARRICK_RUNS } from "../lib/mocks";
 import { stripe } from "../lib/stripe";
+import { YC_COMPANIES, YC_DANA } from "../lib/yc";
 
 async function main() {
   await migrate();
@@ -91,43 +92,45 @@ async function main() {
     ON CONFLICT (id) DO UPDATE SET handle = EXCLUDED.handle`;
 
   let seeded = 0;
-  // Warrick is deliberately EXCLUDED: the demo purchase must be a genuine
-  // arrival — the grid visibly gains a cell — not a duplicate of something
-  // already sitting there.
-  const treySeed = TREY_ITEMS.filter((i) => i.sellerSlug !== "warrick");
-  for (const [idx, item] of treySeed.entries()) {
-    const sellerId = `sel_${item.sellerSlug}`;
-    const runId = `run_${item.sellerSlug}_${item.runName.replace(/[^a-z]/gi, "")}`;
+  // Real YC company names with brand-coloured letterform marks. Serial numbers,
+  // dates and run sizes are INVENTED — see lib/yc.ts. Warrick is excluded so the
+  // demo purchase is a genuine arrival rather than a duplicate.
+  for (const [idx, c] of YC_COMPANIES.entries()) {
+    const sellerId = `sel_${c.slug}`;
+    const runId = `run_${c.slug}_yc`;
+    const isPrivate = idx % 5 === 3;              // a few private ones
+    // All owned. "backed" is the hollow-outline state meaning "supported them,
+    // nothing to sell yet" — nonsense for real companies that all ship products,
+    // and a single hollow coin in a filled grid just reads as a rendering bug.
+    const kind = "owned";
 
     await sql`
       INSERT INTO sellers (id, org_id, slug, name, mark, tint)
-      VALUES (${sellerId}, ${`org_${item.sellerSlug}`}, ${item.sellerSlug},
-              ${item.sellerName}, ${item.glyph}, ${item.tint})
-      ON CONFLICT (id) DO NOTHING`;
+      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint})
+      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, mark = EXCLUDED.mark,
+                                     tint = EXCLUDED.tint`;
 
-    // Reuse a run that already exists for this seller+name (Warrick's runs come
-    // from WARRICK_RUNS above) instead of creating a near-duplicate.
-    const existing = await sql`
-      SELECT id FROM runs WHERE seller_id = ${sellerId} AND name = ${item.runName} LIMIT 1`;
-    const effectiveRunId = existing.length > 0 ? String(existing[0].id) : runId;
+    await sql`
+      INSERT INTO runs (id, seller_id, plan_id, name, size, claimed, glyph, tint)
+      VALUES (${runId}, ${sellerId}, ${`plan_${c.slug}`}, ${c.run}, ${c.size},
+              ${c.serial}, ${c.mark}, ${c.tint})
+      ON CONFLICT (id) DO UPDATE SET glyph = EXCLUDED.glyph, tint = EXCLUDED.tint,
+                                     name = EXCLUDED.name, size = EXCLUDED.size,
+                                     claimed = EXCLUDED.claimed`;
 
-    if (existing.length === 0) {
-      await sql`
-        INSERT INTO runs (id, seller_id, plan_id, name, size, claimed, glyph, tint)
-        VALUES (${runId}, ${sellerId}, ${`plan_${item.sellerSlug}`}, ${item.runName},
-                ${item.size}, ${item.serial}, ${item.glyph}, ${item.tint})
-        ON CONFLICT (id) DO NOTHING`;
-    }
-
+    // Compute the date in JS: `now() - interval '...'` inside a tagged template
+    // is passed as a STRING parameter, not SQL, and Postgres fails to parse it.
+    const acquiredAt = new Date(Date.now() - (idx + 1) * 23 * 86400000).toISOString();
     await sql`
       INSERT INTO coins (id, run_id, seller_id, collector_id, serial, kind, is_public,
                          acquired_at, stripe_event_id)
-      VALUES (${`coin_seed_${idx}`}, ${effectiveRunId}, ${sellerId}, ${TREY.id}, ${item.serial},
-              ${item.kind}, ${item.isPublic}, ${item.acquiredAt}, ${`seed_${idx}`})
-      ON CONFLICT DO NOTHING`; // bare: guards id, (run_id,serial) and stripe_event_id
+      VALUES (${`coin_yc_${idx}`}, ${runId}, ${sellerId}, ${TREY.id}, ${c.serial},
+              ${kind}, ${!isPrivate}, ${acquiredAt},
+              ${`seed_yc_${idx}`})
+      ON CONFLICT DO NOTHING`;
     seeded++;
   }
-  console.log(`✓ collector @trey with ${seeded} coins (Warrick excluded on purpose)`);
+  console.log(`✓ collector @trey with ${seeded} YC coins (Warrick excluded on purpose)`);
 
   // ── Dana, so there is somebody to discover ────────────────
   // Six of her sellers are ones Trey doesn't hold, which is what makes the
@@ -137,44 +140,33 @@ async function main() {
     VALUES ('col_dana', 'dana@example.com', 'dana', 'Dana Okoro', '#3B5BA5', '2025-03-11', true)
     ON CONFLICT (id) DO NOTHING`;
 
-  const DANA_COINS: Array<[slug: string, name: string, run: string, serial: number,
-    size: number, tint: string, glyph: string]> = [
-    ["warrick", "Warrick", "founding user", 8, 50, "#C87137", "▲"],
-    ["tessera", "Tessera", "design partner", 4, 25, "#2F6690", "❖"],
-    ["gravel", "Gravel", "beta", 41, 120, "#B5651D", "▣"],
-    ["almanac", "Almanac", "founding user", 11, 50, "#5D5FA8", "✎"],
-    ["halyard", "Halyard", "beta", 88, 250, "#2E7D7B", "≈"],
-    ["ferrite", "Ferrite", "early access", 2, 30, "#7A3B3B", "✧"],
-    ["ostrich", "Ostrich", "waitlist", 63, 200, "#3C6E71", "◍"],
-    ["quorum", "Quorum", "design partner", 19, 150, "#6F4E37", "⬮"],
-  ];
-
-  for (const [idx, [slug, name, runName, serial, size, tint, glyph]] of DANA_COINS.entries()) {
-    const sellerId = `sel_${slug}`;
+  for (const [idx, c] of YC_DANA.entries()) {
+    const sellerId = `sel_${c.slug}`;
+    const runId = `run_${c.slug}_dana`;
     await sql`
       INSERT INTO sellers (id, org_id, slug, name, mark, tint)
-      VALUES (${sellerId}, ${`org_${slug}`}, ${slug}, ${name}, ${glyph}, ${tint})
-      ON CONFLICT (id) DO NOTHING`;
+      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint})
+      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, mark = EXCLUDED.mark`;
 
     const existing = await sql`
-      SELECT id FROM runs WHERE seller_id = ${sellerId} AND name = ${runName} LIMIT 1`;
-    const runId = existing.length > 0 ? String(existing[0].id) : `run_${slug}_dana`;
+      SELECT id FROM runs WHERE seller_id = ${sellerId} AND name = ${c.run} LIMIT 1`;
+    const rid2 = existing.length > 0 ? String(existing[0].id) : runId;
     if (existing.length === 0) {
       await sql`
         INSERT INTO runs (id, seller_id, plan_id, name, size, claimed, glyph, tint)
-        VALUES (${runId}, ${sellerId}, ${`plan_${slug}`}, ${runName}, ${size}, ${serial},
-                ${glyph}, ${tint})
+        VALUES (${runId}, ${sellerId}, ${`plan_${c.slug}`}, ${c.run}, ${c.size},
+                ${c.serial}, ${c.mark}, ${c.tint})
         ON CONFLICT (id) DO NOTHING`;
     }
 
     await sql`
       INSERT INTO coins (id, run_id, seller_id, collector_id, serial, kind, is_public,
                          acquired_at, stripe_event_id)
-      VALUES (${`coin_dana_${idx}`}, ${runId}, ${sellerId}, 'col_dana', ${serial},
+      VALUES (${`coin_dana_${idx}`}, ${rid2}, ${sellerId}, 'col_dana', ${c.serial},
               'owned', true, now(), ${`seed_dana_${idx}`})
       ON CONFLICT DO NOTHING`;
   }
-  console.log(`✓ collector @dana with ${DANA_COINS.length} coins`);
+  console.log(`✓ collector @dana with ${YC_DANA.length} YC coins`);
 
   // ── Ovation itself ────────────────────────────────────────
   // We are our own first customer. Ovation is a seller row like any other, so

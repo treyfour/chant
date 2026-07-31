@@ -36,7 +36,11 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
     <div onClick={() => setMenu(null)}>
       <div className="flex items-baseline justify-between gap-4 flex-wrap mb-6">
         <span className="t-eyebrow">
-          {owned ? "Your collection" : "Faded ones are new to you"}
+          {owned
+            ? "Your collection"
+            : items.some((i) => i.viewerHasIt === false)
+              ? "Faded ones are new to you"
+              : "Collection"}
         </span>
         <div className="relative">
           <span
