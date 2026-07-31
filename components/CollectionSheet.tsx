@@ -69,7 +69,7 @@ export function CollectionSheet({
                 return (
                   <div key={item.coinId} className="relative text-center">
                     {isNew && (
-                      <span className="absolute -top-1 left-1/2 z-10 -translate-x-1/2 rounded-full bg-accent px-[var(--space-2)] py-0.5 font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.12em] text-accent-fg">
+                      <span className="type-eyebrow absolute -top-1 left-1/2 z-10 -translate-x-1/2 rounded-[var(--radius-pill)] bg-accent px-[var(--space-2)] py-0.5 text-accent-fg">
                         new
                       </span>
                     )}

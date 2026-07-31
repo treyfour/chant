@@ -215,7 +215,12 @@ export function Badge({
     <span
       className={cx(
         "inline-flex items-center rounded-[var(--radius-pill)] border-[length:var(--border)] px-[var(--space-2)] py-[var(--space-1)]",
-        "font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.12em]",
+        // The eyebrow ROLE, not a hand-rolled copy of it. This used to spell
+        // out `uppercase tracking-[0.12em]`, which is a hardcode no token
+        // check can see: nothing leaked a literal colour or size, and the
+        // theme still could not turn the badge lowercase. Mocha uses no
+        // uppercase anywhere and its badges shouted anyway.
+        "type-eyebrow",
         tones[tone],
         className,
       )}
@@ -369,7 +374,7 @@ export function MenuContent({ children }: { children: React.ReactNode }) {
 
 export function MenuLabel({ children }: { children: React.ReactNode }) {
   return (
-    <ContextMenuPrimitive.Label className="border-b border-line px-[var(--space-3)] pb-[var(--space-2)] pt-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.13em] text-fg-faint">
+    <ContextMenuPrimitive.Label className="type-eyebrow border-b border-line px-[var(--space-3)] pb-[var(--space-2)] pt-[var(--space-2)] text-fg-faint">
       {children}
     </ContextMenuPrimitive.Label>
   );

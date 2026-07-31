@@ -38,6 +38,7 @@ const VALUE_FILES = [
   "app/theme.css",
   "app/brand.css",
   "app/theme-codedex.css",
+  "app/theme-mocha.css",
   "lib/",
   "scripts/",
   // The gallery's entire purpose is showing real brand hexes dyed by the
@@ -133,18 +134,32 @@ if (!between) {
   failures++;
 } else {
   const required = [...new Set(between.match(/--[a-z0-9-]+/g) ?? [])];
-  const themeSrc = readFileSync(join(ROOT, "app/theme.css"), "utf8");
-  // `--name:` declarations only. A `var(--name)` reference is a USE, not a
-  // definition — matching those would let a theme pass by mentioning a token.
-  const defined = new Set((themeSrc.match(/^\s*(--[a-z0-9-]+)\s*:/gm) ?? [])
-    .map((d) => d.trim().replace(/\s*:$/, "")));
 
-  const missing = required.filter((k) => !defined.has(k));
-  if (missing.length) {
-    console.log(`  ✗ app/theme.css  ${missing.length} token(s) in the contract with no value:`);
-    for (const k of missing) console.log(`      ${k}`);
-    failures += missing.length;
+  // EVERY theme file, not just the shipping one. A candidate with holes is
+  // worse than no candidate: you judge a direction on a render that is partly
+  // some other theme showing through, and conclude the direction is wrong.
+  const themeFiles = readdirSync(join(ROOT, "app"))
+    .filter((f) => /^theme(-[a-z0-9]+)?\.css$/.test(f))
+    .map((f) => `app/${f}`)
+    .sort();
+
+  let defined = new Set();
+  for (const rel of themeFiles) {
+    const themeSrc = readFileSync(join(ROOT, rel), "utf8");
+    // `--name:` declarations only. A `var(--name)` reference is a USE, not a
+    // definition — matching those would let a theme pass by mentioning a token.
+    const here = new Set((themeSrc.match(/^\s*(--[a-z0-9-]+)\s*:/gm) ?? [])
+      .map((d) => d.trim().replace(/\s*:$/, "")));
+    if (rel === "app/theme.css") defined = here;
+
+    const missing = required.filter((k) => !here.has(k));
+    if (missing.length) {
+      console.log(`  ✗ ${rel}  ${missing.length} token(s) in the contract with no value:`);
+      for (const k of missing) console.log(`      ${k}`);
+      failures += missing.length;
+    }
   }
+  console.log(`  · themes checked: ${themeFiles.join(", ")}`);
 
   /* ── PART THREE — IS EVERY TOKEN ACTUALLY READ? ─────────────────────
      The two checks above look in opposite directions and still miss the

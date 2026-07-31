@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Instrument_Serif, IBM_Plex_Mono, Press_Start_2P, Mulish } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif, IBM_Plex_Mono, Press_Start_2P, Mulish, Figtree } from "next/font/google";
 import "./globals.css";
 
 /**
@@ -48,6 +48,15 @@ const mulish = Mulish({
   display: "swap",
 });
 
+/* Stand-in for "Gosh", the licensed face getmocha.com uses for display. The
+   third reference in a row needing a font added here — the one place the
+   "a restyle is only a CSS file" claim doesn't hold. */
+const figtree = Figtree({
+  subsets: ["latin"],
+  variable: "--font-figtree",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Ovation",
   description: "A receipt you'd actually keep.",
@@ -63,7 +72,7 @@ export default function RootLayout({
       lang="en"
       // `data-theme` cascades. Any subtree can override it, which is how an
       // Ovation sheet renders warm on top of a cold Warrick page.
-      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${plexMono.variable} ${pressStart.variable} ${mulish.variable} h-full antialiased`}
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${plexMono.variable} ${pressStart.variable} ${mulish.variable} ${figtree.variable} h-full antialiased`}
     >
       {/* No flex here: `mx-auto` on a flex child beats align-items:stretch and
           shrink-wraps the page to its content. Plain block layout. */}

@@ -1,0 +1,211 @@
+/* ============================================================
+   A CANDIDATE THEME — getmocha.com
+   ============================================================
+
+   Third reference, and the first one measured properly the first time.
+
+   The method that finally worked: for EACH ROLE, find its own exemplar and
+   walk UP the DOM to whichever ancestor actually paints. Never read one
+   role's value off another element — that is how codedex's buttons came out
+   as pills (their filter chips are 200px round; their buttons are 0px).
+
+   ── MEASURED, ROLE BY ROLE ────────────────────────────────────
+     page ground     rgb(249,248,240)  #f9f8f0   warm cream, not white
+     card            rgb(255,255,255)  #ffffff   radius 20px, no border
+     ink             rgb(33,33,33)     #212121
+     ink dim         rgb(144,141,137)  #908d89
+     hairline        rgb(224,224,224)  #e0e0e0
+     accent          rgb(181,255,107)  #b5ff6b   the Sign in lime
+     accent-2        rgb(97,168,255)   #61a8ff   pull-quote blue
+     primary button  #000000, radius 9999px, padding 8px 16px, height 44
+     prompt bar      radius 9999px, padding 14px 14px 14px 32px
+
+     display         Gosh   88px / 86.24px / w800   (leading 0.98)
+     h1              Gosh   40px / 52px    / w700
+     nav + buttons   Gosh   15px / 20px    / w700
+     lead            Instrument Sans 21px / 28px / w500
+     body            Instrument Sans 18px / 28px / w400
+     meta            Instrument Sans 15px / 20px / w600
+     caption         Instrument Sans 13px / 20px / w400
+
+   ── THE FINDING THIS TIME ─────────────────────────────────────
+   NOTHING on the page is uppercase. Every text-transform measured `none`,
+   at every size. Both other themes lean on an uppercase eyebrow — Ovation
+   for its mono captions, codedex for its section labels — and it would have
+   been effortless to carry that habit over and call it house style.
+
+   Mocha's section labels are simply small, bold, sentence case. So
+   --eyebrow-case is `none` here and the eyebrow does its job through weight
+   alone. Worth noticing that this is a decision most systems never make
+   consciously: uppercase-small-caps is a default people inherit rather than
+   choose.
+
+   Shadows are also absent almost everywhere. This design separates surfaces
+   with radius and ground colour, not elevation — cream page, white card, no
+   border, no shadow. Flat but warm, which is a different move from
+   Warrick's flat-and-cold.
+
+   ── SUBSTITUTIONS ─────────────────────────────────────────────
+   "Gosh" is licensed and cannot be loaded here. Figtree is the closest
+   available geometric sans with a heavy weight. It sets slightly wider than
+   Gosh, so display tracking is pulled to -0.02em where the reference
+   measured 0 — an adaptation to the substitute, not a reading of the site.
+   ============================================================ */
+
+[data-theme="mocha"] {
+  /* ── colour ──────────────────────────────── */
+  --bg: #f9f8f0;
+  --bg-raise: #ffffff;
+  --bg-sink: #f0eee4;
+  --bg-invert: #212121;
+
+  --fg: #212121;
+  --fg-dim: #6b6862;
+  --fg-faint: #908d89;
+  --fg-invert: #f9f8f0;
+
+  --line: #e0e0e0;
+  --line-strong: #212121;
+
+  /* The lime is a POINTING colour, not an ink — it only ever appears as a
+     filled ground behind black text. Hence --accent-fg is near-black. */
+  --accent: #b5ff6b;
+  --accent-fg: #212121;
+  --accent-soft: rgba(181, 255, 107, 0.28);
+  --accent-2: #61a8ff;
+  --accent-3: #ff9db1;
+
+  --good: #4bbf7a;
+  --warn: #e8a13a;
+  --bad: #e26262;
+
+  /* ── families ────────────────────────────── */
+  --font-display: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, Menlo, monospace;
+
+  /* ── type roles ──────────────────────────────
+     Two families doing two jobs: a heavy geometric for anything that shouts,
+     a neutral grotesque for anything you read. The split is by WEIGHT more
+     than by size — 800 against 400 is the whole hierarchy. */
+
+  --display-font: var(--font-display);
+  --display-size: clamp(44px, 7vw, 88px);
+  --display-weight: 800;
+  --display-tracking: -0.02em;
+  --display-leading: 0.98;
+  --display-case: none;
+
+  --h1-font: var(--font-display);
+  --h1-size: 40px;
+  --h1-weight: 700;
+  --h1-tracking: -0.015em;
+  --h1-leading: 1.3;
+  --h1-case: none;
+
+  --h2-font: var(--font-display);
+  --h2-size: 30px;
+  --h2-weight: 700;
+  --h2-tracking: -0.01em;
+  --h2-leading: 1.25;
+  --h2-case: none;
+
+  /* Measured on the nav and the button labels: 15px / w700. */
+  --h3-font: var(--font-display);
+  --h3-size: 18px;
+  --h3-weight: 700;
+  --h3-tracking: 0em;
+  --h3-leading: 1.35;
+  --h3-case: none;
+
+  --name-font: var(--font-display);
+  --name-size: 16px;
+  --name-weight: 700;
+  --name-tracking: 0em;
+  --name-leading: 1.3;
+  --name-case: none;
+
+  --body-font: var(--font-body);
+  --body-size: 18px;
+  --body-weight: 400;
+  --body-tracking: 0em;
+  --body-leading: 1.55;
+  --body-case: none;
+
+  --lead-font: var(--font-body);
+  --lead-size: 21px;
+  --lead-weight: 500;
+  --lead-tracking: 0em;
+  --lead-leading: 1.33;
+  --lead-case: none;
+
+  --meta-font: var(--font-body);
+  --meta-size: 15px;
+  --meta-weight: 500;
+  --meta-tracking: 0em;
+  --meta-leading: 1.35;
+  --meta-case: none;
+
+  /* NOT uppercase, and not letterspaced. Nothing on getmocha.com is. The
+     eyebrow carries itself on weight — which is the whole finding. */
+  --eyebrow-font: var(--font-body);
+  --eyebrow-size: 13px;
+  --eyebrow-weight: 600;
+  --eyebrow-tracking: 0em;
+  --eyebrow-leading: 1.4;
+  --eyebrow-case: none;
+
+  --caption-font: var(--font-body);
+  --caption-size: 13px;
+  --caption-weight: 400;
+  --caption-tracking: 0em;
+  --caption-leading: 1.5;
+  --caption-case: none;
+
+  --code-font: var(--font-mono);
+  --code-size: 14px;
+  --code-weight: 400;
+  --code-tracking: 0em;
+  --code-leading: 1.7;
+  --code-case: none;
+
+  --weight-emphasis: 700;
+
+  /* Airy. Their buttons run 8px/16px, cards 20px radius with real breathing
+     room, the prompt bar 14px/32px. */
+  --space-unit: 4.5px;
+
+  /* ── shape ───────────────────────────────────
+     Pills for anything you press, soft rectangles for anything that holds
+     content. Measured on the buttons themselves this time, not on a chip
+     that happened to be nearby. */
+  --border: 1px;
+  --border-strong: 2px;
+
+  --radius-button: 9999px;
+  --radius-input: 9999px;
+  --radius-card: 20px;
+  --radius-pill: 9999px;
+  --radius-sheet: 20px;
+  --radius-mark: 9999px;
+
+  /* ── elevation ───────────────────────────────
+     Almost nothing. Surfaces separate by ground colour and radius — cream
+     page, white card, no border, no shadow. Flat but WARM, which is a
+     different move from a flat dark UI. */
+  --shadow-sm: none;
+  --shadow-md: 0 1px 2px 0 rgba(33, 33, 33, 0.05);
+  --shadow-lg: 0 24px 60px -20px rgba(33, 33, 33, 0.22);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ── character ───────────────────────────────
+     No grain, no grid. The personality here is colour and roundness, so the
+     texture slot is genuinely empty — which is a legitimate answer, not a
+     gap to fill. */
+  --texture: none;
+  --texture-size: auto;
+  --mark-shadow: none;
+
+  color-scheme: light;
+}

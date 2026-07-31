@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 const CANDIDATES = [
   ["", "Ovation", "the shipping theme"],
   ["codedex", "Codédex", "measured off codedex.io"],
+  ["mocha", "Mocha", "measured off getmocha.com"],
 ] as const;
 
 /**
