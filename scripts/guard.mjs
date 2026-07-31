@@ -146,6 +146,34 @@ if (!between) {
     failures += missing.length;
   }
 
+  /* ── PART THREE — IS EVERY TOKEN ACTUALLY READ? ─────────────────────
+     The two checks above look in opposite directions and still miss the
+     worst case: a token the theme defines and NOTHING consumes. It passes
+     both — the theme has a value, no component leaks a literal — and it is
+     invisible. You set it, nothing moves, and you cannot tell whether you
+     chose badly or the wire was never connected. Found four of these the
+     first time it ran, including --border, whose absence was most of why a
+     2px-outline reference rendered as hairlines.
+
+     Two ways a token counts as read:
+       1. `var(--token)` somewhere in the app, or
+       2. mapped in @theme inline, which makes Tailwind generate a utility
+          for it (--color-accent -> bg-accent), so the reference is real
+          even though no var() appears at the call site. */
+  const consumers = [...walk(join(ROOT, "app")), ...walk(join(ROOT, "components"))]
+    .filter((f) => !VALUE_FILES.some((v) => relative(ROOT, f).startsWith(v)))
+    .map((f) => readFileSync(f, "utf8"))
+    .join("\n");
+  const mapped = new Set((contractSrc.match(/var\((--[a-z0-9-]+)\)/g) ?? [])
+    .map((m) => m.slice(4, -1)));
+
+  const unread = required.filter((k) => !mapped.has(k) && !consumers.includes(`var(${k})`));
+  if (unread.length) {
+    console.log(`  ✗ ${unread.length} token(s) defined but never read — set them and nothing moves:`);
+    for (const k of unread) console.log(`      ${k}`);
+    failures += unread.length;
+  }
+
   const extra = [...defined].filter((k) => !required.includes(k) && !k.startsWith("--font-instrument") && !k.startsWith("--font-plex"));
   if (extra.length) {
     console.log(`  ⚠ app/theme.css  ${extra.length} value(s) not in the contract — add them to tokens.css or nothing reads them:`);

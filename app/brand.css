@@ -41,6 +41,8 @@
   --accent: #7c5cff;
   --accent-fg: #ffffff;
   --accent-soft: rgba(124, 92, 255, 0.14);
+  --accent-2: #14adff;
+  --accent-3: #b8f24a;
 
   --good: #b8f24a;
   --warn: #ffb454;
@@ -58,10 +60,12 @@
   --display-tracking: -0.035em;
   --h1-tracking: -0.03em;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
+  --radius-button: 8px;
+  --radius-input: 6px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --radius-sheet: 18px;
+  --radius-mark: 6px;
 
   --shadow-sm: none;
   --shadow-md: none;
@@ -71,8 +75,7 @@
 
   --texture: linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
-  --mark-style: flat;
-  --surface-feel: flush;
+  --mark-shadow: none;
 
   color-scheme: dark;
 }

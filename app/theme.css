@@ -39,6 +39,10 @@
   --accent: #8a6a3b;
   --accent-fg: #fffdf8;
   --accent-soft: rgba(138, 106, 59, 0.1);
+  /* Ovation is a one-hue system. Pointing these at --accent is a real answer,
+     not a placeholder: it says "this brand speaks with one voice." */
+  --accent-2: var(--accent);
+  --accent-3: var(--accent);
 
   --good: #4a7c59;
   --warn: #b5651d;
@@ -164,10 +168,16 @@
   --border: 1px;
   --border-strong: 2px;
 
-  --radius-sm: 8px;
-  --radius-md: 11px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
+  /* Shape by ROLE, not by t-shirt size. A size ramp cannot say "pill buttons
+     AND sharp cards", which real designs do all the time — and asking for
+     `--radius-lg` at a call site tells you nothing about whether the answer
+     should change when the element is a button rather than a card. */
+  --radius-button: 10px;
+  --radius-input: 8px;
+  --radius-card: 16px;
+  --radius-pill: 999px;
+  --radius-sheet: 22px;
+  --radius-mark: 8px;
 
   /* ── elevation ───────────────────────────── */
   --shadow-sm: 0 2px 8px -4px rgba(60, 48, 30, 0.3);
@@ -182,8 +192,10 @@
      than a dashboard. */
   --texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
   --texture-size: 64px 64px;
-  --mark-style: emboss;
-  --surface-feel: lifted;
+  /* Was `--mark-style: emboss`, a word nothing could act on. The unwired-token
+     check flagged it, which is the check earning its keep: a descriptive token
+     is a note to yourself, not a decision the app can execute. */
+  --mark-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.2), 0 -1px 1px rgba(0, 0, 0, 0.22);
 
   color-scheme: light;
 }

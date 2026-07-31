@@ -18,7 +18,9 @@
      radius        0px on 713 elements, 4px on 9 — sharp, decisively
      border        0px or 2px. Never 1px. Weight is doing real work.
      display       Press Start 2P
-     body          Mulish, 14px / 500
+     body          Mulish, 16px / 500 ... paragraphs 18px / 27px / 500
+     card          2px border rgb(51,65,85), 0px radius, 32px padding
+     pill          2px border, 200px radius, 6px/16px padding
      eyebrow       12px / 600 / 1.68px tracking  (= 0.14em)
      display trk   32px / 700 / 0.96px tracking  (= +0.03em, POSITIVE)
 
@@ -32,17 +34,26 @@
    from measuring: the reference disagreed with the house rule, and the
    reference was right about its own typeface.
 
-   ── WHAT THIS THEME CANNOT REACH ──────────────────────────────
-   --border is 2px below and every button, card and input still renders at
-   1px, because components use Tailwind's bare `border` and nothing reads the
-   token. The chunky outline is half of codedex's identity and it never
-   arrives. That hole passes both halves of the guard — the theme defines the
-   token, no component leaks a raw value — which is why an unwired-token check
-   is the next thing this system needs.
+   ── WHAT THE FIRST PASS GOT WRONG ─────────────────────────────
+   I extracted by FREQUENCY — aggregated every element and took the most
+   common values. The most common background is chrome and the most common
+   font size is nav text, so I got the average of their site rather than its
+   voice: body at 14px when their paragraphs are 18px, --space-unit denser
+   than Ovation when their cards use 32px padding, and every radius flattened
+   to 0 when their pills are fully round.
 
-   The coin also stays leather. It is a material component, not a set of
-   values; under this direction it wants to be a sprite. That is the honest
-   boundary of what tokens can do.
+   Measure one EXEMPLAR PER ROLE instead — hero, paragraph, primary button,
+   card, input, pill. Six elements measured precisely beat a thousand
+   averaged, and padding matters as much as colour.
+
+   ── WHAT NO THEME CAN REACH ───────────────────────────────────
+   Roughly half of codedex by area is pixel art: every course card leads with
+   a painted scene, the hero is an animated world map. No token produces that,
+   and it is the main reason this still won't feel like them.
+
+   The coin stays leather for the same reason. It is a material component, not
+   a set of values; under this direction it wants to be a sprite. That is the
+   honest boundary — a theme buys the grammar, never the vocabulary.
    ============================================================ */
 
 [data-theme="codedex"] {
@@ -64,6 +75,11 @@
   --accent: #facc15;
   --accent-fg: #020617;
   --accent-soft: rgba(250, 204, 21, 0.16);
+  /* A multi-hue system. The category pills run blue, the CTAs yellow, the
+     progress green — one --accent could never describe this, which is why
+     the first attempt read as monochrome-with-a-pixel-font. */
+  --accent-2: #14adff;
+  --accent-3: #4ade80;
 
   --good: #4ade80;
   --warn: #fb923c;
@@ -117,22 +133,22 @@
   --name-case: none;
 
   --body-font: var(--font-body);
-  --body-size: 14px;
+  --body-size: 16px;
   --body-weight: 500;
   --body-tracking: 0em;
   --body-leading: 1.6;
   --body-case: none;
 
   --lead-font: var(--font-body);
-  --lead-size: 17px;
+  --lead-size: 18px;
   --lead-weight: 500;
   --lead-tracking: 0em;
-  --lead-leading: 1.55;
+  --lead-leading: 1.5;
   --lead-case: none;
 
   --meta-font: var(--font-body);
-  --meta-size: 12px;
-  --meta-weight: 400;
+  --meta-size: 14px;
+  --meta-weight: 500;
   --meta-tracking: 0em;
   --meta-leading: 1.5;
   --meta-case: none;
@@ -162,18 +178,26 @@
 
   --weight-emphasis: 700;
 
-  /* Denser than Ovation — an arcade UI packs in. */
-  --space-unit: 3.5px;
+  /* First pass guessed 3.5px on a hunch that "an arcade UI packs in". Wrong:
+     their cards use 32px padding and their pills 6px/16px. Their marketing
+     site is ROOMIER than Ovation, not denser. Measured, not inferred. */
+  --space-unit: 4.5px;
 
   /* ── shape ───────────────────────────────────
      0px radius on 713 of their elements. Sharpness IS the identity. */
   --border: 2px;
   --border-strong: 3px;
 
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
+  /* The finding that broke the old model: codedex is sharp AND round at the
+     same time. Cards sit at 0px, pills at 200px. A t-shirt ramp (sm/md/lg/xl)
+     cannot express that — set them all to 0 and the pills die, set them all
+     round and the cards do. Shape has to be a ROLE. */
+  --radius-button: 999px;
+  --radius-input: 4px;
+  --radius-card: 0px;
+  --radius-pill: 999px;
+  --radius-sheet: 0px;
+  --radius-mark: 0px;
 
   /* ── elevation ───────────────────────────────
      Hard offset, zero blur. A blurred shadow is a lighting model; a pixel UI
@@ -190,8 +214,7 @@
   --texture: linear-gradient(rgba(148, 163, 184, 0.07) 2px, transparent 2px),
     linear-gradient(90deg, rgba(148, 163, 184, 0.07) 2px, transparent 2px);
   --texture-size: 24px 24px;
-  --mark-style: flat;
-  --surface-feel: flush;
+  --mark-shadow: none;
 
   color-scheme: dark;
 }

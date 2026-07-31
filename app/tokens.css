@@ -48,6 +48,11 @@
   --color-accent: var(--accent);
   --color-accent-fg: var(--accent-fg);
   --color-accent-soft: var(--accent-soft);
+  /* Systems that run several hues at once — a category colour per topic —
+     cannot be described by one accent. Two more, and a theme that doesn't
+     need them just points them at --accent. */
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
 
   /* ── status ──────────────────────────────── */
   --color-good: var(--good);
@@ -60,10 +65,12 @@
   --font-mono: var(--font-mono);
 
   /* ── shape ───────────────────────────────── */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
+  --radius-button: var(--radius-button);
+  --radius-input: var(--radius-input);
+  --radius-card: var(--radius-card);
+  --radius-pill: var(--radius-pill);
+  --radius-sheet: var(--radius-sheet);
+  --radius-mark: var(--radius-mark);
 
   /* ── motion ──────────────────────────────── */
   --ease-brand: var(--ease);
@@ -134,7 +141,7 @@
    --bg --bg-raise --bg-sink --bg-invert
    --fg --fg-dim --fg-faint --fg-invert
    --line --line-strong
-   --accent --accent-fg --accent-soft
+   --accent --accent-fg --accent-soft --accent-2 --accent-3
    --good --warn --bad
 
    --font-display --font-body --font-mono
@@ -154,10 +161,9 @@
    --weight-emphasis
    --space-unit
    --border --border-strong
-   --radius-sm --radius-md --radius-lg --radius-xl
+   --radius-button --radius-input --radius-card --radius-pill --radius-sheet --radius-mark
    --shadow-sm --shadow-md --shadow-lg
    --ease
-   --texture --texture-size
-   --mark-style --surface-feel
+   --texture --texture-size --mark-shadow
    ── END CONTRACT ──
    ============================================================ */

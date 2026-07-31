@@ -146,7 +146,7 @@
      Kept as a component class rather than utilities because it is a physical
      material, not a layout: grain, stitching and a blind-embossed mark. It
      reads its dye from --lt/--md/--dk (computed per seller by lib/leather.ts)
-     and its finish from the theme's --texture and --mark-style.
+     and its finish from the theme's --texture and --mark-shadow.
 
      This is the part of the app that already passed the swap test: it went
      from polished chrome to dyed leather in a single edit because exactly one
@@ -212,7 +212,10 @@
     z-index: 4;
     line-height: 1;
     color: rgb(0 0 0 / 0.34);
-    text-shadow: 0 1.5px 0 rgb(255 255 255 / 0.2), 0 -1px 1px rgb(0 0 0 / 0.22);
+    /* Was hardcoded, with `--mark-style: emboss` sitting beside it doing
+       nothing — a word no stylesheet can act on. A theme that wants a flat
+       mark now sets --mark-shadow: none and the coin obeys. */
+    text-shadow: var(--mark-shadow);
   }
 
   /* backed = supported with nothing to sell yet: a tooled outline */

@@ -89,7 +89,7 @@ export default async function TeamPage({
                 {ROLE_PERMISSIONS[r].map((p) => (
                   <span
                     key={p}
-                    className="rounded-[var(--radius-sm)] border border-line bg-fg/5 px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-dim"
+                    className="rounded-[var(--radius-mark)] border-[length:var(--border)] border-line bg-fg/5 px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-dim"
                   >
                     {p}
                   </span>
@@ -99,7 +99,7 @@ export default async function TeamPage({
           ))}
         </div>
 
-        <div className="mt-[var(--space-5)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
+        <div className="mt-[var(--space-5)] rounded-[var(--radius-card)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
           <Text variant="meta" tone="dim">
             <b className="text-fg">The ten-second Auth0 beat.</b> Switch to Member and every
             Add coin and Retire button on Plans goes dead. The API rejects them with 403

@@ -81,7 +81,7 @@ export function RevealSheet({
           {/* A DIFFERENT company is talking. Warrick's checkout didn't change;
               Ovation was listening to the webhook and showed up. */}
           <div className="flex items-center justify-center gap-[var(--space-2)]">
-            <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
+            <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-mark)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
               ◈
             </span>
             <Text as="span" variant="eyebrow" tone="faint">Ovation</Text>
@@ -114,7 +114,7 @@ export function RevealSheet({
               <Text variant="meta" tone="faint">
                 It&rsquo;s already yours. No account needed — keep the link.
               </Text>
-              <div className="mt-[var(--space-3)] flex items-center gap-[var(--space-2)] rounded-[var(--radius-sm)] bg-bg-sink px-[var(--space-3)] py-[var(--space-2)]">
+              <div className="mt-[var(--space-3)] flex items-center gap-[var(--space-2)] rounded-[var(--radius-mark)] bg-bg-sink px-[var(--space-3)] py-[var(--space-2)]">
                 <Text as="span" variant="eyebrow" tone="dim" className="flex-1 truncate text-left normal-case tracking-normal">
                   /@{payload.handle}
                 </Text>

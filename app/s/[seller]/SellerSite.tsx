@@ -47,7 +47,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
       {/* ---------- nav ---------- */}
       <nav className="sticky top-0 z-50 flex h-16 items-center gap-[var(--space-8)] border-b border-line bg-bg/85 px-[var(--space-6)] backdrop-blur md:px-[var(--space-12)]">
         <Stack row gap={3} align="center">
-          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
+          <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-card)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
             ▲
           </span>
           <Text as="span" variant="h3" className="type-emphasis">
@@ -187,7 +187,7 @@ export function SellerSite({ view }: { view: SellerPublicView }) {
                   {p.run && !p.run.retired && (
                     <Stack
                       row gap={3} align="center"
-                      className="mt-[var(--space-6)] rounded-[var(--radius-md)] border border-line bg-fg/4 p-[var(--space-3)]"
+                      className="mt-[var(--space-6)] rounded-[var(--radius-card)] border-[length:var(--border)] border-line bg-fg/4 p-[var(--space-3)]"
                     >
                       <Coin glyph={p.run.glyph} tint={p.run.tint} size={42} />
                       <div>

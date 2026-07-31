@@ -50,9 +50,9 @@ export function PlansClient({
         <Text as="span" variant="h3">Ovation</Text>
         <Stack
           row gap={2} align="center"
-          className="ml-[var(--space-3)] rounded-[var(--radius-sm)] border border-line px-[var(--space-3)] py-[var(--space-2)]"
+          className="ml-[var(--space-3)] rounded-[var(--radius-mark)] border-[length:var(--border)] border-line px-[var(--space-3)] py-[var(--space-2)]"
         >
-          <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-sm)] bg-accent text-[length:var(--eyebrow-size)] text-accent-fg">
+          <span className="grid h-5 w-5 place-items-center rounded-[var(--radius-mark)] bg-accent text-[length:var(--eyebrow-size)] text-accent-fg">
             {view.seller.mark}
           </span>
           <Text as="span" variant="meta" className="type-emphasis">{view.seller.name}</Text>
@@ -111,7 +111,7 @@ export function PlansClient({
                 {p.run ? (
                   <Coin glyph={p.run.glyph} tint={p.run.tint} size={44} retired={p.run.retired} />
                 ) : (
-                  <div className="grid h-11 w-11 place-items-center rounded-full border border-dashed border-line text-fg-faint">
+                  <div className="grid h-11 w-11 place-items-center rounded-full border-[length:var(--border)] border-dashed border-line text-fg-faint">
                     <Plus size={16} strokeWidth={1.5} />
                   </div>
                 )}
@@ -176,7 +176,7 @@ export function PlansClient({
         </div>
 
         {role === "member" && (
-          <div className="mt-[var(--space-6)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
+          <div className="mt-[var(--space-6)] rounded-[var(--radius-card)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
             <Text variant="meta" tone="dim">
               Viewing as <b className="text-fg">Member</b> — read only. Add coin and Retire
               are disabled by the permissions on the Auth0 token, not by a flag in our

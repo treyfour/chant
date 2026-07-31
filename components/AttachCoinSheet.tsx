@@ -79,7 +79,7 @@ export function AttachCoinSheet({
                   key={g}
                   onClick={() => setGlyph(g)}
                   className={[
-                    "grid h-9 w-9 place-items-center rounded-[var(--radius-sm)] border text-[length:var(--lead-size)]",
+                    "grid h-9 w-9 place-items-center rounded-[var(--radius-mark)] border text-[length:var(--lead-size)]",
                     g === glyph
                       ? "border-fg bg-bg-sink text-fg"
                       : "border-line bg-bg-raise text-fg-dim",

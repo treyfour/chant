@@ -53,7 +53,7 @@ export function WelcomeClient({
   return (
     <div data-brand="warrick" className="min-h-screen bg-bg text-fg">
       <nav className="flex h-[var(--h-nav)] items-center gap-[var(--space-3)] border-b border-line px-[var(--space-6)] md:px-[var(--space-12)]">
-        <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-md)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
+        <span className="grid h-7 w-7 place-items-center rounded-[var(--radius-card)] bg-accent text-[length:var(--meta-size)] text-accent-fg">
           ▲
         </span>
         <Text as="span" variant="h3" className="type-emphasis">
@@ -63,7 +63,7 @@ export function WelcomeClient({
 
       <main className="surface-textured min-h-[calc(100vh-var(--h-nav))]">
         <div className="mx-auto max-w-[var(--w-col-sm)] px-[var(--space-6)] py-[var(--space-20)] text-center">
-          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border border-good/30 bg-good/14 text-good">
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full border-[length:var(--border)] border-good/30 bg-good/14 text-good">
             <Check size={20} strokeWidth={1.5} />
           </div>
 

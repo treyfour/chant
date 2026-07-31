@@ -31,7 +31,7 @@ export default function DemoIndex() {
         person finds the company.
       </Text>
 
-      <div className="mt-[var(--space-6)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
+      <div className="mt-[var(--space-6)] rounded-[var(--radius-card)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)]">
         <Text variant="meta" tone="dim">
           <b className="text-fg">Walk it in order.</b> Card{" "}
           <code className="font-[family-name:var(--font-mono)]">4242 4242 4242 4242</code>, any

@@ -41,7 +41,7 @@ export function CollectionSheet({
       <SheetContent size="lg">
         {/* Ovation's own header — a different company's chrome */}
         <div className="flex flex-wrap items-center gap-[var(--space-3)] border-b border-line bg-bg-raise px-[var(--space-8)] py-[var(--space-5)]">
-          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-mark)] bg-fg text-[length:var(--eyebrow-size)] text-fg-invert">
             ◈
           </span>
           <SheetTitle asChild>

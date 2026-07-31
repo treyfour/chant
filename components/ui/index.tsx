@@ -123,14 +123,16 @@ const BTN_BASE =
 const BTN_VARIANT = {
   primary: "bg-fg text-fg-invert hover:opacity-88",
   accent: "bg-accent text-accent-fg hover:opacity-88",
-  ghost: "bg-transparent text-fg-dim border border-line hover:text-fg",
-  danger: "bg-transparent text-bad border border-bad/30 hover:opacity-80",
+  ghost: "bg-transparent text-fg-dim border-[length:var(--border)] border-line hover:text-fg",
+  danger: "bg-transparent text-bad border-[length:var(--border)] border-bad/30 hover:opacity-80",
 } as const;
 
 const BTN_SIZE = {
-  sm: "h-9 px-[var(--space-4)] text-[length:var(--meta-size)] rounded-[var(--radius-sm)]",
-  md: "h-11 px-[var(--space-6)] text-[length:var(--body-size)] rounded-[var(--radius-md)]",
+  sm: "h-9 px-[var(--space-4)] text-[length:var(--meta-size)]",
+  md: "h-11 px-[var(--space-6)] text-[length:var(--body-size)]",
 } as const;
+
+const BTN_SHAPE = "rounded-[var(--radius-button)] shadow-[var(--shadow-sm)]";
 
 export function Button({
   variant = "primary",
@@ -145,7 +147,7 @@ export function Button({
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={cx(BTN_BASE, BTN_VARIANT[variant], BTN_SIZE[size], full && "w-full", className)}
+      className={cx(BTN_BASE, BTN_SHAPE, BTN_VARIANT[variant], BTN_SIZE[size], full && "w-full", className)}
       {...rest}
     />
   );
@@ -165,7 +167,7 @@ export function ButtonLink({
 } & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
     <a
-      className={cx(BTN_BASE, BTN_VARIANT[variant], BTN_SIZE[size], full && "w-full", className)}
+      className={cx(BTN_BASE, BTN_SHAPE, BTN_VARIANT[variant], BTN_SIZE[size], full && "w-full", className)}
       {...rest}
     />
   );
@@ -185,7 +187,7 @@ export function Card({
   return (
     <div
       className={cx(
-        "bg-bg-raise border border-line rounded-[var(--radius-lg)]",
+        "bg-bg-raise border-[length:var(--border)] border-line rounded-[var(--radius-card)]",
         raised && "shadow-[var(--shadow-md)]",
         className,
       )}
@@ -212,7 +214,7 @@ export function Badge({
   return (
     <span
       className={cx(
-        "inline-flex items-center rounded-full border px-[var(--space-2)] py-[var(--space-1)]",
+        "inline-flex items-center rounded-[var(--radius-pill)] border-[length:var(--border)] px-[var(--space-2)] py-[var(--space-1)]",
         "font-[family-name:var(--font-body)] text-[length:var(--eyebrow-size)] type-emphasis uppercase tracking-[0.12em]",
         tones[tone],
         className,
@@ -256,7 +258,7 @@ export function Input({ className, ...rest }: React.InputHTMLAttributes<HTMLInpu
   return (
     <input
       className={cx(
-        "w-full bg-bg-raise border border-line rounded-[var(--radius-sm)] outline-none",
+        "w-full bg-bg-raise border-[length:var(--border)] border-line rounded-[var(--radius-input)] outline-none",
         "px-[var(--space-3)] py-[var(--space-3)]",
         "font-[family-name:var(--font-body)] text-[length:var(--body-size)] text-fg",
         "placeholder:text-fg-faint focus:border-line-strong",
@@ -328,7 +330,7 @@ export function SheetContent({
       <DialogPrimitive.Content
         className={cx(
           "fixed left-1/2 top-1/2 z-50 w-[calc(100%-var(--space-8))] -translate-x-1/2 -translate-y-1/2",
-          "bg-bg rounded-[var(--radius-xl)] shadow-[var(--shadow-lg)] overflow-hidden",
+          "bg-bg rounded-[var(--radius-sheet)] shadow-[var(--shadow-lg)] overflow-hidden",
           widths[size],
           className,
         )}
@@ -357,7 +359,7 @@ export function MenuContent({ children }: { children: React.ReactNode }) {
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Content
-        className="z-50 min-w-[var(--w-tooltip)] rounded-[var(--radius-md)] border border-line bg-bg-raise p-[var(--space-1)] shadow-[var(--shadow-md)]"
+        className="z-50 min-w-[var(--w-tooltip)] rounded-[var(--radius-card)] border-[length:var(--border)] border-line bg-bg-raise p-[var(--space-1)] shadow-[var(--shadow-md)]"
       >
         {children}
       </ContextMenuPrimitive.Content>
@@ -383,7 +385,7 @@ export function MenuItem({
   return (
     <ContextMenuPrimitive.Item
       onSelect={onSelect}
-      className="mt-[var(--space-1)] flex cursor-pointer items-center gap-[var(--space-2)] rounded-[var(--radius-sm)] px-[var(--space-3)] py-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--meta-size)] text-fg outline-none data-[highlighted]:bg-fg/6"
+      className="mt-[var(--space-1)] flex cursor-pointer items-center gap-[var(--space-2)] rounded-[var(--radius-mark)] px-[var(--space-3)] py-[var(--space-2)] font-[family-name:var(--font-body)] text-[length:var(--meta-size)] text-fg outline-none data-[highlighted]:bg-fg/6"
     >
       {children}
     </ContextMenuPrimitive.Item>
@@ -409,7 +411,7 @@ export function Tooltip({
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content
           sideOffset={6}
-          className="z-50 rounded-[var(--radius-sm)] bg-fg px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-invert"
+          className="z-50 rounded-[var(--radius-mark)] bg-fg px-[var(--space-2)] py-[var(--space-1)] font-[family-name:var(--font-mono)] text-[length:var(--eyebrow-size)] text-fg-invert"
         >
           {label}
           <TooltipPrimitive.Arrow className="fill-fg" />
@@ -484,7 +486,7 @@ export function Swatch({
       aria-label={color}
       aria-pressed={selected}
       className={cx(
-        "h-8 w-8 cursor-pointer rounded-[var(--radius-sm)] border-2",
+        "h-8 w-8 cursor-pointer rounded-[var(--radius-mark)] border-[length:var(--border-strong)]",
         selected ? "border-fg" : "border-transparent",
         className,
       )}

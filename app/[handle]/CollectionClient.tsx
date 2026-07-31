@@ -44,7 +44,7 @@ export function CollectionClient({
           from whatever site you arrived from, and it should look like it. */}
       <nav className="sticky top-0 z-40 flex h-[var(--h-nav-app)] items-center gap-[var(--space-3)] border-b border-line bg-bg/92 px-[var(--space-12)] backdrop-blur">
         <a href="/demo" className="flex items-center gap-[var(--space-3)]">
-          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-sm)] bg-fg text-[length:var(--meta-size)] text-fg-invert">
+          <span className="grid h-6 w-6 place-items-center rounded-[var(--radius-mark)] bg-fg text-[length:var(--meta-size)] text-fg-invert">
             ◈
           </span>
           <Text as="span" variant="h3">Ovation</Text>

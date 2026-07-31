@@ -123,7 +123,7 @@ export function BillingClient({ view }: { view: SellerPublicView }) {
           })}
         </div>
 
-        <div className="mx-auto mt-[var(--space-10)] max-w-[var(--w-col)] rounded-[var(--radius-md)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)] text-left">
+        <div className="mx-auto mt-[var(--space-10)] max-w-[var(--w-col)] rounded-[var(--radius-card)] bg-bg-sink px-[var(--space-5)] py-[var(--space-4)] text-left">
           <Text variant="meta" tone="dim">
             <b className="text-fg">The closer.</b> Warrick subscribes to Ovation through
             Stripe and gets an Ovation coin in the same reveal their own subscribers get.

@@ -82,7 +82,7 @@ export default async function SpecimenPage({
               <span
                 className={[
                   "inline-flex items-center gap-[var(--space-2)] border px-[var(--space-4)] py-[var(--space-2)]",
-                  "rounded-[var(--radius-md)]",
+                  "rounded-[var(--radius-card)]",
                   slug === active[0] ? "border-fg bg-bg-sink" : "border-line",
                 ].join(" ")}
               >
@@ -119,7 +119,7 @@ export default async function SpecimenPage({
               ["warn", "bg-warn"], ["bad", "bg-bad"],
             ].map(([name, cls]) => (
               <div key={name}>
-                <div className={`h-16 rounded-[var(--radius-md)] border border-line ${cls}`} />
+                <div className={`h-16 rounded-[var(--radius-card)] border-[length:var(--border)] border-line ${cls}`} />
                 <Text variant="caption" tone="faint" className="mt-[var(--space-2)]">{name}</Text>
               </div>
             ))}
@@ -212,7 +212,7 @@ export default async function SpecimenPage({
           </Text>
           <div
             data-brand="warrick"
-            className="rounded-[var(--radius-lg)] border border-line bg-bg p-[var(--space-8)] text-fg"
+            className="rounded-[var(--radius-card)] border-[length:var(--border)] border-line bg-bg p-[var(--space-8)] text-fg"
           >
             <Text variant="eyebrow" tone="faint">Pricing</Text>
             <Text as="h2" variant="h2" className="mt-[var(--space-3)]">
