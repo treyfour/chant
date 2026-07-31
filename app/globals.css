@@ -48,6 +48,46 @@
   .t-display { font: 400 44px/1.05 var(--display); letter-spacing: -0.03em; }
   .t-h2 { font: 400 32px/1.12 var(--display); letter-spacing: -0.025em; }
   .t-name { font: 400 14.5px/1.25 var(--display); letter-spacing: -0.01em; }
+
+  /* Weight is the hover signal on the name. Higher specificity than `.t-name`,
+     which sets weight via the `font` shorthand. */
+  .group:hover .t-name { font-weight: 600; }
+
+  /* Delayed tooltip. Appears only on sustained hover so it never flickers while
+     you sweep across a grid, and disappears instantly on leave. */
+  .coin-tip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(2px);
+    margin-bottom: 7px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 20;
+    background: var(--ink);
+    color: var(--ground);
+    font: 500 10.5px/1 var(--mono);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: opacity 0.14s ease, transform 0.14s ease;
+    transition-delay: 0s;
+  }
+  .coin-tip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .group:hover .coin-tip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    transition-delay: 0.5s;
+  }
   .t-serial {
     font: 400 9.5px/1.3 var(--mono);
     letter-spacing: 0.08em;

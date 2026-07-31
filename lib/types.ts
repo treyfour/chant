@@ -158,6 +158,9 @@ export interface CollectionItem {
   coinId: string;
   sellerSlug: string;
   sellerName: string;
+  /** Where the coin points. This is what makes it a promotional object rather
+   *  than decoration — every browse of a collection is a lead for the seller. */
+  website: string | null;
   runName: string;             // "founding user"
   serial: number;
   size: number;

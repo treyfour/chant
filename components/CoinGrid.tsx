@@ -40,7 +40,7 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
             ? "Your collection"
             : items.some((i) => i.viewerHasIt === false)
               ? "Faded ones are new to you"
-              : "Collection"}
+              : `${items.length} coin${items.length === 1 ? "" : "s"}`}
         </span>
         <div className="relative">
           <span
@@ -76,13 +76,29 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
         >
           {filtered.map((item) => {
             const isLead = item.viewerHasIt === false;
-            const Cell = isLead ? "a" : "div";
+            // Every coin points somewhere: a lead goes to the seller page you
+            // could buy from, an owned coin goes to the company itself. A
+            // collectible that links nowhere is decoration — this is what makes
+            // browsing a collection worth something to the seller.
+            const href = isLead
+              ? `/s/${item.sellerSlug}`
+              : item.website ?? `/s/${item.sellerSlug}`;
+            const external = href.startsWith("http");
+            const destination = external
+              ? new URL(href).host.replace(/^www\./, "")
+              : `ovation.app/s/${item.sellerSlug}`;
+            const Cell = "a";
             return (
             <Cell
               key={item.coinId}
-              {...(isLead ? { href: `/s/${item.sellerSlug}` } : {})}
-              className="text-center relative block"
-              style={{ cursor: isLead ? "pointer" : owned ? "context-menu" : "default" }}
+              href={href}
+              // Always a new tab: clicking a coin should never cost you the
+              // collection you were browsing.
+              target="_blank"
+              rel="noopener noreferrer"
+              title={destination}
+              className="group text-center relative block"
+              style={{ cursor: "pointer" }}
               onContextMenu={
                 owned
                   ? (e: React.MouseEvent) => {
@@ -103,12 +119,24 @@ export function CoinGrid({ items, owned = false, onToggleVisibility }: Props) {
                 />
                 {!item.isPublic && <span className="coin-private-dot" />}
               </div>
+              {/* The name carries the whole affordance: it gains weight, an
+                  arrow appears beside it, and a tooltip with the destination
+                  fades in above after a sustained hover. Nothing below moves. */}
               <span
-                className="t-name block mt-[15px] truncate"
+                className="t-name relative mt-[15px] inline-flex max-w-full items-center justify-center gap-1"
                 style={{ color: item.isPublic ? "var(--ink)" : "var(--dim)" }}
               >
-                {item.sellerName}
+                <span className="coin-tip">{destination}</span>
+                <span className="truncate">{item.sellerName}</span>
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                  style={{ color: "var(--accent)", fontSize: 11 }}
+                >
+                  ↗
+                </span>
               </span>
+
               <span
                 className="t-serial block mt-[5px]"
                 style={isLead ? { color: "var(--accent)" } : undefined}

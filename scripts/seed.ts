@@ -22,10 +22,10 @@ async function main() {
 
   await sql`
     INSERT INTO sellers (id, org_id, slug, name, tagline, location, stage, mark, tint,
-                         stripe_account_id, ovation_tier)
+                         stripe_account_id, ovation_tier, website)
     VALUES (${WARRICK.id}, ${WARRICK.orgId}, ${WARRICK.slug}, ${WARRICK.name},
             ${WARRICK.tagline}, ${WARRICK.location}, ${WARRICK.stage}, ${WARRICK.mark},
-            ${WARRICK.tint}, ${WARRICK.stripeAccountId}, ${WARRICK.ovationTier})
+            ${WARRICK.tint}, ${WARRICK.stripeAccountId}, ${WARRICK.ovationTier}, '/s/warrick')
     ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, tagline = EXCLUDED.tagline`;
   console.log("✓ seller warrick");
 
@@ -36,7 +36,8 @@ async function main() {
       INSERT INTO runs (id, seller_id, plan_id, name, size, claimed, glyph, tint, retired)
       VALUES (${r.id}, ${r.sellerId}, ${r.planId}, ${r.name}, ${r.size}, ${seeded},
               ${r.glyph}, ${r.tint}, ${r.retired})
-      ON CONFLICT (id) DO UPDATE SET size = EXCLUDED.size, claimed = EXCLUDED.claimed`;
+      ON CONFLICT (id) DO UPDATE SET size = EXCLUDED.size, claimed = EXCLUDED.claimed,
+                                     name = EXCLUDED.name, glyph = EXCLUDED.glyph`;
   }
   console.log(`✓ ${WARRICK_RUNS.length} runs`);
 
@@ -111,10 +112,11 @@ async function main() {
     const kind = "owned";
 
     await sql`
-      INSERT INTO sellers (id, org_id, slug, name, mark, tint)
-      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint})
+      INSERT INTO sellers (id, org_id, slug, name, mark, tint, website)
+      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint},
+              ${c.website})
       ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, mark = EXCLUDED.mark,
-                                     tint = EXCLUDED.tint`;
+                                     tint = EXCLUDED.tint, website = EXCLUDED.website`;
 
     await sql`
       INSERT INTO runs (id, seller_id, plan_id, name, size, claimed, glyph, tint)
@@ -150,9 +152,10 @@ async function main() {
     const sellerId = `sel_${c.slug}`;
     const runId = `run_${c.slug}_dana`;
     await sql`
-      INSERT INTO sellers (id, org_id, slug, name, mark, tint)
-      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint})
-      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, mark = EXCLUDED.mark`;
+      INSERT INTO sellers (id, org_id, slug, name, mark, tint, website)
+      VALUES (${sellerId}, ${`org_${c.slug}`}, ${c.slug}, ${c.name}, ${c.mark}, ${c.tint},
+              ${c.website})
+      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, website = EXCLUDED.website`;
 
     const existing = await sql`
       SELECT id FROM runs WHERE seller_id = ${sellerId} AND name = ${c.run} LIMIT 1`;

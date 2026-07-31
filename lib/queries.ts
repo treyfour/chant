@@ -9,7 +9,7 @@ export async function getCollection(handle: string): Promise<CollectionView | nu
   const rows = await sql`
     SELECT co.id, co.serial, co.kind, co.is_public, co.acquired_at,
            r.name AS run_name, r.size, r.glyph, r.tint, r.retired,
-           s.slug, s.name AS seller_name
+           s.slug, s.name AS seller_name, s.website
     FROM coins co
     JOIN runs r ON r.id = co.run_id
     JOIN sellers s ON s.id = co.seller_id
@@ -20,6 +20,7 @@ export async function getCollection(handle: string): Promise<CollectionView | nu
     coinId: String(r.id),
     sellerSlug: String(r.slug),
     sellerName: String(r.seller_name),
+    website: r.website ? String(r.website) : null,
     runName: String(r.run_name),
     serial: Number(r.serial),
     size: Number(r.size),

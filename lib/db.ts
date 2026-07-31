@@ -44,8 +44,13 @@ export async function migrate() {
       mark TEXT NOT NULL DEFAULT '●',
       tint TEXT NOT NULL DEFAULT '#C87137',
       stripe_account_id TEXT,
-      ovation_tier TEXT NOT NULL DEFAULT 'starter'
+      ovation_tier TEXT NOT NULL DEFAULT 'starter',
+      -- Where the coin points. A collectible with no way back to the company
+      -- is decoration; with a link it's a promotional object that pays the
+      -- seller back every time somebody browses a collection.
+      website TEXT
     )`;
+  await sql`ALTER TABLE sellers ADD COLUMN IF NOT EXISTS website TEXT`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS collectors (

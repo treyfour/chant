@@ -51,10 +51,10 @@ export const WARRICK_MEMBERS: Member[] = [
 
 export const WARRICK_RUNS: CoinRun[] = [
   { id: "run_founding", sellerId: "sel_warrick", planId: "plan_pro",
-    name: "founding user", size: 50, claimed: 35, glyph: "▲", tint: "#C87137",
+    name: "first 50 pro", size: 50, claimed: 35, glyph: "▲", tint: "#C87137",
     retired: false, createdAt: "2026-03-02T10:00:00Z" },
   { id: "run_charter", sellerId: "sel_warrick", planId: "plan_team",
-    name: "charter member", size: 25, claimed: 3, glyph: "◆", tint: "#3B5BA5",
+    name: "first 25 team", size: 25, claimed: 3, glyph: "◆", tint: "#3B5BA5",
     retired: false, createdAt: "2026-05-14T10:00:00Z" },
 ];
 
@@ -96,7 +96,7 @@ const TREY_SEED: Seed[] = [
 
 const toItem = (s: Seed, i: number): CollectionItem => ({
   coinId: `coin_${i}`,
-  sellerSlug: s[1], sellerName: s[0], runName: s[2],
+  sellerSlug: s[1], sellerName: s[0], website: null, runName: s[2],
   serial: s[3], size: s[4], tint: s[5] as CollectionItem["tint"], glyph: s[6],
   kind: s[7], isPublic: s[8], retired: false, acquiredAt: s[9],
 });
