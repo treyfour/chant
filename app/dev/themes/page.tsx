@@ -98,7 +98,7 @@ export default async function SpecimenPage({
           A specimen proves a theme is coherent. Only a real composition shows
           whether it is any good —{" "}
           <a
-            href={`/s/warrick${active[0] ? `?t=${active[0]}` : "?t="}`}
+            href={`/s/warrick?t=${active[0] || "ovation"}`}
             className="text-accent-ink underline underline-offset-2"
           >
             see these on a full landing page →

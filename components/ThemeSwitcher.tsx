@@ -16,9 +16,18 @@ import { Text } from "./ui";
  * Only appears when ?t= is in the URL, so the demo itself stays clean.
  */
 
+/**
+ * Every candidate has a REAL slug, including the shipping theme.
+ *
+ * Ovation used to be the empty string, so its link dropped the ?t= param
+ * entirely — the switcher then saw no param, decided this was the clean demo,
+ * and un-rendered itself. You landed on Ovation with no way back to the other
+ * themes. An "off" option that turns off the control you need is a dead end,
+ * and the empty-string slug was what made it look reasonable.
+ */
 export const THEME_CANDIDATES = [
   ["brand", "Warrick", "the guest brand"],
-  ["", "Ovation", "the shipping theme"],
+  ["ovation", "Ovation", "the shipping theme"],
   ["codedex", "Codédex", "codedex.io"],
   ["mocha", "Mocha", "getmocha.com"],
 ] as const;
@@ -41,7 +50,8 @@ export function ThemeSwitcher({ active, base }: { active: string; base: string }
           return (
             <a
               key={name}
-              href={slug ? `${base}?t=${slug}` : base}
+              // Always carries ?t=, so the bar survives every click.
+              href={`${base}?t=${slug}`}
               title={note}
               className={[
                 "rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors",
@@ -60,12 +70,13 @@ export function ThemeSwitcher({ active, base }: { active: string; base: string }
 /** Shared by every page that offers the preview. */
 export function resolveTheme(t?: string) {
   const known = THEME_CANDIDATES.map(([s]) => s as string);
-  const active = t && known.includes(t) ? t : null;
+  // Also accept "" so older links (?t=) still land somewhere sensible.
+  const active = t === "" ? "ovation" : t && known.includes(t) ? t : null;
   return {
     active,
-    /** The guest brand still applies unless a candidate theme is chosen. */
+    /** No param at all = the real demo, which is Warrick's own brand. */
     brand: active === null || active === "brand" ? "warrick" : undefined,
-    /** "" means the shipping theme, which lives on :root and needs no attr. */
-    theme: active && active !== "brand" && active !== "" ? active : undefined,
+    /** Ovation lives on :root, so it needs no attribute — just no brand. */
+    theme: active === "codedex" || active === "mocha" ? active : undefined,
   };
 }
