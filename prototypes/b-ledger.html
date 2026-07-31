@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · B · The Ledger</title>
+<style>
+  :root{
+    --bg:#0b0b0c; --row:#121214; --ink:#f4f1ec; --dim:#8b8880; --faint:#57544e;
+    --line:rgba(244,241,236,.08);
+    --serif:ui-serif,Georgia,'Iowan Old Style','Times New Roman',serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,'Segoe UI',Inter,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:110px}
+
+  .wrap{max-width:860px;margin:0 auto;padding:0 32px}
+
+  header{padding:64px 0 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  h1{font:400 44px/1.05 var(--serif);letter-spacing:-.02em;margin:16px 0 0}
+  h1 .at{color:var(--faint)}
+  .meta{margin-top:16px;font:400 12px/1 var(--mono);color:var(--dim);display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .meta b{color:var(--ink);font-weight:500}
+  .pub{color:#8fb488;border:1px solid rgba(143,180,136,.28);padding:5px 9px;border-radius:999px;
+       font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+
+  /* column headings, like a statement */
+  .cols{display:grid;grid-template-columns:56px 1fr 128px 92px;gap:18px;align-items:end;
+    padding:34px 0 10px;border-bottom:1px solid var(--line);
+    font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:30px}
+  .cols span:nth-child(3),.cols span:nth-child(4){text-align:right}
+
+  .year{font:500 10px/1 var(--mono);letter-spacing:.16em;color:var(--faint);
+    padding:30px 0 12px;border-bottom:1px solid var(--line)}
+
+  .row{display:grid;grid-template-columns:56px 1fr 128px 92px;gap:18px;align-items:center;
+    padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer;transition:background .16s}
+  .row:hover{background:var(--row)}
+
+  /* small coin, list-scale */
+  .cwrap{width:44px;height:44px;perspective:500px}
+  .coin{width:44px;height:44px;position:relative;transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .row.flipped .coin{transform:rotateY(180deg)}
+  .side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.20), inset 0 2px 5px rgba(255,255,255,.24),
+               inset 0 -2px 6px rgba(0,0,0,.5), 0 4px 10px -3px rgba(0,0,0,.8)}
+  .face{background:
+      conic-gradient(from 38deg, rgba(255,255,255,.30), rgba(0,0,0,.26) 22%, rgba(255,255,255,.22) 47%,
+                     rgba(0,0,0,.30) 71%, rgba(255,255,255,.28) 100%),
+      radial-gradient(circle at 33% 26%, var(--lt), var(--md) 54%, var(--dk) 100%)}
+  .face::after{content:'';position:absolute;inset:3.5px;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.28)}
+  .glyph{font-size:17px;color:rgba(255,255,255,.92);position:relative;z-index:1;
+    text-shadow:0 1px 0 rgba(255,255,255,.4),0 -1px 2px rgba(0,0,0,.6)}
+  .back{transform:rotateY(180deg);background:radial-gradient(circle at 40% 30%,#37342e,#1c1b18 70%);
+    font:500 11px/1 var(--mono);color:#fff}
+  .backed .face{background:radial-gradient(circle at 40% 34%, rgba(255,255,255,.06), transparent 62%);
+    box-shadow:inset 0 0 0 2px var(--md)}
+  .backed .face::after{display:none}
+  .backed .glyph{color:var(--lt);text-shadow:none}
+
+  .who .name{font:400 20px/1.2 var(--serif);letter-spacing:-.015em}
+  .who .note{font:400 12px/1.45 var(--sans);color:var(--dim);margin-top:4px;
+    max-width:44ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tags{display:inline-flex;gap:6px;margin-left:8px;vertical-align:2px}
+  .tag{font:500 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 6px;border-radius:3px;border:1px solid var(--line);color:var(--faint)}
+  .tag.priv{color:#9a8fb0;border-color:rgba(154,143,176,.3)}
+  .tag.back{color:#b0a184;border-color:rgba(176,161,132,.3)}
+
+  .serial{text-align:right;font:500 16px/1 var(--mono);letter-spacing:-.01em}
+  .serial i{font-style:normal;color:var(--faint);font-size:11px}
+  .serial .run{display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:5px}
+  .when{text-align:right;font:400 12px/1 var(--mono);color:var(--dim)}
+  .when .closed{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#a8724e;margin-top:5px}
+
+  .foot{margin-top:34px;font:400 11.5px/1.7 var(--mono);color:var(--faint)}
+
+  .empty{padding:120px 0;text-align:center}
+  .empty .line{height:1px;background:var(--line);margin-bottom:44px}
+  .empty h2{font:400 26px/1.3 var(--serif);margin-bottom:12px}
+  .empty p{color:var(--dim);font-size:14px;line-height:1.65;max-width:420px;margin:0 auto}
+  .empty .ph{display:flex;gap:14px;justify-content:center;margin-top:40px;opacity:.3}
+  .empty .ph div{width:44px;height:44px;border-radius:50%;border:1px dashed var(--faint)}
+
+  .tog{position:fixed;right:18px;bottom:18px;display:flex;gap:1px;background:var(--line);border-radius:7px;overflow:hidden;z-index:99}
+  .tog button{background:#191918;color:var(--dim);border:0;padding:9px 15px;font:500 10px/1 var(--mono);
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .tog button.on{background:var(--ink);color:#0b0b0c}
+  .hide{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Ovation</div>
+    <h1><span class="at">@</span>trey</h1>
+    <div class="meta">
+      <span><b>14</b> coins</span><span><b>12</b> sellers</span><span>since <b>Oct 2025</b></span>
+      <span class="pub">● public</span>
+    </div>
+  </header>
+
+  <div id="loaded">
+    <div class="cols"><span></span><span>Seller</span><span>Coin</span><span>Acquired</span></div>
+    <div id="rows"></div>
+    <div class="foot">Click any row to flip the coin. Amounts are never recorded here: when, not how much.</div>
+  </div>
+
+  <div class="empty hide" id="empty">
+    <div class="line"></div>
+    <h2>The ledger is empty.</h2>
+    <p>Every purchase you make on Ovation writes one line here, and hands you the coin that goes with it. No receipt emails, nothing to file.</p>
+    <div class="ph"><div></div><div></div><div></div></div>
+  </div>
+</div>
+
+<div class="tog">
+  <button class="on" onclick="setState('loaded',this)">Loaded</button>
+  <button onclick="setState('empty',this)">Empty</button>
+</div>
+
+<script>
+const COINS = [
+  { seller:'Understory',        run:'pre-seed',    n:9,   of:50,  date:'Jul 2026', tint:'#356859', glyph:'❀', kind:'owned',  state:'open',    private:true,  note:'Forestry data. Quiet company, loud founders.' },
+  { seller:'Pallet',            run:'v1',          n:130, of:300, date:'Jul 2026', tint:'#8A8253', glyph:'◬', kind:'owned',  state:'open',    private:false, note:'Shipping cost calculator for people who hate shipping.' },
+  { seller:'Wren',              run:'founding',    n:5,   of:25,  date:'Jul 2026', tint:'#A8324A', glyph:'❈', kind:'backed', state:'open',    private:true,  note:'Two designers, no website, one very good demo.' },
+  { seller:'Casa Verde Dive',   run:'season pass', n:22,  of:40,  date:'Jul 2026', tint:'#1B9AAA', glyph:'⌇', kind:'owned',  state:'open',    private:false, note:'Playa Guiones, Costa Rica. Four dives and a bad sunburn.' },
+  { seller:'Kettle & Co.',      run:'launch',      n:12,  of:100, date:'Jun 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false, note:'Second run. The one that actually shipped.' },
+  { seller:'Halvard',           run:'pre-seed',    n:14,  of:50,  date:'May 2026', tint:'#7B4B94', glyph:'✲', kind:'backed', state:'open',    private:true,  note:'Nothing to sell yet. Backed them anyway.' },
+  { seller:'Ninth St Roasters', run:'first roast', n:61,  of:150, date:'May 2026', tint:'#6F4E37', glyph:'⬮', kind:'owned',  state:'open',    private:false, note:'One origin at a time. Roasted Tuesday, shipped Wednesday.' },
+  { seller:'Tidepool',          run:'early',       n:401, of:500, date:'Apr 2026', tint:'#2E7D7B', glyph:'≈', kind:'owned',  state:'open',    private:false, note:'Tide and swell forecasting with no wetsuit ads.' },
+  { seller:'Kettle & Co.',      run:'pre-seed',    n:35,  of:50,  date:'Mar 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false, note:'Countertop fermentation for people who ruined batch one.' },
+  { seller:'Mossbook',          run:'v1',          n:88,  of:200, date:'Feb 2026', tint:'#4A7C59', glyph:'⬡', kind:'owned',  state:'soldout', private:false, note:'Field notebooks printed on stone paper.' },
+  { seller:'Orbit',             run:'founding',    n:3,   of:25,  date:'Jan 2026', tint:'#3B5BA5', glyph:'◆', kind:'owned',  state:'soldout', private:false, note:'Calendar that hides itself while you are focused.' },
+  { seller:'Lumen',             run:'pre-seed',    n:7,   of:50,  date:'Dec 2025', tint:'#D4A017', glyph:'✦', kind:'owned',  state:'soldout', private:false, note:'Daylight-tracking desk lamp. Kickstarter refugees.' },
+  { seller:'Arc',               run:'founding',    n:19,  of:30,  date:'Nov 2025', tint:'#5C6B73', glyph:'◐', kind:'owned',  state:'soldout', private:false, note:'Ambient status displays for small teams.' },
+  { seller:'Ferrous',           run:'pre-seed',    n:2,   of:50,  date:'Oct 2025', tint:'#B7410E', glyph:'▰', kind:'owned',  state:'soldout', private:false, note:'Machining marketplace. Two people in a garage in Oakland.' },
+];
+
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16), cl=v=>Math.max(0,Math.min(255,v));
+  return '#'+(((cl((n>>16)+amt))<<16)|((cl(((n>>8)&255)+amt))<<8)|cl((n&255)+amt)).toString(16).padStart(6,'0');
+}
+
+let html='', lastYear='';
+COINS.forEach(c=>{
+  const yr=c.date.split(' ')[1];
+  if(yr!==lastYear){ html+=`<div class="year">${yr}</div>`; lastYear=yr; }
+  html+=`
+  <div class="row ${c.kind==='backed'?'backed':''}" onclick="this.classList.toggle('flipped')"
+       style="--lt:${shade(c.tint,62)};--md:${c.tint};--dk:${shade(c.tint,-58)}">
+    <div class="cwrap"><div class="coin">
+      <div class="side face"><span class="glyph">${c.glyph}</span></div>
+      <div class="side back">${c.n}</div>
+    </div></div>
+    <div class="who">
+      <div class="name">${c.seller}<span class="tags">${c.private?'<span class="tag priv">private</span>':''}${c.kind==='backed'?'<span class="tag back">backed</span>':''}</span></div>
+      <div class="note">${c.note}</div>
+    </div>
+    <div class="serial">${c.n}<i> / ${c.of}</i><span class="run">${c.run}</span></div>
+    <div class="when">${c.date}${c.state==='soldout'?'<span class="closed">closed</span>':''}</div>
+  </div>`;
+});
+document.getElementById('rows').innerHTML=html;
+
+function setState(s,btn){
+  document.querySelectorAll('.tog button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('loaded').classList.toggle('hide',s==='empty');
+  document.getElementById('empty').classList.toggle('hide',s!=='empty');
+}
+</script>
+</body>
+</html>

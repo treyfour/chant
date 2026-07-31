@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · D · Skins</title>
+<style>
+/* ============================================================
+   STRUCTURE (locked — this is D's UX, identical in every skin)
+   Everything below the token block is layout only. To add a new
+   visual direction, add one [data-skin="..."] block. Nothing else.
+   ============================================================ */
+
+/* ---------- 1 · BONE — warm gallery catalogue ---------- */
+[data-skin="bone"]{
+  --ground:#f7f4ed; --raise:#fffdf8; --ink:#211f1b; --dim:#6d675d; --faint:#a29a8c;
+  --rule:rgba(33,31,27,.11); --accent:#8a6a3b;
+  --display:'Iowan Old Style',Georgia,serif; --body:'Avenir Next','Segoe UI',sans-serif;
+  --num:'Avenir Next','Segoe UI',sans-serif;
+  --r:14px; --air:1.15; --shadow:0 18px 34px -20px rgba(60,48,30,.4);
+  --numsize:22px; --numtrack:-.02em; --numcase:none; --numweight:500;
+}
+/* ---------- 2 · STUDIO — soft, friendly, consumer ---------- */
+[data-skin="studio"]{
+  --ground:#eef1f4; --raise:#ffffff; --ink:#1c2733; --dim:#67788a; --faint:#9aabbb;
+  --rule:rgba(28,39,51,.10); --accent:#3f7fd4;
+  --display:'Avenir Next',Futura,'Segoe UI',sans-serif; --body:'Avenir Next','Segoe UI',sans-serif;
+  --num:'Avenir Next','Segoe UI',sans-serif;
+  --r:22px; --air:1.3; --shadow:0 22px 40px -22px rgba(28,50,80,.34);
+  --numsize:22px; --numtrack:-.02em; --numcase:none; --numweight:600;
+}
+/* ---------- 3 · VELVET — warm dark, jewel box (dark ≠ crypto) ---------- */
+[data-skin="velvet"]{
+  --ground:#1a1416; --raise:#241c1f; --ink:#f6efe8; --dim:#a89a92; --faint:#75665f;
+  --rule:rgba(246,239,232,.11); --accent:#d9a441;
+  --display:Didot,'Bodoni 72',Georgia,serif; --body:'Avenir Next','Segoe UI',sans-serif;
+  --num:Didot,'Bodoni 72',Georgia,serif;
+  --r:10px; --air:1.2; --shadow:0 26px 46px -24px rgba(0,0,0,.85);
+  --numsize:26px; --numtrack:0; --numcase:none; --numweight:400;
+}
+/* ---------- 4 · PRESS — graphic, print, high key ---------- */
+[data-skin="press"]{
+  --ground:#ffffff; --raise:#f4f4f2; --ink:#111; --dim:#666; --faint:#a5a5a0;
+  --rule:rgba(0,0,0,.14); --accent:#e0452f;
+  --display:'Helvetica Neue',Arial,sans-serif; --body:'Helvetica Neue',Arial,sans-serif;
+  --num:'Helvetica Neue',Arial,sans-serif;
+  --r:0px; --air:1.05; --shadow:none;
+  --numsize:24px; --numtrack:-.04em; --numcase:none; --numweight:700;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  -webkit-font-smoothing:antialiased;padding-bottom:120px;transition:background .35s,color .35s}
+.wrap{max-width:1000px;margin:0 auto;padding:0 44px}
+
+/* ---------- skin switcher ---------- */
+.switch{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+  padding:13px 24px;background:var(--raise);border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.switch .lbl{font:600 10px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.switch .opts{display:flex;gap:7px;flex-wrap:wrap}
+.switch button{background:transparent;border:1px solid var(--rule);color:var(--dim);cursor:pointer;
+  padding:8px 14px;border-radius:999px;font:600 11px/1 var(--body);letter-spacing:.04em;transition:.18s}
+.switch button:hover{color:var(--ink)}
+.switch button.on{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.switch .desc{font:400 12px/1.4 var(--body);color:var(--dim);flex:1;min-width:220px;text-align:right}
+
+/* ---------- header ---------- */
+header{padding:calc(58px * var(--air)) 0 0;display:flex;justify-content:space-between;
+  align-items:flex-end;gap:30px;flex-wrap:wrap}
+.eyebrow{font:600 10px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+h1{font:400 52px/1 var(--display);letter-spacing:-.03em;margin:16px 0 0}
+[data-skin="studio"] h1,[data-skin="press"] h1{font-weight:600}
+[data-skin="press"] h1{letter-spacing:-.05em;font-weight:700}
+h1 .at{color:var(--faint)}
+.stats{font:400 13px/1.85 var(--body);color:var(--dim);text-align:right}
+.stats b{color:var(--ink);font-weight:600}
+.pub{display:inline-block;margin-top:8px;color:var(--accent);border:1px solid var(--rule);
+  padding:6px 11px;border-radius:999px;font:600 10px/1 var(--body);letter-spacing:.12em;text-transform:uppercase}
+
+/* ---------- hero ---------- */
+.hero{margin-top:calc(46px * var(--air));padding:calc(46px * var(--air)) 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  display:grid;grid-template-columns:270px 1fr;gap:calc(46px * var(--air));align-items:center}
+.hero .stage{display:grid;place-items:center;perspective:1000px}
+.hero .coin{width:230px;height:230px}
+.hero .glyph{font-size:78px}
+.kicker{font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.hero h2{font:400 42px/1.08 var(--display);letter-spacing:-.028em;margin:15px 0 0}
+[data-skin="studio"] .hero h2{font-weight:600}
+[data-skin="press"] .hero h2{font-weight:700;letter-spacing:-.045em}
+.hero .note{font:400 16px/1.68 var(--body);color:var(--dim);margin-top:15px;max-width:42ch}
+.facts{display:flex;gap:38px;margin-top:28px;padding-top:24px;border-top:1px solid var(--rule)}
+.fact .k{font:600 9.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;color:var(--faint)}
+.fact .v{font:var(--numweight) var(--numsize)/1 var(--num);letter-spacing:var(--numtrack);margin-top:10px}
+.fact .v small{color:var(--faint);font-size:.62em}
+.fact .v.txt{font-size:16px;font-family:var(--body);font-weight:500}
+
+/* ---------- the field below ---------- */
+.rest{margin-top:calc(48px * var(--air))}
+.rest .cap{font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--faint);padding-bottom:26px}
+.rows{display:flex;flex-wrap:wrap;gap:calc(42px * var(--air)) 38px;align-items:flex-start}
+.item{width:132px;text-align:center;cursor:pointer}
+.item:nth-child(4n+2){margin-top:30px}
+.item:nth-child(5n+3){margin-top:14px}
+.item .stage{perspective:700px;display:grid;place-items:center}
+.item .coin{width:112px;height:112px;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.item:hover .coin{transform:translateY(-7px)}
+.item.flipped .coin,.item.flipped:hover .coin{transform:rotateY(180deg)}
+.item .glyph{font-size:37px}
+.item .nm{font:400 15px/1.3 var(--display);display:block;margin-top:16px;letter-spacing:-.01em}
+[data-skin="studio"] .item .nm,[data-skin="press"] .item .nm{font-weight:600}
+.item .rn{font:500 10px/1.4 var(--body);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);display:block;margin-top:6px}
+.item.private .nm{color:var(--dim)}
+.item.soldout .rn{color:var(--accent)}
+
+/* ============================================================
+   COIN MATERIAL — the single biggest lever on how this feels
+   ============================================================ */
+.coin{position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center}
+.glyph{position:relative;z-index:1;line-height:1}
+.back{transform:rotateY(180deg);flex-direction:column;gap:3px;text-align:center;padding:13%}
+.back .bs{font:600 8.5px/1.25 var(--body);letter-spacing:.09em;text-transform:uppercase}
+.back .bn{font:var(--numweight) 17px/1 var(--num);margin:4px 0}
+.back .bd{font:400 8.5px/1.3 var(--body)}
+.hero .back .bs{font-size:12px}.hero .back .bn{font-size:34px}.hero .back .bd{font-size:12px}
+
+/* BONE — matte enamel, embossed rim, soft warm shadow */
+[data-skin="bone"] .face{background:radial-gradient(circle at 36% 28%, var(--lt), var(--md) 62%, var(--dk) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.34), inset 0 -6px 14px rgba(0,0,0,.16),
+             inset 0 5px 12px rgba(255,255,255,.28), var(--shadow)}
+[data-skin="bone"] .face::after{content:'';position:absolute;inset:7.5%;border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.24), 0 1px 0 rgba(0,0,0,.10)}
+[data-skin="bone"] .glyph{color:#fffdf8;text-shadow:0 1px 1px rgba(0,0,0,.18)}
+[data-skin="bone"] .back{background:#efe9dc;box-shadow:inset 0 0 0 1px rgba(0,0,0,.09), var(--shadow)}
+[data-skin="bone"] .back .bs{color:#8a8172}[data-skin="bone"] .back .bn{color:#211f1b}
+[data-skin="bone"] .back .bd{color:#a29a8c}
+
+/* STUDIO — glazed ceramic, glossy specular, generous soft shadow */
+[data-skin="studio"] .face{background:radial-gradient(circle at 34% 26%, var(--lt), var(--md) 58%, var(--dk) 100%);
+  box-shadow:inset 0 -8px 18px rgba(0,0,0,.20), inset 0 6px 14px rgba(255,255,255,.42), var(--shadow)}
+[data-skin="studio"] .face::after{content:'';position:absolute;top:9%;left:15%;width:44%;height:30%;
+  border-radius:50%;background:linear-gradient(160deg,rgba(255,255,255,.62),rgba(255,255,255,0));filter:blur(3px)}
+[data-skin="studio"] .glyph{color:#fff;text-shadow:0 2px 3px rgba(0,0,0,.22)}
+[data-skin="studio"] .back{background:#fff;box-shadow:inset 0 0 0 1px rgba(28,39,51,.10), var(--shadow)}
+[data-skin="studio"] .back .bs{color:#8496a6}[data-skin="studio"] .back .bn{color:#1c2733}
+[data-skin="studio"] .back .bd{color:#9aabbb}
+
+/* VELVET — soft enamel glow on warm dark, zero chrome */
+[data-skin="velvet"] .face{background:radial-gradient(circle at 38% 30%, var(--lt), var(--md) 60%, var(--dk) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16), inset 0 -7px 16px rgba(0,0,0,.44),
+             0 0 34px -6px var(--md), var(--shadow)}
+[data-skin="velvet"] .face::after{content:'';position:absolute;inset:8%;border-radius:50%;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.20)}
+[data-skin="velvet"] .glyph{color:rgba(255,255,255,.96);text-shadow:0 1px 3px rgba(0,0,0,.45)}
+[data-skin="velvet"] .back{background:#2b2226;box-shadow:inset 0 0 0 1px rgba(246,239,232,.12), var(--shadow)}
+[data-skin="velvet"] .back .bs{color:#b9a89e}[data-skin="velvet"] .back .bn{color:#f6efe8}
+[data-skin="velvet"] .back .bd{color:#8d7d75}
+
+/* PRESS — flat two-tone with offset registration, hard edges */
+[data-skin="press"] .face{background:var(--md);box-shadow:none;overflow:hidden}
+[data-skin="press"] .face::after{content:'';position:absolute;inset:0;border-radius:50%;
+  background:var(--dk);clip-path:polygon(0 62%,100% 46%,100% 100%,0 100%);mix-blend-mode:multiply;opacity:.55}
+[data-skin="press"] .glyph{color:#fff;mix-blend-mode:normal}
+[data-skin="press"] .back{background:var(--ground);box-shadow:inset 0 0 0 2px var(--ink)}
+[data-skin="press"] .back .bs{color:var(--dim)}[data-skin="press"] .back .bn{color:var(--ink)}
+[data-skin="press"] .back .bd{color:var(--faint)}
+
+/* backed = outline instead of filled, in every skin */
+.backed .face{background:transparent !important;box-shadow:inset 0 0 0 2.5px var(--md) !important}
+.backed .face::after{display:none !important}
+.backed .glyph{color:var(--md) !important;text-shadow:none !important}
+</style>
+</head>
+<body data-skin="bone">
+
+<div class="switch">
+  <span class="lbl">Skin</span>
+  <div class="opts">
+    <button class="on" onclick="setSkin('bone',this)">Bone</button>
+    <button onclick="setSkin('studio',this)">Studio</button>
+    <button onclick="setSkin('velvet',this)">Velvet</button>
+    <button onclick="setSkin('press',this)">Press</button>
+  </div>
+  <span class="desc" id="desc"></span>
+</div>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Ovation</div>
+      <h1><span class="at">@</span>trey</h1>
+    </div>
+    <div class="stats">
+      <div><b>14</b> coins across <b>12</b> sellers</div>
+      <div>collecting since <b>Oct 2025</b></div>
+      <span class="pub">● public</span>
+    </div>
+  </header>
+
+  <section class="hero" id="hero"></section>
+
+  <section class="rest">
+    <div class="cap">Everything else</div>
+    <div class="rows" id="rows"></div>
+  </section>
+</div>
+
+<script>
+const DESC = {
+  bone:'Warm gallery catalogue. Matte enamel coins, book serif, generous air.',
+  studio:'Soft and friendly. Glazed ceramic coins, geometric sans, rounded and consumer.',
+  velvet:'Warm dark jewel box. Soft enamel glow, no chrome — proof that dark need not read crypto.',
+  press:'Graphic and printed. Flat two-tone coins with offset registration, tight grotesque.'
+};
+
+const COINS = [
+  { seller:'Casa Verde Dive',   run:'season pass', n:22,  of:40,  date:'Jul 2026', tint:'#1B9AAA', glyph:'⌇', kind:'owned',  state:'open',    private:false, note:'Playa Guiones, Costa Rica. Four dives, one very bad sunburn, and the only coin here that came with a tan.' },
+  { seller:'Wren',              run:'founding',    n:5,   of:25,  date:'Jul 2026', tint:'#A8324A', glyph:'❈', kind:'backed', state:'open',    private:true  },
+  { seller:'Understory',        run:'pre-seed',    n:9,   of:50,  date:'Jul 2026', tint:'#356859', glyph:'❀', kind:'owned',  state:'open',    private:true  },
+  { seller:'Pallet',            run:'v1',          n:130, of:300, date:'Jul 2026', tint:'#8A8253', glyph:'◬', kind:'owned',  state:'open',    private:false },
+  { seller:'Kettle & Co.',      run:'launch',      n:12,  of:100, date:'Jun 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Halvard',           run:'pre-seed',    n:14,  of:50,  date:'May 2026', tint:'#7B4B94', glyph:'✲', kind:'backed', state:'open',    private:true  },
+  { seller:'Ninth St Roasters', run:'first roast', n:61,  of:150, date:'May 2026', tint:'#6F4E37', glyph:'⬮', kind:'owned',  state:'open',    private:false },
+  { seller:'Tidepool',          run:'early',       n:401, of:500, date:'Apr 2026', tint:'#2E7D7B', glyph:'≈', kind:'owned',  state:'open',    private:false },
+  { seller:'Kettle & Co.',      run:'pre-seed',    n:35,  of:50,  date:'Mar 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Mossbook',          run:'v1',          n:88,  of:200, date:'Feb 2026', tint:'#4A7C59', glyph:'⬡', kind:'owned',  state:'soldout', private:false },
+  { seller:'Orbit',             run:'founding',    n:3,   of:25,  date:'Jan 2026', tint:'#3B5BA5', glyph:'◆', kind:'owned',  state:'soldout', private:false },
+  { seller:'Lumen',             run:'pre-seed',    n:7,   of:50,  date:'Dec 2025', tint:'#D4A017', glyph:'✦', kind:'owned',  state:'soldout', private:false },
+  { seller:'Arc',               run:'founding',    n:19,  of:30,  date:'Nov 2025', tint:'#5C6B73', glyph:'◐', kind:'owned',  state:'soldout', private:false },
+  { seller:'Ferrous',           run:'pre-seed',    n:2,   of:50,  date:'Oct 2025', tint:'#B7410E', glyph:'▰', kind:'owned',  state:'soldout', private:false },
+];
+
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16), cl=v=>Math.max(0,Math.min(255,v));
+  return '#'+(((cl((n>>16)+amt))<<16)|((cl(((n>>8)&255)+amt))<<8)|cl((n&255)+amt)).toString(16).padStart(6,'0');
+}
+const tint=c=>`--lt:${shade(c.tint,58)};--md:${c.tint};--dk:${shade(c.tint,-52)}`;
+const coinEl=c=>`<div class="coin">
+    <div class="side face"><span class="glyph">${c.glyph}</span></div>
+    <div class="side back"><span class="bs">${c.seller}</span>
+      <span class="bn">${c.n} / ${c.of}</span><span class="bd">${c.run} · ${c.date}</span></div>
+  </div>`;
+
+const h=COINS[0];
+document.getElementById('hero').innerHTML=`
+  <div class="stage" style="${tint(h)}" onclick="this.querySelector('.coin').style.transform=this.querySelector('.coin').style.transform?'':'rotateY(180deg)'">${coinEl(h)}</div>
+  <div>
+    <div class="kicker">Most recent</div>
+    <h2>${h.seller}</h2>
+    <p class="note">${h.note}</p>
+    <div class="facts">
+      <div class="fact"><div class="k">Coin</div><div class="v">${h.n}<small> / ${h.of}</small></div></div>
+      <div class="fact"><div class="k">Run</div><div class="v txt">${h.run}</div></div>
+      <div class="fact"><div class="k">Acquired</div><div class="v txt">${h.date}</div></div>
+    </div>
+  </div>`;
+
+document.getElementById('rows').innerHTML=COINS.slice(1).map(c=>`
+  <div class="item ${c.kind==='backed'?'backed':''} ${c.private?'private':''} ${c.state==='soldout'?'soldout':''}"
+       style="${tint(c)}" onclick="this.classList.toggle('flipped')">
+    <div class="stage">${coinEl(c)}</div>
+    <span class="nm">${c.seller}</span>
+    <span class="rn">${c.run} · #${c.n}${c.state==='soldout'?' · closed':''}</span>
+  </div>`).join('');
+
+function setSkin(s,btn){
+  document.body.dataset.skin=s;
+  document.querySelectorAll('.switch button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('desc').textContent=DESC[s];
+}
+document.getElementById('desc').textContent=DESC.bone;
+addEventListener('keydown',e=>{
+  const map={'1':'bone','2':'studio','3':'velvet','4':'press'};
+  if(map[e.key]){ setSkin(map[e.key], document.querySelectorAll('.switch button')[+e.key-1]); }
+});
+</script>
+</body>
+</html>

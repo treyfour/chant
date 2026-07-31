@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · Buyer Flow v3</title>
+<style>
+:root{
+  --ground:#f7f4ed; --raise:#fffdf8; --paper:#efe9dc;
+  --ink:#211f1b; --dim:#6d675d; --faint:#a29a8c;
+  --rule:rgba(33,31,27,.11); --accent:#8a6a3b; --good:#4a7c59;
+  --display:'Iowan Old Style',Georgia,'Times New Roman',serif;
+  --body:'Avenir Next','Segoe UI',-apple-system,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --lift:0 18px 34px -20px rgba(60,48,30,.42);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+
+.eyebrow{font:600 10px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.kicker{font:600 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+h1{font:400 44px/1.05 var(--display);letter-spacing:-.03em}
+h2{font:400 32px/1.12 var(--display);letter-spacing:-.025em}
+h3{font:400 21px/1.2 var(--display);letter-spacing:-.02em}
+p{line-height:1.65;color:var(--dim)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--ink);color:var(--ground);
+  border:0;border-radius:11px;padding:15px 26px;font:600 14px/1 var(--body);cursor:pointer;transition:.18s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--lift)}
+.btn.ghost{background:transparent;color:var(--dim);border:1px solid var(--rule)}
+.btn.ghost:hover{color:var(--ink);box-shadow:none;transform:none}
+.btn.sm{padding:10px 16px;font-size:12.5px;border-radius:9px}
+.card{background:var(--raise);border:1px solid var(--rule);border-radius:16px}
+.lbl{display:block;font:600 11px/1 var(--body);letter-spacing:.06em;color:var(--dim);margin-bottom:7px}
+.inp{background:var(--raise);border:1px solid var(--rule);border-radius:10px;padding:13px 14px;font:400 14px/1 var(--body)}
+.inp.ph{color:var(--faint)}
+
+/* ---------- rail ---------- */
+.rail{position:sticky;top:0;z-index:200;background:var(--raise);border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:12px;padding:11px 22px;flex-wrap:wrap}
+.rail .lb{font:600 10px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.rail button{background:transparent;border:1px solid var(--rule);color:var(--dim);cursor:pointer;
+  padding:7px 12px;border-radius:999px;font:600 11px/1 var(--body);transition:.16s;white-space:nowrap}
+.rail button:hover{color:var(--ink)}
+.rail button.on{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.rail .note{flex:1;text-align:right;min-width:190px;font:400 11.5px/1.4 var(--body);color:var(--dim)}
+
+.page{display:none;min-height:calc(100vh - 46px)}
+.page.on{display:block}
+.wrap{max-width:1000px;margin:0 auto;padding:0 44px}
+
+.nav{height:62px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--rule);padding:0 44px;
+  position:sticky;top:46px;background:rgba(247,244,237,.92);backdrop-filter:blur(8px);z-index:100}
+.nav .wm{font:400 19px/1 var(--display);letter-spacing:-.02em}
+.nav .sp{flex:1}
+.nav .me{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--ground);
+  display:grid;place-items:center;font:600 12px/1 var(--body);cursor:pointer}
+
+/* ============================================================
+   COIN
+   ============================================================ */
+/* ---- DYED LEATHER: matte, grained, stitched, blind-embossed ---- */
+.coin{position:relative}
+.side{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;overflow:hidden}
+.face{
+  background:radial-gradient(circle at 50% 42%, var(--lt) 0%, var(--md) 54%, var(--dk) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.26),          /* cut edge */
+    inset 0 3px 5px rgba(255,255,255,.09),    /* barely-there top light */
+    inset 0 -10px 20px rgba(0,0,0,.30),       /* matte falloff, no specular */
+    0 10px 20px -10px rgba(48,34,18,.42);     /* soft dry shadow */
+}
+/* grain */
+.face::before{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2;
+  opacity:.42;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size:120px 120px}
+/* stitch ring */
+.face::after{content:'';position:absolute;inset:9%;border-radius:50%;z-index:3;pointer-events:none;
+  border:1.5px dashed rgba(255,255,255,.20);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.10)}
+/* blind emboss — pressed in, never printed on */
+.glyph{position:relative;z-index:4;line-height:1;color:rgba(0,0,0,.34);
+  text-shadow:0 1.5px 0 rgba(255,255,255,.20), 0 -1px 1px rgba(0,0,0,.22)}
+
+/* backed = unfilled, just a tooled outline */
+.backed .face{background:transparent;box-shadow:inset 0 0 0 2px var(--md)}
+.backed .face::before,.backed .face::after{display:none}
+.backed .glyph{color:var(--md);text-shadow:none;opacity:.85}
+
+/* ============================================================
+   P1 · SELLER — coin is a line of text, not a display case
+   ============================================================ */
+/* Warrick's own site. Ovation does not exist on this screen. */
+.wnav{height:62px;display:flex;align-items:center;gap:26px;border-bottom:1px solid var(--rule);padding:0 44px;
+  position:sticky;top:46px;background:rgba(247,244,237,.94);backdrop-filter:blur(8px);z-index:100}
+.wnav .brand{display:flex;align-items:center;gap:10px;font:600 16px/1 var(--body)}
+.wnav .brand .m{width:27px;height:27px;border-radius:8px;background:#8f6a45;color:#fff;display:grid;
+  place-items:center;font-size:12px}
+.wnav .lk{font:500 13px/1 var(--body);color:var(--dim);cursor:pointer}
+.wnav .lk:hover{color:var(--ink)}
+.wnav .lk.act{color:var(--ink)}
+.wnav .sp{flex:1}
+
+.pricing{padding:60px 0 90px;text-align:center}
+.pricing .sub{font-size:16px;margin-top:12px}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px;text-align:left;
+  align-items:stretch}
+.tier{padding:28px 26px;position:relative;display:flex;flex-direction:column}
+.tier.feat{border-color:rgba(33,31,27,.26);box-shadow:var(--lift)}
+.tier .badge{position:absolute;top:-9px;left:26px;font:600 9px/1 var(--body);letter-spacing:.14em;
+  text-transform:uppercase;background:var(--ink);color:var(--ground);padding:6px 10px;border-radius:999px}
+.tier .tn{font:400 22px/1 var(--display);letter-spacing:-.02em}
+.tier .tp{font:400 34px/1 var(--display);letter-spacing:-.03em;margin-top:12px}
+.tier .tp small{font:400 14px/1 var(--body);color:var(--faint);letter-spacing:0}
+.tier ul{list-style:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--rule)}
+.tier li{font:400 13.5px/1.5 var(--body);color:var(--dim);padding:5px 0;display:flex;gap:9px}
+.tier li::before{content:'·';color:var(--faint)}
+.tier .coinline{display:flex;gap:12px;align-items:center;margin-top:18px;padding-top:16px;
+  border-top:1px solid var(--rule)}
+.tier .coinline .ic{width:40px;height:40px;flex-shrink:0}
+.tier .coinline .ic .glyph{font-size:14px}
+.tier .coinline .t{font:600 12.5px/1.35 var(--body)}
+.tier .coinline .s{font:400 11.5px/1.35 var(--body);color:var(--faint);margin-top:3px}
+.tier .cta{margin-top:auto;padding-top:24px}
+.avs{display:flex}
+.av{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--raise);margin-left:-7px;
+  display:grid;place-items:center;font:600 9.5px/1 var(--body);color:#fff;cursor:pointer;transition:.15s}
+.av:first-child{margin-left:0}
+.av:hover{transform:translateY(-3px)}
+.hair{height:1px;background:var(--rule);margin:18px 0}
+
+/* ============================================================
+   P2 · CHECKOUT
+   ============================================================ */
+.co{max-width:920px;margin:0 auto;padding:52px 44px;display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.co .ln{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.co .ln.free{border:0;padding:12px 0;color:var(--dim);font-size:13px;align-items:center}
+.co .ln.free b{color:var(--ink)}
+.co .ln.free .z{font:600 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--good)}
+.co .tot{display:flex;justify-content:space-between;padding-top:16px;font:600 17px/1 var(--body);
+  border-top:1px solid var(--rule)}
+
+/* ============================================================
+   P3 · CONFIRMATION
+   ============================================================ */
+.cfm{max-width:540px;margin:0 auto;padding:90px 44px;text-align:center}
+.cfm .tick{width:50px;height:50px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center;
+  font-size:22px;margin:0 auto 22px}
+.cfm .box{padding:20px 24px;margin-top:30px;text-align:left}
+.cfm .box .r{display:flex;justify-content:space-between;padding:9px 0;font-size:13.5px}
+.cfm .box .r span{color:var(--dim)}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.scrim{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:24px;
+  opacity:0;transition:opacity .4s ease;
+  background:radial-gradient(120% 90% at 50% 45%, rgba(43,34,22,.62), rgba(20,16,11,.86));
+  backdrop-filter:blur(7px) saturate(.9)}
+.scrim.open{display:flex}
+.scrim.in{opacity:1}
+.x{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:0;background:transparent;
+  color:var(--faint);cursor:pointer;font-size:16px;line-height:1;z-index:6;transition:.15s}
+.x:hover{background:rgba(33,31,27,.07);color:var(--ink)}
+
+/* ---------- the reveal ---------- */
+.reveal{position:relative;width:100%;max-width:404px;background:var(--raise);border-radius:22px;
+  padding:52px 44px 40px;text-align:center;overflow:hidden;
+  box-shadow:0 50px 90px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.5) inset;
+  transform:translateY(22px) scale(.965);opacity:0;
+  transition:transform .62s cubic-bezier(.16,.86,.28,1), opacity .45s ease}
+.scrim.in .reveal{transform:none;opacity:1}
+.reveal::before{content:'';position:absolute;top:-30%;left:50%;width:150%;height:88%;transform:translateX(-50%);
+  background:radial-gradient(closest-side, rgba(200,113,55,.14), transparent 72%);pointer-events:none}
+.reveal .stage{position:relative;display:grid;place-items:center;margin-bottom:34px}
+.reveal .coin{width:186px;height:186px;position:relative;z-index:2;
+  animation:land 1.25s cubic-bezier(.14,.85,.25,1) both}
+.reveal .glyph{font-size:64px}
+@keyframes land{
+  0%{opacity:0;transform:translateY(30px) scale(.86)}
+  55%{opacity:1;transform:translateY(-5px) scale(1.015)}
+  100%{opacity:1;transform:none}
+}
+/* leather doesn't glint — a warm light warms across it instead */
+.reveal .stage::after{content:'';position:absolute;inset:-14%;border-radius:50%;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side, rgba(214,150,90,.34), transparent 70%);
+  animation:warm 2.4s .55s cubic-bezier(.3,0,.35,1) both}
+@keyframes warm{0%{opacity:0;transform:scale(.82)}38%{opacity:1;transform:scale(1)}100%{opacity:.34;transform:scale(1.04)}}
+
+.reveal .nm{font:400 30px/1.15 var(--display);letter-spacing:-.025em}
+.reveal .sn{font:400 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:12px}
+.reveal .go{width:100%;margin-top:32px}
+.reveal .dismiss{display:block;margin:15px auto 0;background:none;border:0;color:var(--faint);cursor:pointer;
+  font:400 12px/1 var(--body)}
+.reveal .dismiss:hover{color:var(--dim)}
+
+/* ---------- collection sheet ---------- */
+.sheet{position:relative;width:100%;max-width:880px;max-height:86vh;background:var(--ground);border-radius:20px;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 50px 90px -30px rgba(0,0,0,.6);
+  transform:translateY(20px) scale(.975);opacity:0;
+  transition:transform .5s cubic-bezier(.16,.86,.28,1), opacity .4s ease}
+.scrim.in .sheet{transform:none;opacity:1}
+.sh-head{padding:26px 30px 20px;border-bottom:1px solid var(--rule);display:flex;align-items:flex-end;
+  gap:18px;flex-wrap:wrap;background:var(--raise)}
+.sh-head .nm{font:400 30px/1 var(--display);letter-spacing:-.028em}
+.sh-head .nm i{color:var(--faint);font-style:normal}
+.sh-head .ct{font:400 12.5px/1 var(--body);color:var(--dim);margin-top:9px}
+.search{margin-left:auto;position:relative}
+.search input{width:210px;background:var(--ground);border:1px solid var(--rule);border-radius:10px;
+  padding:11px 13px 11px 34px;font:400 13px/1 var(--body);color:var(--ink);outline:none;transition:.15s}
+.search input:focus{border-color:var(--faint)}
+.search input::placeholder{color:var(--faint)}
+.search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:12px}
+.sh-body{padding:28px 30px 34px;overflow-y:auto}
+
+/* ALIGNED grid — equal cells, no stagger */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:34px 20px}
+.it{text-align:center;cursor:context-menu;position:relative}
+.it .stage{display:grid;place-items:center;height:112px}
+.it .coin{width:104px;height:104px;transition:transform .28s cubic-bezier(.2,.7,.2,1)}
+.it:hover .coin{transform:translateY(-6px)}
+.it .glyph{font-size:35px}
+.it .n{display:block;margin-top:15px;font:400 14.5px/1.25 var(--display);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .r{display:block;margin-top:5px;font:400 9.5px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint)}
+.it.priv .n{color:var(--dim)}
+.it.priv .stage::after{content:'';position:absolute;top:4px;right:14px;width:16px;height:16px;border-radius:50%;
+  background:var(--ground);box-shadow:inset 0 0 0 1px var(--rule);
+  background-image:radial-gradient(circle,var(--faint) 1.6px,transparent 1.7px)}
+.it.miss{opacity:.5}
+.it.miss .face{background:transparent;box-shadow:inset 0 0 0 1.5px var(--rule)}
+.it.miss .face::before,.it.miss .face::after{display:none}
+.it.miss .glyph{color:var(--faint);text-shadow:none}
+.it.miss .r{color:var(--accent)}
+.empty{text-align:center;padding:60px 0;color:var(--dim);font-size:14px}
+
+.sh-foot{padding:14px 30px;border-top:1px solid var(--rule);background:var(--raise);
+  font:400 11.5px/1.5 var(--body);color:var(--faint);display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.sh-foot .sp{flex:1}
+
+/* right-click menu */
+.ctx{position:fixed;z-index:400;background:var(--raise);border:1px solid var(--rule);border-radius:11px;
+  box-shadow:0 20px 40px -16px rgba(60,48,30,.5);padding:6px;display:none;min-width:186px}
+.ctx.open{display:block}
+.ctx .hd{padding:8px 11px 7px;font:600 9.5px/1 var(--body);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--faint);border-bottom:1px solid var(--rule);margin-bottom:5px}
+.ctx button{display:flex;align-items:center;gap:9px;width:100%;background:none;border:0;text-align:left;
+  padding:9px 11px;border-radius:7px;cursor:pointer;font:400 13px/1 var(--body);color:var(--ink)}
+.ctx button:hover{background:rgba(33,31,27,.055)}
+.ctx button small{color:var(--faint);font-size:11px}
+
+/* ============================================================
+   P4 · DISCOVERY (public page — has a URL, unlike the sheet)
+   ============================================================ */
+.pub{padding:52px 0 90px}
+.pub .hd{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.pub .st{text-align:right;font:400 13px/1.8 var(--body);color:var(--dim)}
+.pub .st b{color:var(--ink);font-weight:600}
+.note-band{background:var(--paper);border-radius:14px;padding:18px 22px;margin-top:26px;
+  font:400 13.5px/1.6 var(--body);color:var(--dim)}
+.note-band b{color:var(--ink)}
+.pub .grid{margin-top:32px;padding-top:32px;border-top:1px solid var(--rule)}
+</style>
+</head>
+<body>
+
+<div class="rail">
+  <span class="lb">Buyer v3</span>
+  <div class="steps" id="steps"></div>
+  <span class="note" id="note"></span>
+</div>
+
+<!-- ================= P1 · SELLER ================= -->
+<div class="page on" id="p1">
+  <div class="wnav">
+    <div class="brand"><div class="m">▲</div>Warrick</div>
+    <span class="lk">Product</span><span class="lk">Docs</span><span class="lk act">Pricing</span>
+    <span class="sp"></span>
+    <span class="lk">Sign in</span>
+    <button class="btn sm">Start free</button>
+  </div>
+
+  <div class="wrap pricing">
+    <div class="eyebrow">Pricing</div>
+    <h1 style="margin-top:14px">Free while you're figuring it out.</h1>
+    <p class="sub">Code review that reads your whole codebase, not just the diff.</p>
+
+    <div class="tiers">
+      <div class="card tier">
+        <div class="tn">Free</div>
+        <div class="tp">$0</div>
+        <ul><li>One repository</li><li>100 reviews a month</li><li>Community support</li></ul>
+        <div class="cta"><button class="btn ghost" style="width:100%">Start free</button></div>
+      </div>
+
+      <div class="card tier feat">
+        <span class="badge">Most popular</span>
+        <div class="tn">Pro</div>
+        <div class="tp">$20<small> / month</small></div>
+        <ul><li>Unlimited repositories</li><li>Self-hosted runners</li><li>Shared Slack channel</li></ul>
+        <div class="coinline">
+          <div class="ic" id="coinPro"><div class="coin"><div class="side face"><span class="glyph">▲</span></div></div></div>
+          <div><div class="t">Founding user coin</div><div class="s">No. 35 of 50 · 15 left</div></div>
+        </div>
+        <div class="cta"><button class="btn" style="width:100%" onclick="go(2)">Subscribe</button></div>
+      </div>
+
+      <div class="card tier">
+        <div class="tn">Team</div>
+        <div class="tp">$99<small> / month</small></div>
+        <ul><li>Everything in Pro</li><li>SSO and SAML</li><li>99.9% uptime SLA</li></ul>
+        <div class="coinline">
+          <div class="ic" id="coinTeam"><div class="coin"><div class="side face"><span class="glyph">◆</span></div></div></div>
+          <div><div class="t">Charter member coin</div><div class="s">No. 3 of 25 · 22 left</div></div>
+        </div>
+        <div class="cta"><button class="btn ghost" style="width:100%" onclick="go(2)">Subscribe</button></div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:38px">
+      <div class="avs" id="avs"></div>
+      <span style="font-size:12.5px;color:var(--faint)">455 developers subscribe to Warrick</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ================= P2 · CHECKOUT ================= -->
+<div class="page" id="p2">
+  <div class="co">
+    <div>
+      <div class="eyebrow">Warrick</div>
+      <h2 style="margin-top:12px">$20.00 <span style="font-size:17px;color:var(--faint)">/ month</span></h2>
+      <div style="margin-top:26px">
+        <div class="ln"><span>Pro · monthly</span><span>$20.00</span></div>
+        <div class="ln free">
+          <span>Founding user coin <b>·</b> no. 35 of 50</span>
+          <span class="z">Included</span>
+        </div>
+        <div class="tot"><span>Due today</span><span>$20.00</span></div>
+      </div>
+      <p style="font-size:12.5px;margin-top:24px">An ordinary Stripe subscription. The coin costs nothing and adds no steps.</p>
+    </div>
+    <div>
+      <label class="lbl">Email</label><div class="inp">trey@example.com</div>
+      <label class="lbl" style="margin-top:14px">Card information</label><div class="inp ph">1234 1234 1234 1234</div>
+      <label class="lbl" style="margin-top:14px">Name on card</label><div class="inp">Trey Schulte</div>
+      <button class="btn" style="width:100%;margin-top:24px" onclick="go(3)">Start subscription</button>
+      <div style="text-align:center;font-size:11.5px;color:var(--faint);margin-top:12px">Powered by <b>Stripe</b></div>
+      <button class="btn ghost sm" style="width:100%;margin-top:22px" onclick="go(1)">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= P3 · CONFIRMATION ================= -->
+<div class="page" id="p3">
+  <div class="cfm">
+    <div class="tick">✓</div>
+    <h2>You're on Pro</h2>
+    <p style="font-size:16px;margin-top:11px">Welcome, Trey. Your subscription is active.</p>
+    <div class="card box">
+      <div class="r"><span>Plan</span><b>Pro · $20/mo</b></div>
+      <div class="r"><span>Next invoice</span><b>29 Aug 2026</b></div>
+      <div class="r"><span>Card</span><b>•••• 4242</b></div>
+    </div>
+    <button class="btn ghost sm" style="margin-top:24px" onclick="openReveal()">Show the coin again</button>
+    <p style="font-size:12px;margin-top:16px">Warrick's own onboarding page. Ovation appears on top and can be ignored.</p>
+  </div>
+</div>
+
+<!-- ================= P4 · DISCOVERY ================= -->
+<div class="page" id="p4">
+  <div class="nav"><span class="wm">Ovation</span><span class="sp"></span>
+    <div class="me" onclick="openSheet()">T</div></div>
+  <div class="wrap pub">
+    <div class="hd">
+      <div><div class="eyebrow">You clicked Dana's face on Warrick's page</div>
+        <h1 style="margin-top:12px"><span style="color:var(--faint)">@</span>dana</h1></div>
+      <div class="st"><div><b>21</b> coins · <b>19</b> sellers</div><div>since <b>Mar 2025</b></div></div>
+    </div>
+    <div class="note-band"><b>Nobody shared anything.</b> Six of these you have never heard of, and that is the whole growth mechanic.</div>
+    <div class="grid" id="danaGrid"></div>
+  </div>
+</div>
+
+<!-- ================= REVEAL ================= -->
+<div class="scrim" id="mReveal" onclick="if(event.target===this)close_('mReveal')">
+  <div class="reveal">
+    <button class="x" onclick="close_('mReveal')">✕</button>
+    <div class="stage" id="rStage">
+      <div class="coin" id="rCoin"><div class="side face"><span class="glyph">▲</span></div></div>
+    </div>
+    <div class="nm">Warrick</div>
+    <div class="sn">Founding user · 35 of 50</div>
+    <button class="btn go" onclick="accept()">Add to collection</button>
+    <button class="dismiss" onclick="close_('mReveal')">No thanks</button>
+  </div>
+</div>
+
+<!-- ================= COLLECTION SHEET ================= -->
+<div class="scrim" id="mSheet" onclick="if(event.target===this)close_('mSheet')">
+  <div class="sheet">
+    <button class="x" onclick="close_('mSheet')">✕</button>
+    <div class="sh-head">
+      <div><div class="nm"><i>@</i>trey</div><div class="ct" id="shCount"></div></div>
+      <div class="search"><span class="ic">⌕</span>
+        <input id="q" type="text" placeholder="Search sellers" oninput="renderGrid()" autocomplete="off"></div>
+    </div>
+    <div class="sh-body"><div class="grid" id="myGrid"></div></div>
+    <div class="sh-foot">
+      <span>Right-click any coin to hide it or make it public.</span>
+      <span class="sp"></span>
+      <button class="btn ghost sm" onclick="close_('mSheet');go(4)">See how people find you →</button>
+    </div>
+  </div>
+</div>
+
+<div class="ctx" id="ctx">
+  <div class="hd" id="ctxName">Coin</div>
+  <button onclick="togglePriv()"><span id="ctxAct">Hide from public</span></button>
+  <button onclick="closeCtx()">Copy link <small>· nothing is posted</small></button>
+</div>
+
+<script>
+const STEPS=[
+  ['1 · Pricing','A pre-seed startup\'s Pro plan. The coin is one line, next to who already has one.'],
+  ['2 · Checkout','Stripe subscription. Coin listed as included, no extra step.'],
+  ['3 · Reveal','Warrick\'s own onboarding page. The coin is revealed on top, one action, ignorable.'],
+  ['4 · Discovery','A public collection has a URL. This is how a stranger finds a company.'],
+];
+document.getElementById('steps').innerHTML=STEPS.map((s,i)=>
+  `<button class="${i===0?'on':''}" onclick="go(${i+1})">${s[0]}</button>`).join('');
+
+function go(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p'+n).classList.add('on');
+  document.querySelectorAll('.steps button').forEach((b,i)=>b.classList.toggle('on',i===n-1));
+  document.getElementById('note').textContent=STEPS[n-1][1];
+  scrollTo(0,0);
+  if(n===3) setTimeout(openReveal,480);
+}
+function open_(id){const m=document.getElementById(id);m.classList.add('open');requestAnimationFrame(()=>m.classList.add('in'));}
+function close_(id){const m=document.getElementById(id);m.classList.remove('in');setTimeout(()=>m.classList.remove('open'),400);closeCtx();}
+function openReveal(){
+  const st=document.getElementById('rStage'), c=document.getElementById('rCoin');
+  st.style.cssText=leather('#C87137');
+  c.style.animation='none'; st.style.setProperty('--x','');
+  c.offsetHeight; c.style.animation='';
+  const g=getComputedStyle(st,'::after'); // force reflow so the warm glow replays
+  open_('mReveal');
+}
+function accept(){ close_('mReveal'); setTimeout(openSheet,300); }
+function openSheet(){ renderGrid(); open_('mSheet'); }
+
+/* Fictional YC-shaped companies. Real names would attach fabricated collector
+   counts and purchase data to real businesses, which we shouldn't ship. */
+const COINS=[
+ {seller:'Warrick',  run:'founding user', n:35, of:50,  tint:'#C87137',glyph:'▲',kind:'owned', priv:false},
+ {seller:'Cinder',   run:'design partner',n:6,  of:25,  tint:'#B7410E',glyph:'▰',kind:'owned', priv:false},
+ {seller:'Halyard',  run:'beta',          n:112,of:250, tint:'#2E7D7B',glyph:'≈',kind:'owned', priv:false},
+ {seller:'Kiln',     run:'founding user', n:9,  of:50,  tint:'#D4A017',glyph:'✦',kind:'owned', priv:true },
+ {seller:'Parity',   run:'early access',  n:41, of:100, tint:'#3B5BA5',glyph:'◆',kind:'owned', priv:false},
+ {seller:'Warrick',  run:'pro · year one',n:12, of:200, tint:'#C87137',glyph:'▲',kind:'owned', priv:false},
+ {seller:'Wick',     run:'waitlist',      n:14, of:50,  tint:'#7B4B94',glyph:'✲',kind:'backed',priv:true },
+ {seller:'Thresher', run:'beta',          n:61, of:150, tint:'#6F4E37',glyph:'⬮',kind:'owned', priv:false},
+ {seller:'Roost',    run:'early access',  n:401,of:500, tint:'#356859',glyph:'❀',kind:'owned', priv:false},
+ {seller:'Sable',    run:'design partner',n:3,  of:25,  tint:'#8A8253',glyph:'◬',kind:'owned', priv:false},
+ {seller:'Mica',     run:'founding user', n:88, of:200, tint:'#4A7C59',glyph:'⬡',kind:'owned', priv:false},
+ {seller:'Bramble',  run:'beta',          n:19, of:30,  tint:'#5C6B73',glyph:'◐',kind:'owned', priv:false},
+ {seller:'Perch',    run:'founding user', n:7,  of:50,  tint:'#A8324A',glyph:'❈',kind:'backed',priv:true },
+ {seller:'Loam',     run:'early access',  n:2,  of:50,  tint:'#2F6690',glyph:'❖',kind:'owned', priv:false},
+];
+const DANA=[
+ {seller:'Warrick',  run:'founding user', n:8,  of:50,  tint:'#C87137',glyph:'▲',have:true },
+ {seller:'Tessera',  run:'design partner',n:4,  of:25,  tint:'#2F6690',glyph:'❖',have:false},
+ {seller:'Gravel',   run:'beta',          n:41, of:120, tint:'#B5651D',glyph:'▣',have:false},
+ {seller:'Almanac',  run:'founding user', n:11, of:50,  tint:'#5D5FA8',glyph:'✎',have:false},
+ {seller:'Halyard',  run:'beta',          n:88, of:250, tint:'#2E7D7B',glyph:'≈',have:true },
+ {seller:'Ferrite',  run:'early access',  n:2,  of:30,  tint:'#7A3B3B',glyph:'✧',have:false},
+ {seller:'Ostrich',  run:'waitlist',      n:63, of:200, tint:'#3C6E71',glyph:'◍',have:false},
+ {seller:'Quorum',   run:'design partner',n:19, of:150, tint:'#6F4E37',glyph:'⬮',have:false},
+];
+
+/* brand hue rendered as DYED LEATHER: pull the saturation back, sit it darker.
+   Pigment is plastic; dye is leather. */
+function toHsl(hex){
+  const r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h=0,s=0;const l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h/=6;}
+  return [h*360,s*100,l*100];
+}
+const hsl=(h,s,l)=>`hsl(${h.toFixed(0)} ${Math.max(0,Math.min(100,s)).toFixed(0)}% ${Math.max(2,Math.min(96,l)).toFixed(0)}%)`;
+function leather(hex){
+  const [h,s0,l0]=toHsl(hex);
+  const s=s0*.52, l=Math.min(l0*.78,42);
+  return `--lt:${hsl(h,s*.9,l+12)};--md:${hsl(h,s,l)};--dk:${hsl(h,s*1.08,l-13)};--raw:${hex}`;
+}
+const tint=c=>leather(c.tint);
+const coinEl=c=>`<div class="coin"><div class="side face"><span class="glyph">${c.glyph}</span></div></div>`;
+
+const AV=[['D','#C87137'],['M','#3B5BA5'],['R','#4A7C59'],['J','#A8324A'],['K','#2E7D7B'],['S','#7B4B94'],['P','#8A8253'],['+','#a29a8c']];
+document.getElementById('avs').innerHTML=AV.map(a=>`<div class="av" style="background:${a[1]}" onclick="go(4)">${a[0]}</div>`).join('');
+document.getElementById('coinPro').style.cssText=leather('#C87137');
+document.getElementById('coinTeam').style.cssText=leather('#3B5BA5');
+
+function renderGrid(){
+  const q=(document.getElementById('q').value||'').toLowerCase().trim();
+  const list=COINS.map((c,i)=>({c,i})).filter(({c})=>!q||c.seller.toLowerCase().includes(q)||c.run.toLowerCase().includes(q));
+  const g=document.getElementById('myGrid');
+  g.innerHTML = list.length ? list.map(({c,i})=>`
+    <div class="it ${c.kind==='backed'?'backed':''} ${c.priv?'priv':''}" style="${tint(c)}"
+         oncontextmenu="ctxOpen(event,${i})">
+      <div class="stage">${coinEl(c)}</div>
+      <span class="n">${c.seller}</span>
+      <span class="r">${c.run} · #${c.n}</span>
+    </div>`).join('')
+    : `<div class="empty" style="grid-column:1/-1">Nothing matches “${q}”.</div>`;
+  const priv=COINS.filter(c=>c.priv).length;
+  document.getElementById('shCount').textContent =
+    `${COINS.length} coins · ${new Set(COINS.map(c=>c.seller)).size} sellers${priv?` · ${priv} private`:''}`;
+}
+
+document.getElementById('danaGrid').innerHTML=DANA.map(c=>`
+ <div class="it ${c.have?'':'miss'}" style="${tint(c)}" ${c.have?'':'onclick="go(1)"'}>
+  <div class="stage">${coinEl(c)}</div><span class="n">${c.seller}</span>
+  <span class="r">${c.have?'you have this':'new to you →'}</span></div>`).join('');
+
+// right-click menu
+let ctxIdx=null;
+function ctxOpen(e,i){
+  e.preventDefault(); ctxIdx=i;
+  const c=COINS[i], m=document.getElementById('ctx');
+  document.getElementById('ctxName').textContent=`${c.seller} · #${c.n}`;
+  document.getElementById('ctxAct').textContent=c.priv?'Make public':'Hide from public';
+  m.style.left=Math.min(e.clientX,innerWidth-200)+'px';
+  m.style.top=Math.min(e.clientY,innerHeight-130)+'px';
+  m.classList.add('open');
+}
+function closeCtx(){document.getElementById('ctx').classList.remove('open');}
+function togglePriv(){ if(ctxIdx!=null){COINS[ctxIdx].priv=!COINS[ctxIdx].priv; renderGrid();} closeCtx(); }
+addEventListener('click',e=>{ if(!e.target.closest('.ctx')) closeCtx(); });
+addEventListener('scroll',closeCtx,true);
+
+document.getElementById('note').textContent=STEPS[0][1];
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){close_('mReveal');close_('mSheet');return;}
+  const n=parseInt(e.key,10); if(n>=1&&n<=4) go(n);
+});
+renderGrid();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "providers": {
+    "auth0": {
+      "name": "Auth0"
+    },
+    "neon": {
+      "name": "Neon"
+    }
+  },
+  "resources": {
+    "auth0-plan": {
+      "name": "auth0-plan",
+      "providerName": "Auth0",
+      "serviceId": "free"
+    },
+    "neon-plan": {
+      "name": "neon-plan",
+      "providerName": "Neon",
+      "serviceId": "free"
+    },
+    "neon-postgres": {
+      "name": "neon-postgres",
+      "providerName": "Neon",
+      "serviceId": "postgres"
+    },
+    "Ovation Web": {
+      "name": "Ovation Web",
+      "providerName": "Auth0",
+      "serviceId": "client"
+    }
+  },
+  "environments": {
+    "default": {
+      "output": ".env",
+      "resources": [
+        {
+          "resourceName": "Ovation Web"
+        },
+        {
+          "resourceName": "auth0-plan"
+        },
+        {
+          "resourceName": "neon-plan"
+        },
+        {
+          "resourceName": "neon-postgres"
+        }
+      ],
+      "variables": [
+        {
+          "variableName": "app_base_url",
+          "envKey": "APP_BASE_URL"
+        },
+        {
+          "variableName": "auth0_secret",
+          "envKey": "AUTH0_SECRET"
+        },
+        {
+          "variableName": "stripe_secret_key",
+          "envKey": "STRIPE_SECRET_KEY"
+        }
+      ]
+    }
+  },
+  "variables": {
+    "app_base_url": {
+      "name": "app_base_url",
+      "backendId": "fprjvar_61V8RDDKQcCeHsoof16PIsrVJOSQC4gS1YGQGCXIuHpI"
+    },
+    "auth0_secret": {
+      "name": "auth0_secret",
+      "backendId": "fprjvar_61V8RDA28eqMUcG7S16PIsrVJOSQC4gS1YGQGCXIuC0u"
+    },
+    "stripe_secret_key": {
+      "name": "stripe_secret_key",
+      "backendId": "fprjvar_61V8RYPP73afQE00B16PIsrVJOSQC4gS1YGQGCXIuQxk"
+    }
+  }
+}

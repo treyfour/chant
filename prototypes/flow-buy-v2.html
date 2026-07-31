@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · Buyer Flow v2 · Saniti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SANITI TOKENS — light polarity default
+   ============================================================ */
+:root{
+  --canvas:#ffffff; --canvas-paper:#ededed; --canvas-dark:#0b0b0b; --canvas-soft:#212121;
+  --ink:#0b0b0b; --ink-soft:#212121; --graphite:#353535; --mute:#797979; --ash:#b9b9b9;
+  --hairline:#ededed; --hairline-soft:#353535;
+  --brand:#f36458; --success:#37cd84; --link:#0052ef;
+
+  --sans:'Instrument Sans',-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --r-xs:3px; --r-sm:4px; --r-md:5px; --r-lg:6px; --r-mk:12px; --r-full:99999px;
+  --s-xxs:4px; --s-xs:8px; --s-sm:12px; --s-md:16px; --s-lg:24px; --s-xl:32px;
+  --s-xxl:48px; --s-sec:64px; --s-secl:96px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+
+/* type roles */
+.d-md{font:400 48px/1.08 var(--sans);letter-spacing:-1.9px}
+.d-sm{font:400 38px/1.10 var(--sans);letter-spacing:-1.35px}
+.h-md{font:500 32px/1.13 var(--sans);letter-spacing:-.5px}
+.h-sm{font:400 24px/1.10 var(--sans);letter-spacing:-.4px}
+.sub{font:400 18px/1.5 var(--sans);letter-spacing:-.18px}
+.bs{font:400 15px/1.5 var(--sans);letter-spacing:-.15px}
+.cap{font:400 13px/1.5 var(--sans)}
+.meta{font:400 12px/1.5 var(--sans);letter-spacing:-.12px}
+.eyebrow{font:400 13px/1.5 var(--mono);color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
+.mcaps{font:400 11px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+.mmicro{font:400 10px/1.3 var(--mono);color:var(--mute)}
+
+/* buttons — pill for CTA, app radii for utility */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 var(--s-lg);
+  background:var(--ink);color:#fff;border:0;border-radius:var(--r-full);font:500 16px/1 var(--sans);
+  cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.86}
+.btn.brand{background:var(--brand);color:var(--ink)}
+.btn.out{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn.quiet{background:transparent;color:var(--mute);border:1px solid var(--hairline);height:36px;
+  font:500 13px/1 var(--sans);letter-spacing:-.13px;padding:0 var(--s-md)}
+.btn.quiet:hover{color:var(--ink);border-color:var(--ash)}
+.btn.sm{height:36px;font-size:13px;padding:0 var(--s-md)}
+.dot{width:12px;height:12px;border-radius:var(--r-full);background:var(--brand);display:inline-block}
+
+.inp{height:44px;display:flex;align-items:center;padding:0 var(--s-sm);border:1px solid var(--hairline);
+  border-radius:var(--r-xs);font-size:16px;background:#fff}
+.inp.ph{color:var(--ash)}
+.lbl{display:block;font:400 12px/1.5 var(--sans);letter-spacing:-.12px;color:var(--mute);margin-bottom:6px}
+
+/* ============================================================
+   COIN — the only object with depth in a flat system
+   ============================================================ */
+.coin{position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.coin.flipped{transform:rotateY(180deg)}
+.side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center}
+.face{background:radial-gradient(circle at 36% 28%, var(--lt), var(--md) 62%, var(--dk) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.30), inset 0 -5px 12px rgba(0,0,0,.17),
+             inset 0 4px 10px rgba(255,255,255,.26), 0 4px 24px rgba(0,0,0,.10)}
+.face::after{content:'';position:absolute;inset:7.5%;border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22)}
+.glyph{position:relative;z-index:1;line-height:1;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.16)}
+.back{transform:rotateY(180deg);flex-direction:column;gap:2px;text-align:center;padding:13%;
+  background:var(--canvas-paper);box-shadow:inset 0 0 0 1px rgba(0,0,0,.07), 0 4px 24px rgba(0,0,0,.10)}
+.back .bs2{font:400 9px/1.3 var(--mono);text-transform:uppercase;color:var(--mute)}
+.back .bn{font:500 16px/1 var(--mono);color:var(--ink);margin:4px 0}
+.back .bd{font:400 9px/1.3 var(--mono);color:var(--ash)}
+.backed .face{background:transparent;box-shadow:inset 0 0 0 2px var(--md)}
+.backed .face::after{display:none}
+.backed .glyph{color:var(--md);text-shadow:none}
+
+/* ============================================================
+   RAIL
+   ============================================================ */
+.rail{position:sticky;top:0;z-index:200;background:var(--canvas-paper);color:var(--ink);
+  display:flex;align-items:center;gap:var(--s-sm);padding:10px var(--s-lg);flex-wrap:wrap;
+  border-bottom:1px solid var(--hairline)}
+.rail .lb{font:400 11px/1.5 var(--mono);text-transform:uppercase;color:var(--mute)}
+.rail button{background:transparent;border:1px solid var(--ash);color:var(--graphite);cursor:pointer;
+  height:32px;padding:0 12px;border-radius:var(--r-sm);font:600 11px/1 var(--sans);text-transform:uppercase;
+  letter-spacing:.03em;transition:.15s;white-space:nowrap}
+.rail button:hover{color:var(--ink);border-color:var(--ink)}
+.rail button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rail .steps{display:flex;gap:6px;flex-wrap:wrap}
+.rail .note{flex:1;text-align:right;min-width:180px;font:400 12px/1.4 var(--sans);color:var(--mute)}
+
+.page{display:none;min-height:calc(100vh - 52px)}
+.page.on{display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 var(--s-xl)}
+
+/* nav on seller/collection pages */
+.nav{height:64px;display:flex;align-items:center;gap:var(--s-xs);border-bottom:1px solid var(--hairline);
+  padding:0 var(--s-xl);position:sticky;top:52px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);z-index:100}
+.nav .wm{font:500 17px/1 var(--sans);letter-spacing:-.4px;margin-left:6px}
+.nav .sp{flex:1}
+.nav .me{width:32px;height:32px;border-radius:var(--r-full);background:var(--ink);color:#fff;
+  display:grid;place-items:center;font:500 12px/1 var(--sans);cursor:pointer}
+
+/* ============================================================
+   P1 · SELLER PAGE
+   ============================================================ */
+.sp{padding:var(--s-sec) 0 var(--s-secl)}
+.sp .top{display:flex;gap:var(--s-md);align-items:center;margin-bottom:var(--s-xl)}
+.sp .mk{width:44px;height:44px;border-radius:var(--r-lg);display:grid;place-items:center;font-size:20px;color:#fff;
+  background:#C87137}
+.sp .stg{margin-left:auto;padding:6px 12px;border:1px solid var(--hairline);border-radius:var(--r-full)}
+.sp .lede{max-width:30ch;margin-top:var(--s-md);color:var(--graphite)}
+.sp .grid{display:grid;grid-template-columns:1fr 380px;gap:var(--s-xxl);margin-top:var(--s-xxl);align-items:start}
+.pcard{border:1px solid var(--hairline);border-radius:var(--r-mk);padding:var(--s-xl)}
+.pcard .amt{font:400 48px/1.08 var(--sans);letter-spacing:-1.9px;margin:var(--s-xs) 0 var(--s-md)}
+.incl{display:flex;gap:var(--s-md);align-items:center;padding-top:var(--s-lg);margin-top:var(--s-lg);
+  border-top:1px solid var(--hairline)}
+.incl .mini{width:52px;height:52px;flex-shrink:0}
+.incl .mini .glyph{font-size:18px}
+.bar{height:3px;background:var(--hairline);border-radius:var(--r-full);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--brand);width:68%}
+.side-card{border:1px solid var(--hairline);border-radius:var(--r-mk);padding:var(--s-lg)}
+.avs{display:flex;margin-top:var(--s-md)}
+.av{width:34px;height:34px;border-radius:var(--r-full);border:2px solid #fff;margin-left:-8px;
+  display:grid;place-items:center;font:500 12px/1 var(--sans);color:#fff;cursor:pointer;transition:.15s}
+.av:first-child{margin-left:0}
+.av:hover{transform:translateY(-3px)}
+.hair{height:1px;background:var(--hairline);margin:var(--s-lg) 0}
+
+/* ============================================================
+   P2 · CHECKOUT
+   ============================================================ */
+.co{max-width:940px;margin:0 auto;padding:var(--s-sec) var(--s-xl);display:grid;grid-template-columns:1fr 1fr;gap:var(--s-secl)}
+.co .ln{display:flex;justify-content:space-between;padding:var(--s-sm) 0;border-bottom:1px solid var(--hairline)}
+.co .ln.s{border:0;padding:2px 0 var(--s-sm);color:var(--mute)}
+.co .tot{display:flex;justify-content:space-between;padding-top:var(--s-md);font-weight:600}
+
+/* ============================================================
+   P3 · SELLER CONFIRMATION (modal lands over this)
+   ============================================================ */
+.cfm{max-width:560px;margin:0 auto;padding:var(--s-secl) var(--s-xl);text-align:center}
+.cfm .tick{width:52px;height:52px;border-radius:var(--r-full);background:var(--success);color:#fff;
+  display:grid;place-items:center;font-size:23px;margin:0 auto var(--s-lg)}
+.cfm .box{border:1px solid var(--hairline);border-radius:var(--r-mk);padding:var(--s-lg);margin-top:var(--s-xl);text-align:left}
+.cfm .box .r{display:flex;justify-content:space-between;padding:9px 0}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.scrim{position:fixed;inset:0;z-index:300;background:rgba(11,11,11,.55);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;padding:var(--s-lg);
+  opacity:0;transition:opacity .28s}
+.scrim.open{display:flex}
+.scrim.in{opacity:1}
+.sheet{width:100%;max-width:440px;background:var(--canvas);border-radius:var(--r-mk);position:relative;
+  padding:var(--s-xl);text-align:center;
+  transform:translateY(18px) scale(.97);opacity:0;transition:transform .34s cubic-bezier(.16,.9,.3,1),opacity .28s}
+.scrim.in .sheet{transform:none;opacity:1}
+.sheet.wide{max-width:760px;text-align:left;padding:0;overflow:hidden}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:var(--r-full);border:0;
+  background:transparent;color:var(--mute);cursor:pointer;font-size:17px;line-height:1;z-index:5}
+.x:hover{background:var(--hairline);color:var(--ink)}
+
+.arrive .stage{perspective:1000px;display:grid;place-items:center;margin:var(--s-md) 0 var(--s-lg)}
+.arrive .coin{width:168px;height:168px;animation:arrive 1s cubic-bezier(.16,.9,.3,1) both;cursor:pointer}
+.arrive .glyph{font-size:58px}
+@keyframes arrive{
+  0%{opacity:0;transform:translateY(34px) rotateX(48deg) rotateZ(-14deg) scale(.72)}
+  60%{opacity:1;transform:translateY(-7px) rotateX(-6deg) rotateZ(3deg) scale(1.03)}
+  100%{opacity:1;transform:none}
+}
+.subtle{color:var(--mute)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-xs);margin-top:var(--s-lg)}
+.opt{border:1px solid var(--hairline);border-radius:var(--r-md);padding:var(--s-sm);cursor:pointer;
+  transition:.15s;text-align:left;background:transparent;color:var(--graphite)}
+.opt:hover{border-color:var(--ash)}
+.opt.sel{border-color:var(--ink);color:var(--ink);background:rgba(11,11,11,.03)}
+.opt b{display:block;font:500 13px/1.3 var(--sans);letter-spacing:-.13px}
+.opt span{display:block;font:400 12px/1.4 var(--sans);margin-top:4px;opacity:.75}
+.acts{display:flex;gap:var(--s-xs);margin-top:var(--s-lg)}
+.acts .btn{flex:1}
+.fine{margin-top:var(--s-md);padding-top:var(--s-md);border-top:1px solid var(--hairline);
+  font:400 12px/1.5 var(--sans);color:var(--mute)}
+
+/* coin detail modal */
+.dt{display:grid;grid-template-columns:280px 1fr}
+.dt .l{background:var(--canvas-paper);display:grid;place-items:center;padding:var(--s-xl)}
+.dt .l .coin{width:196px;height:196px;cursor:pointer}
+.dt .l .glyph{font-size:68px}
+.dt .r{padding:var(--s-xl)}
+.dt .rows{margin-top:var(--s-lg);border-top:1px solid var(--hairline)}
+.dt .rw{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--hairline);font-size:15px}
+.dt .rw span{color:var(--mute)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:var(--s-md);margin-top:var(--s-lg);
+  padding:var(--s-sm) var(--s-md);border:1px solid var(--hairline);border-radius:var(--r-md)}
+.sw{width:42px;height:24px;border-radius:var(--r-full);background:var(--success);position:relative;
+  cursor:pointer;flex-shrink:0;transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:var(--r-full);background:#fff;
+  transition:transform .2s}
+.sw.off{background:var(--ash)}
+.sw.off i{transform:translateX(18px)}
+.og{margin-top:var(--s-md);border:1px solid var(--hairline);border-radius:var(--r-lg);overflow:hidden}
+.og .im{height:96px;display:grid;place-items:center;background:var(--canvas-paper)}
+.og .im .coin{width:60px;height:60px}
+.og .im .glyph{font-size:21px}
+.og .tx{padding:10px 12px;border-top:1px solid var(--hairline)}
+
+/* ============================================================
+   P4/P5 · COLLECTION
+   ============================================================ */
+.col{padding:var(--s-sec) 0 var(--s-secl)}
+.col .hd{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s-lg);flex-wrap:wrap}
+.col .who .nm{font:400 48px/1.08 var(--sans);letter-spacing:-1.9px;margin-top:10px}
+.col .who .nm i{color:var(--ash);font-style:normal}
+.col .st{text-align:right;color:var(--mute)}
+.col .st b{color:var(--ink);font-weight:500}
+.hero{margin-top:var(--s-xxl);padding:var(--s-xxl) 0;border-top:1px solid var(--hairline);
+  border-bottom:1px solid var(--hairline);display:grid;grid-template-columns:240px 1fr;gap:var(--s-xxl);align-items:center}
+.hero .stage{display:grid;place-items:center;perspective:900px;cursor:pointer}
+.hero .coin{width:210px;height:210px}
+.hero .glyph{font-size:72px}
+.facts{display:flex;gap:var(--s-xl);margin-top:var(--s-lg);padding-top:var(--s-md);border-top:1px solid var(--hairline)}
+.fact .v{font:500 20px/1 var(--mono);margin-top:8px}
+.fact .v small{color:var(--ash)}
+.rest{margin-top:var(--s-xxl)}
+.rows{display:flex;flex-wrap:wrap;gap:var(--s-xxl) var(--s-xl);margin-top:var(--s-lg)}
+.it{width:126px;text-align:center;cursor:pointer}
+.it:nth-child(4n+2){margin-top:26px}
+.it:nth-child(5n+3){margin-top:12px}
+.it .stage{perspective:600px;display:grid;place-items:center}
+.it .coin{width:106px;height:106px}
+.it:hover .coin{transform:translateY(-6px)}
+.it .glyph{font-size:35px}
+.it .n{display:block;margin-top:var(--s-sm);font:500 14px/1.3 var(--sans);letter-spacing:-.2px}
+.it .r{display:block;margin-top:4px;font:400 10px/1.3 var(--mono);text-transform:uppercase;color:var(--mute)}
+.it.priv .n{color:var(--mute)}
+.it.miss{opacity:.42}
+.it.miss .face{background:transparent;box-shadow:inset 0 0 0 1px var(--hairline)}
+.it.miss .face::after{display:none}
+.it.miss .glyph{color:var(--ash);text-shadow:none}
+.it.miss .r{color:var(--brand)}
+
+/* polarity rhythm stays inside the light range: white → paper */
+.band{background:var(--canvas-paper);color:var(--ink);padding:var(--s-xxl) 0;margin-top:var(--s-xxl)}
+.band .wrap{display:flex;gap:var(--s-lg);align-items:center;flex-wrap:wrap}
+.band .t{flex:1;min-width:280px}
+.band .t p{color:var(--graphite);margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="rail">
+  <span class="lb">Buyer v2</span>
+  <div class="steps" id="steps"></div>
+  <span class="note" id="note"></span>
+</div>
+
+<!-- ================= P1 · SELLER PAGE ================= -->
+<div class="page on" id="p1">
+  <div class="nav"><span class="dot"></span><span class="wm">Ovation</span><span class="sp"></span>
+    <span class="cap subtle" style="margin-right:14px">Kettle &amp; Co.</span>
+    <div class="me" onclick="go(4)">T</div></div>
+  <div class="wrap sp">
+    <div class="top">
+      <div class="mk">▲</div>
+      <div><div class="eyebrow">Oakland · two people</div><div class="h-md" style="margin-top:4px">Kettle &amp; Co.</div></div>
+      <span class="stg mcaps">Pre-seed</span>
+    </div>
+    <div class="d-sm">Countertop fermentation, for people who ruined their first batch.</div>
+    <div class="grid">
+      <div class="pcard">
+        <div class="eyebrow">Now selling</div>
+        <div class="h-sm" style="margin-top:10px">Early Access Pass</div>
+        <div class="amt">$20</div>
+        <p class="bs subtle">First hardware run, shipped December. Includes the recipe library and a direct line to us when it goes wrong.</p>
+        <div class="incl">
+          <div class="mini" style="--lt:#e0a06f;--md:#C87137;--dk:#8f4f24">
+            <div class="coin"><div class="side face"><span class="glyph">▲</span></div></div>
+          </div>
+          <div style="flex:1">
+            <div class="cap" style="font-weight:500">Comes with the pre-seed coin</div>
+            <div class="meta subtle" style="margin-top:3px">34 of 50 claimed. When they're gone, that's it.</div>
+            <div class="bar"><i></i></div>
+          </div>
+        </div>
+        <button class="btn brand" style="width:100%;margin-top:var(--s-lg)" onclick="go(2)">Buy · $20</button>
+      </div>
+      <div>
+        <div class="side-card">
+          <div class="mcaps">Collectors · 34</div>
+          <div class="avs" id="avs"></div>
+          <div class="hair"></div>
+          <p class="meta subtle">Every face here is clickable. That opens their collection, which is how the next person finds you.</p>
+        </div>
+        <div class="side-card" style="margin-top:var(--s-md)">
+          <div class="mcaps">Ovation</div>
+          <p class="bs" style="margin-top:10px">We don't run the checkout. We're the layer that turns the receipt into something worth keeping.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= P2 · CHECKOUT ================= -->
+<div class="page" id="p2">
+  <div class="co">
+    <div>
+      <div class="eyebrow">Kettle &amp; Co.</div>
+      <div class="d-md" style="margin-top:10px">$20.00</div>
+      <div style="margin-top:var(--s-lg)">
+        <div class="ln"><span>Early Access Pass</span><span>$20.00</span></div>
+        <div class="ln s meta">Comes with the pre-seed coin, #35 of 50. No extra charge.</div>
+        <div class="tot"><span>Total due</span><span>$20.00</span></div>
+      </div>
+      <div class="hair"></div>
+      <p class="meta subtle">One ordinary Stripe payment. Nothing here asks a second question.</p>
+    </div>
+    <div>
+      <label class="lbl">Email</label><div class="inp">trey@example.com</div>
+      <label class="lbl" style="margin-top:14px">Card information</label><div class="inp ph">1234 1234 1234 1234</div>
+      <label class="lbl" style="margin-top:14px">Name on card</label><div class="inp">Trey Schulte</div>
+      <button class="btn" style="width:100%;margin-top:var(--s-lg)" onclick="go(3)">Pay $20.00</button>
+      <div class="meta subtle" style="text-align:center;margin-top:var(--s-sm)">Powered by <b>Stripe</b></div>
+      <button class="btn quiet" style="width:100%;margin-top:var(--s-lg)" onclick="go(1)">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= P3 · SELLER CONFIRMATION + ARRIVAL SHEET ================= -->
+<div class="page" id="p3">
+  <div class="cfm">
+    <div class="tick">✓</div>
+    <div class="h-md">Order confirmed</div>
+    <p class="sub subtle" style="margin-top:10px">Thanks, Trey. We'll email you when the first run ships in December.</p>
+    <div class="box">
+      <div class="r"><span class="subtle">Order</span><b class="cap">KTL-4471</b></div>
+      <div class="r"><span class="subtle">Early Access Pass</span><b class="cap">$20.00</b></div>
+      <div class="r"><span class="subtle">Card</span><b class="cap">•••• 4242</b></div>
+    </div>
+    <button class="btn quiet" style="margin-top:var(--s-lg)" onclick="openArrive()">Show the coin again</button>
+    <p class="meta subtle" style="margin-top:var(--s-md)">This is Kettle's own confirmation page. Ovation arrives on top of it, and you can dismiss it.</p>
+  </div>
+</div>
+
+<!-- ================= P4 · YOUR COLLECTION ================= -->
+<div class="page" id="p4">
+  <div class="nav"><span class="dot"></span><span class="wm">Ovation</span><span class="sp"></span>
+    <div class="me">T</div></div>
+  <div class="wrap col">
+    <div class="hd">
+      <div class="who"><div class="eyebrow">Collection</div><div class="nm"><i>@</i>trey</div></div>
+      <div class="st bs"><div><b>15</b> coins · <b>12</b> sellers</div><div>since <b>Oct 2025</b></div>
+        <div class="mcaps" style="margin-top:8px;color:var(--success)">● Public</div></div>
+    </div>
+    <div class="hero" id="hero"></div>
+    <div class="rest"><div class="mcaps">Everything else</div><div class="rows" id="rows"></div></div>
+  </div>
+  <div class="band"><div class="wrap">
+    <div class="t"><div class="h-sm">Nobody was asked to share this.</div>
+      <p class="bs">You get found because someone clicked a face on a seller's page and ended up here.</p></div>
+    <button class="btn brand" onclick="go(5)">See how →</button>
+  </div></div>
+</div>
+
+<!-- ================= P5 · DISCOVERY ================= -->
+<div class="page" id="p5">
+  <div class="nav"><span class="dot"></span><span class="wm">Ovation</span><span class="sp"></span>
+    <div class="me" onclick="go(4)">T</div></div>
+  <div class="wrap col">
+    <div class="hd">
+      <div class="who"><div class="eyebrow">You clicked Dana's face on the Kettle page</div><div class="nm"><i>@</i>dana</div></div>
+      <div class="st bs"><div><b>21</b> coins · <b>19</b> sellers</div><div>since <b>Mar 2025</b></div>
+        <div class="mcaps" style="margin-top:8px;color:var(--success)">● Public</div></div>
+    </div>
+    <div class="rest" style="margin-top:var(--s-xl);border-top:1px solid var(--hairline);padding-top:var(--s-xl)">
+      <div class="mcaps">Faded ones are new to you</div>
+      <div class="rows" id="rows2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL · ARRIVAL ================= -->
+<div class="scrim" id="mArrive" onclick="if(event.target===this)close_('mArrive')">
+  <div class="sheet arrive">
+    <button class="x" onclick="close_('mArrive')">✕</button>
+    <div class="eyebrow">Ovation</div>
+    <div class="stage" style="--lt:#e0a06f;--md:#C87137;--dk:#8f4f24">
+      <div class="coin" id="aCoin" onclick="this.classList.toggle('flipped')">
+        <div class="side face"><span class="glyph">▲</span></div>
+        <div class="side back"><span class="bs2">Kettle &amp; Co.</span><span class="bn">35/50</span><span class="bd">pre-seed · Jul 26</span></div>
+      </div>
+    </div>
+    <div class="h-sm">Kettle &amp; Co. pre-seed</div>
+    <p class="bs subtle" style="margin-top:6px">You're number 35 of 50. Fifteen left.</p>
+    <div class="opts">
+      <div class="opt sel" onclick="pick(this)"><b>● Public</b><span>Shows on your collection</span></div>
+      <div class="opt" onclick="pick(this)"><b>◐ Private</b><span>Only you see it</span></div>
+    </div>
+    <div class="acts">
+      <button class="btn quiet" onclick="close_('mArrive')">Not now</button>
+      <button class="btn" onclick="close_('mArrive');go(4)">Add to collection</button>
+    </div>
+    <div class="fine">Dismissing keeps it. The coin is yours either way — it's on your receipt and you can add it any time.</div>
+  </div>
+</div>
+
+<!-- ================= MODAL · COIN DETAIL ================= -->
+<div class="scrim" id="mDetail" onclick="if(event.target===this)close_('mDetail')">
+  <div class="sheet wide">
+    <button class="x" onclick="close_('mDetail')">✕</button>
+    <div class="dt">
+      <div class="l" id="dtL"></div>
+      <div class="r" id="dtR"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STEPS=[
+  ['1 · Seller','A real product. The coin gets one line and no exclamation mark.'],
+  ['2 · Checkout','Ordinary Stripe. Nothing asks a second question.'],
+  ['3 · Arrival sheet','Kettle\'s own confirmation page. Ovation arrives on top, dismissible.'],
+  ['4 · Collection','A real page with a real URL, because sharing depends on it.'],
+  ['5 · Discovery','You clicked a stranger. Faded coins are companies you\'ve never heard of.'],
+];
+document.getElementById('steps').innerHTML=STEPS.map((s,i)=>
+  `<button class="${i===0?'on':''}" onclick="go(${i+1})">${s[0]}</button>`).join('');
+
+function go(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p'+n).classList.add('on');
+  document.querySelectorAll('.steps button').forEach((b,i)=>b.classList.toggle('on',i===n-1));
+  document.getElementById('note').textContent=STEPS[n-1][1];
+  scrollTo(0,0);
+  if(n===3) setTimeout(openArrive,420);
+}
+function open_(id){const m=document.getElementById(id);m.classList.add('open');requestAnimationFrame(()=>m.classList.add('in'));}
+function close_(id){const m=document.getElementById(id);m.classList.remove('in');setTimeout(()=>m.classList.remove('open'),280);}
+function openArrive(){
+  const c=document.getElementById('aCoin');
+  c.classList.remove('flipped'); c.style.animation='none'; c.offsetHeight; c.style.animation='';
+  open_('mArrive');
+}
+function pick(el){el.parentNode.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+
+const COINS=[
+ {seller:'Kettle & Co.',run:'pre-seed',n:35,of:50,date:'Jul 2026',tint:'#C87137',glyph:'▲',kind:'owned',priv:false,note:'Countertop fermentation, for people who ruined their first batch. Two people, pre-seed, first hardware run ships December.',left:15},
+ {seller:'Casa Verde Dive',run:'season pass',n:22,of:40,date:'Jul 2026',tint:'#1B9AAA',glyph:'⌇',kind:'owned',priv:false,note:'Playa Guiones, Costa Rica. Four dives and a bad sunburn.',left:18},
+ {seller:'Wren',run:'founding',n:5,of:25,date:'Jul 2026',tint:'#A8324A',glyph:'❈',kind:'backed',priv:true,note:'Two designers, no website, one very good demo.',left:20},
+ {seller:'Understory',run:'pre-seed',n:9,of:50,date:'Jul 2026',tint:'#356859',glyph:'❀',kind:'owned',priv:true,note:'Forestry data. Quiet company, loud founders.',left:41},
+ {seller:'Pallet',run:'v1',n:130,of:300,date:'Jul 2026',tint:'#8A8253',glyph:'◬',kind:'owned',priv:false,note:'Shipping calculator for people who hate shipping.',left:170},
+ {seller:'Kettle & Co.',run:'launch',n:12,of:100,date:'Jun 2026',tint:'#C87137',glyph:'▲',kind:'owned',priv:false,note:'Second run. The one that shipped.',left:88},
+ {seller:'Halvard',run:'pre-seed',n:14,of:50,date:'May 2026',tint:'#7B4B94',glyph:'✲',kind:'backed',priv:true,note:'Nothing to sell yet. Backed them anyway.',left:36},
+ {seller:'Ninth St Roasters',run:'first roast',n:61,of:150,date:'May 2026',tint:'#6F4E37',glyph:'⬮',kind:'owned',priv:false,note:'One origin at a time. Roasted Tuesday, shipped Wednesday.',left:89},
+ {seller:'Tidepool',run:'early',n:401,of:500,date:'Apr 2026',tint:'#2E7D7B',glyph:'≈',kind:'owned',priv:false,note:'Swell forecasting with no wetsuit ads.',left:99},
+ {seller:'Mossbook',run:'v1',n:88,of:200,date:'Feb 2026',tint:'#4A7C59',glyph:'⬡',kind:'owned',priv:false,note:'Field notebooks printed on stone paper.',left:0},
+ {seller:'Orbit',run:'founding',n:3,of:25,date:'Jan 2026',tint:'#3B5BA5',glyph:'◆',kind:'owned',priv:false,note:'A calendar that hides itself while you are focused.',left:0},
+ {seller:'Lumen',run:'pre-seed',n:7,of:50,date:'Dec 2025',tint:'#D4A017',glyph:'✦',kind:'owned',priv:false,note:'Daylight-tracking desk lamp. Kickstarter refugees.',left:0},
+ {seller:'Arc',run:'founding',n:19,of:30,date:'Nov 2025',tint:'#5C6B73',glyph:'◐',kind:'owned',priv:false,note:'Ambient status displays for small teams.',left:0},
+ {seller:'Ferrous',run:'pre-seed',n:2,of:50,date:'Oct 2025',tint:'#B7410E',glyph:'▰',kind:'owned',priv:false,note:'Machining marketplace. Two people in a garage in Oakland.',left:0},
+];
+const DANA=[
+ {seller:'Kettle & Co.',run:'pre-seed',n:8,of:50,tint:'#C87137',glyph:'▲',have:true},
+ {seller:'Bellwether',run:'founding',n:4,of:25,tint:'#2F6690',glyph:'❖',have:false},
+ {seller:'Saltbox',run:'v1',n:41,of:120,tint:'#B5651D',glyph:'▣',have:false},
+ {seller:'Quill',run:'pre-seed',n:11,of:50,tint:'#5D5FA8',glyph:'✎',have:false},
+ {seller:'Tidepool',run:'early',n:88,of:500,tint:'#2E7D7B',glyph:'≈',have:true},
+ {seller:'Marrow',run:'founding',n:2,of:30,tint:'#7A3B3B',glyph:'✧',have:false},
+ {seller:'Fathom',run:'v1',n:63,of:200,tint:'#3C6E71',glyph:'◍',have:false},
+ {seller:'Ninth St',run:'roast 2',n:19,of:150,tint:'#6F4E37',glyph:'⬮',have:false},
+];
+
+function shade(h,a){const n=parseInt(h.slice(1),16),c=v=>Math.max(0,Math.min(255,v));
+ return '#'+(((c((n>>16)+a))<<16)|((c(((n>>8)&255)+a))<<8)|c((n&255)+a)).toString(16).padStart(6,'0');}
+const tint=c=>`--lt:${shade(c.tint,58)};--md:${c.tint};--dk:${shade(c.tint,-52)}`;
+const coinEl=c=>`<div class="coin"><div class="side face"><span class="glyph">${c.glyph}</span></div>
+ <div class="side back"><span class="bs2">${c.seller}</span><span class="bn">${c.n}/${c.of}</span>
+ <span class="bd">${c.run}</span></div></div>`;
+
+const AV=[['D','#C87137'],['M','#3B5BA5'],['R','#4A7C59'],['J','#A8324A'],['K','#2E7D7B'],['S','#7B4B94'],['P','#8A8253'],['+','#b9b9b9']];
+document.getElementById('avs').innerHTML=AV.map(a=>`<div class="av" style="background:${a[1]}" onclick="go(5)">${a[0]}</div>`).join('');
+
+const h=COINS[0];
+document.getElementById('hero').innerHTML=`
+ <div class="stage" style="${tint(h)}" onclick="this.querySelector('.coin').classList.toggle('flipped')">${coinEl(h)}</div>
+ <div><div class="eyebrow">Just added</div><div class="d-sm" style="margin-top:8px">${h.seller}</div>
+ <p class="sub subtle" style="margin-top:10px;max-width:44ch">${h.note}</p>
+ <div class="facts">
+   <div class="fact"><div class="mcaps">Coin</div><div class="v">${h.n}<small>/${h.of}</small></div></div>
+   <div class="fact"><div class="mcaps">Run</div><div class="v" style="font-size:15px">${h.run}</div></div>
+   <div class="fact"><div class="mcaps">Acquired</div><div class="v" style="font-size:15px">${h.date}</div></div>
+ </div>
+ <button class="btn sm" style="margin-top:var(--s-lg)" onclick="detail(0)">Open coin</button></div>`;
+
+document.getElementById('rows').innerHTML=COINS.slice(1).map((c,i)=>`
+ <div class="it ${c.kind==='backed'?'backed':''} ${c.priv?'priv':''}" style="${tint(c)}" onclick="detail(${i+1})">
+  <div class="stage">${coinEl(c)}</div><span class="n">${c.seller}</span>
+  <span class="r">${c.run} · #${c.n}</span></div>`).join('');
+
+document.getElementById('rows2').innerHTML=DANA.map(c=>`
+ <div class="it ${c.have?'':'miss'}" style="${tint(c)}" ${c.have?'':'onclick="go(1)"'}>
+  <div class="stage">${coinEl(c)}</div><span class="n">${c.seller}</span>
+  <span class="r">${c.have?'you have this':'new to you →'}</span></div>`).join('');
+
+function detail(i){
+  const c=COINS[i];
+  document.getElementById('dtL').style.cssText=tint(c);
+  document.getElementById('dtL').innerHTML=`<div onclick="this.querySelector('.coin').classList.toggle('flipped')">${coinEl(c)}
+    <div class="mmicro" style="text-align:center;margin-top:14px">Click to turn over</div></div>`;
+  document.getElementById('dtR').innerHTML=`
+    <div class="eyebrow">${c.run}</div>
+    <div class="h-sm" style="margin-top:8px">${c.seller}</div>
+    <p class="bs subtle" style="margin-top:10px">${c.note||''}</p>
+    <div class="rows">
+      <div class="rw"><span>Coin</span><b>${c.n} of ${c.of}</b></div>
+      <div class="rw"><span>Acquired</span><b>${c.date}</b></div>
+      <div class="rw"><span>Still available</span><b>${c.left>0?c.left:'none — closed'}</b></div>
+    </div>
+    <div class="tog"><div><div class="cap" style="font-weight:500">${c.priv?'Private':'Visible on your collection'}</div>
+      <div class="meta subtle" style="margin-top:2px">${c.priv?'Only you see this one.':'Your face shows on their page.'}</div></div>
+      <div class="sw ${c.priv?'off':''}" onclick="this.classList.toggle('off')"><i></i></div></div>
+    <div class="og">
+      <div class="im" style="${tint(c)}"><div class="coin"><div class="side face"><span class="glyph">${c.glyph}</span></div></div></div>
+      <div class="tx"><div class="cap" style="font-weight:500">${c.seller} · ${c.run} #${c.n} of ${c.of}</div>
+        <div class="mmicro" style="margin-top:4px">ovation.app/@trey</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:var(--s-md)">
+      <button class="btn quiet">Copy link</button><button class="btn quiet">Copy card</button></div>`;
+  open_('mDetail');
+}
+
+document.getElementById('note').textContent=STEPS[0][1];
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){close_('mArrive');close_('mDetail');return;}
+  const n=parseInt(e.key,10); if(n>=1&&n<=5) go(n);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · A · The Case</title>
+<style>
+  :root{
+    --bg:#0d0c0b; --felt:#171512; --felt2:#100f0d;
+    --ink:#f2ece1; --dim:#8d8579; --faint:#5b554c;
+    --line:rgba(242,236,225,.10);
+    --serif:ui-serif,Georgia,'Iowan Old Style','Times New Roman',serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,'Segoe UI',Inter,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding:0 0 100px}
+
+  /* ---------- header ---------- */
+  header{padding:56px 40px 28px;max-width:1180px;margin:0 auto}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  h1{font:400 46px/1.05 var(--serif);letter-spacing:-.02em;margin:14px 0 0}
+  h1 .at{color:var(--faint)}
+  .sub{display:flex;gap:22px;align-items:baseline;margin-top:14px;font:400 13px/1 var(--mono);color:var(--dim)}
+  .sub b{color:var(--ink);font-weight:500}
+  .pub{display:inline-flex;align-items:center;gap:6px;font:500 10px/1 var(--mono);letter-spacing:.12em;
+       text-transform:uppercase;color:#93b48b;border:1px solid rgba(147,180,139,.3);
+       padding:5px 9px;border-radius:999px}
+
+  /* ---------- the tray ---------- */
+  .tray{max-width:1180px;margin:26px auto 0;padding:44px 40px 52px;border-radius:6px;
+    background:
+      radial-gradient(120% 90% at 50% -10%, rgba(255,255,255,.045), transparent 60%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,.010) 0 2px, transparent 2px 5px),
+      linear-gradient(#1a1815,#121110);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06), inset 0 0 90px rgba(0,0,0,.7), 0 30px 60px -30px #000;
+    border:1px solid rgba(255,255,255,.05);
+  }
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:30px 26px}
+
+  /* ---------- the well + coin ---------- */
+  .slot{display:flex;flex-direction:column;align-items:center;gap:11px}
+  .well{width:112px;height:112px;border-radius:50%;position:relative;display:grid;place-items:center;
+    background:radial-gradient(circle at 50% 42%, #000 0%, rgba(0,0,0,.55) 62%, transparent 72%);
+    box-shadow:inset 0 3px 7px rgba(0,0,0,.85), 0 1px 0 rgba(255,255,255,.055);
+    perspective:700px;cursor:pointer}
+  .coin{width:96px;height:96px;border-radius:50%;position:relative;transform-style:preserve-3d;
+    transition:transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform}
+  .well:hover .coin{transform:translateY(-7px) rotateX(7deg)}
+  .well.flipped .coin{transform:rotateY(180deg) translateZ(6px)}
+  .well.flipped:hover .coin{transform:rotateY(180deg) translateZ(10px)}
+
+  .side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.20),
+      inset 0 3px 8px rgba(255,255,255,.26),
+      inset 0 -4px 10px rgba(0,0,0,.5),
+      0 9px 20px -6px rgba(0,0,0,.85);
+  }
+  .face{
+    background:
+      conic-gradient(from 38deg, rgba(255,255,255,.30), rgba(0,0,0,.26) 22%, rgba(255,255,255,.22) 47%,
+                     rgba(0,0,0,.30) 71%, rgba(255,255,255,.28) 100%),
+      radial-gradient(circle at 33% 26%, var(--lt), var(--md) 54%, var(--dk) 100%);
+  }
+  .face::after{content:'';position:absolute;inset:7px;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.20)}
+  .glyph{font-size:34px;line-height:1;color:rgba(255,255,255,.90);
+    text-shadow:0 1px 0 rgba(255,255,255,.5), 0 -1px 2px rgba(0,0,0,.7);position:relative;z-index:1}
+  .back{transform:rotateY(180deg);
+    background:
+      conic-gradient(from 200deg, rgba(255,255,255,.18), rgba(0,0,0,.28) 30%, rgba(255,255,255,.14) 60%, rgba(0,0,0,.26) 100%),
+      radial-gradient(circle at 40% 30%, #3a362f, #21201c 60%, #14130f 100%);
+    flex-direction:column;gap:3px;padding:16px;text-align:center}
+  .back .bs{font:500 8.5px/1.25 var(--mono);letter-spacing:.05em;color:#cfc6b6;text-transform:uppercase}
+  .back .bn{font:500 15px/1 var(--mono);color:#fff;margin:2px 0}
+  .back .bd{font:400 8.5px/1 var(--mono);color:#8f877a}
+
+  /* hollow = backed, not bought */
+  .slot.backed .face{background:radial-gradient(circle at 40% 34%, rgba(255,255,255,.07), transparent 62%);
+    box-shadow:inset 0 0 0 2px var(--md), inset 0 0 16px rgba(0,0,0,.6)}
+  .slot.backed .face::after{display:none}
+  .slot.backed .glyph{color:var(--lt);text-shadow:none;opacity:.9}
+
+  .slot.private .well::after{content:'';position:absolute;top:2px;right:4px;width:16px;height:16px;border-radius:50%;
+    background:#0d0c0b;box-shadow:inset 0 0 0 1px var(--line);z-index:3;
+    background-image:radial-gradient(circle,var(--dim) 1.6px,transparent 1.7px);background-size:100% 100%}
+
+  .cap{text-align:center;line-height:1.35}
+  .cap .s{font:400 13px/1.2 var(--serif);letter-spacing:-.01em;display:block}
+  .cap .r{font:400 9.5px/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint);display:block;margin-top:3px}
+  .slot.private .cap .s{color:var(--dim)}
+  .soldout .cap .r{color:#a8724e}
+
+  /* ---------- footer / empty ---------- */
+  .legend{max-width:1180px;margin:22px auto 0;padding:0 40px;display:flex;gap:24px;flex-wrap:wrap;
+    font:400 11px/1 var(--mono);color:var(--faint);letter-spacing:.04em}
+  .legend i{font-style:normal;color:var(--dim)}
+
+  .empty{max-width:1180px;margin:26px auto 0;padding:100px 40px;text-align:center;border-radius:6px;
+    background:linear-gradient(#1a1815,#121110);border:1px solid rgba(255,255,255,.05);
+    box-shadow:inset 0 0 90px rgba(0,0,0,.7)}
+  .empty .wells{display:flex;gap:26px;justify-content:center;margin-bottom:34px}
+  .empty .wells div{width:96px;height:96px;border-radius:50%;
+    box-shadow:inset 0 3px 7px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.05);
+    background:radial-gradient(circle at 50% 42%, #000, rgba(0,0,0,.4) 65%, transparent 74%)}
+  .empty h2{font:400 25px/1.3 var(--serif);margin-bottom:10px}
+  .empty p{color:var(--dim);font-size:14px;max-width:400px;margin:0 auto;line-height:1.6}
+
+  /* toggle */
+  .tog{position:fixed;right:18px;bottom:18px;display:flex;gap:1px;background:var(--line);border-radius:7px;overflow:hidden;z-index:99}
+  .tog button{background:#1b1917;color:var(--dim);border:0;padding:9px 15px;font:500 10px/1 var(--mono);
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .tog button.on{background:var(--ink);color:#0d0c0b}
+  .hide{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Ovation</div>
+  <h1><span class="at">@</span>trey</h1>
+  <div class="sub">
+    <span><b>14</b> coins</span>
+    <span><b>12</b> sellers</span>
+    <span>collecting since <b>Oct 2025</b></span>
+    <span class="pub">● public</span>
+  </div>
+</header>
+
+<section class="tray" id="tray"><div class="grid" id="grid"></div></section>
+
+<div class="legend" id="legend">
+  <span><i>solid</i> : bought</span>
+  <span><i>hollow</i> : backed, nothing to sell yet</span>
+  <span><i>·· mark</i> : private, only you see it</span>
+  <span><i>closed</i> : run sold out, no more exist</span>
+  <span style="color:var(--dim)">click any coin to flip it</span>
+</div>
+
+<section class="empty hide" id="empty">
+  <div class="wells"><div></div><div></div><div></div></div>
+  <h2>Nothing in the case yet.</h2>
+  <p>Your first purchase from any seller on Ovation puts a coin here. It arrives instead of a receipt email. Same moment, better object.</p>
+</section>
+
+<div class="tog">
+  <button class="on" onclick="setState('loaded',this)">Loaded</button>
+  <button onclick="setState('empty',this)">Empty</button>
+</div>
+
+<script>
+const COINS = [
+  { seller:'Ferrous',            run:'pre-seed',    n:2,   of:50,  date:'Oct 2025', tint:'#B7410E', glyph:'▰', kind:'owned',  state:'soldout', private:false },
+  { seller:'Arc',                run:'founding',    n:19,  of:30,  date:'Nov 2025', tint:'#5C6B73', glyph:'◐', kind:'owned',  state:'soldout', private:false },
+  { seller:'Lumen',              run:'pre-seed',    n:7,   of:50,  date:'Dec 2025', tint:'#D4A017', glyph:'✦', kind:'owned',  state:'soldout', private:false },
+  { seller:'Orbit',              run:'founding',    n:3,   of:25,  date:'Jan 2026', tint:'#3B5BA5', glyph:'◆', kind:'owned',  state:'soldout', private:false },
+  { seller:'Mossbook',           run:'v1',          n:88,  of:200, date:'Feb 2026', tint:'#4A7C59', glyph:'⬡', kind:'owned',  state:'soldout', private:false },
+  { seller:'Kettle & Co.',       run:'pre-seed',    n:35,  of:50,  date:'Mar 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Tidepool',           run:'early',       n:401, of:500, date:'Apr 2026', tint:'#2E7D7B', glyph:'≈', kind:'owned',  state:'open',    private:false },
+  { seller:'Ninth St Roasters',  run:'first roast', n:61,  of:150, date:'May 2026', tint:'#6F4E37', glyph:'⬮', kind:'owned',  state:'open',    private:false },
+  { seller:'Halvard',            run:'pre-seed',    n:14,  of:50,  date:'May 2026', tint:'#7B4B94', glyph:'✲', kind:'backed', state:'open',    private:true  },
+  { seller:'Kettle & Co.',       run:'launch',      n:12,  of:100, date:'Jun 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Casa Verde Dive',    run:'season pass', n:22,  of:40,  date:'Jul 2026', tint:'#1B9AAA', glyph:'⌇', kind:'owned',  state:'open',    private:false },
+  { seller:'Wren',               run:'founding',    n:5,   of:25,  date:'Jul 2026', tint:'#A8324A', glyph:'❈', kind:'backed', state:'open',    private:true  },
+  { seller:'Pallet',             run:'v1',          n:130, of:300, date:'Jul 2026', tint:'#8A8253', glyph:'◬', kind:'owned',  state:'open',    private:false },
+  { seller:'Understory',         run:'pre-seed',    n:9,   of:50,  date:'Jul 2026', tint:'#356859', glyph:'❀', kind:'owned',  state:'open',    private:true  },
+];
+
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16);
+  const cl=v=>Math.max(0,Math.min(255,v));
+  const r=cl((n>>16)+amt), g=cl(((n>>8)&255)+amt), b=cl((n&255)+amt);
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+}
+
+document.getElementById('grid').innerHTML = COINS.map((c,i)=>`
+  <div class="slot ${c.kind==='backed'?'backed':''} ${c.private?'private':''} ${c.state==='soldout'?'soldout':''}"
+       style="--lt:${shade(c.tint,62)};--md:${c.tint};--dk:${shade(c.tint,-58)}">
+    <div class="well" onclick="this.classList.toggle('flipped')">
+      <div class="coin">
+        <div class="side face"><span class="glyph">${c.glyph}</span></div>
+        <div class="side back">
+          <span class="bs">${c.seller}</span>
+          <span class="bn">${c.n} / ${c.of}</span>
+          <span class="bd">${c.run} · ${c.date}</span>
+        </div>
+      </div>
+    </div>
+    <div class="cap">
+      <span class="s">${c.seller}</span>
+      <span class="r">${c.run} · #${c.n}${c.state==='soldout'?' · closed':''}</span>
+    </div>
+  </div>`).join('');
+
+function setState(s,btn){
+  document.querySelectorAll('.tog button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('tray').classList.toggle('hide',s==='empty');
+  document.getElementById('legend').classList.toggle('hide',s==='empty');
+  document.getElementById('empty').classList.toggle('hide',s!=='empty');
+}
+</script>
+</body>
+</html>

@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+/* ============================================================
+   BONE — the only design tokens. Change the look here, nowhere else.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #f7f4ed;
+  --raise: #fffdf8;
+  --paper: #efe9dc;
+  --ink: #211f1b;
+  --dim: #6d675d;
+  --faint: #a29a8c;
+  --rule: rgba(33, 31, 27, 0.11);
+  --accent: #8a6a3b;
+  --good: #4a7c59;
+  --warn: #b5651d;
+
+  --display: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --body: "Avenir Next", "Segoe UI", -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --lift: 0 18px 34px -20px rgba(60, 48, 30, 0.42);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* NOTE: do NOT add a `* { margin:0; padding:0 }` reset here.
+   Tailwind v4 ships its utilities inside @layer, and UNLAYERED css beats
+   LAYERED css in the cascade no matter the specificity — so a bare `*` rule
+   silently kills every p-*, m-*, px-* utility in the app. Preflight already
+   zeroes margins. Everything below stays inside a layer for the same reason. */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------- type roles ---------- */
+@layer components {
+  .t-eyebrow {
+    font: 600 10px/1 var(--body);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .t-display { font: 400 44px/1.05 var(--display); letter-spacing: -0.03em; }
+  .t-h2 { font: 400 32px/1.12 var(--display); letter-spacing: -0.025em; }
+  .t-name { font: 400 14.5px/1.25 var(--display); letter-spacing: -0.01em; }
+  .t-serial {
+    font: 400 9.5px/1.3 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
 }
+
+/* ============================================================
+   DYED LEATHER — matte, grained, stitched, blind-embossed.
+   NO conic gradients. Those read as chrome, and chrome reads as crypto.
+   ============================================================ */
+@layer components {
+
+.coin { position: relative; }
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 42%, var(--lt) 0%, var(--md) 54%, var(--dk) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.26),
+    inset 0 3px 5px rgba(255, 255, 255, 0.09),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.3),
+    0 10px 20px -10px rgba(48, 34, 18, 0.42);
+}
+
+/* grain */
+.coin-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.42;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+/* stitch ring */
+.coin-face::after {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+  border: 1.5px dashed rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* blind emboss — pressed in, never printed on */
+.coin-glyph {
+  position: relative;
+  z-index: 4;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.34);
+  text-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.2), 0 -1px 1px rgba(0, 0, 0, 0.22);
+}
+
+/* backed = supported with nothing to sell yet: a tooled outline, not a filled disc */
+.coin-backed .coin-face {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--md);
+}
+.coin-backed .coin-face::before,
+.coin-backed .coin-face::after { display: none; }
+.coin-backed .coin-glyph {
+  color: var(--md);
+  text-shadow: none;
+  opacity: 0.85;
+}
+
+/* not yours — the "new to you" cells on someone else's collection */
+.coin-missing { opacity: 0.5; }
+.coin-missing .coin-face {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--rule);
+}
+.coin-missing .coin-face::before,
+.coin-missing .coin-face::after { display: none; }
+.coin-missing .coin-glyph { color: var(--faint); text-shadow: none; }
+
+.coin-retired .coin-face { filter: grayscale(0.55) brightness(0.88); }
+
+/* ---------- private marker ---------- */
+.coin-private-dot {
+  position: absolute;
+  top: 4px;
+  right: 14px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ground);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  background-image: radial-gradient(circle, var(--faint) 1.6px, transparent 1.7px);
+}
+
+/* ---------- the reveal ---------- */
+/* Leather doesn't glint, so no sweep. A warm light blooms behind it instead. */
+.reveal-sheet::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: 50%;
+  width: 150%;
+  height: 88%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(200, 113, 55, 0.14), transparent 72%);
+  pointer-events: none;
+}
+
+.reveal-coin { animation: coin-land 1.25s cubic-bezier(0.14, 0.85, 0.25, 1) both; }
+
+@keyframes coin-land {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.86); }
+  55%  { opacity: 1; transform: translateY(-5px) scale(1.015); }
+  100% { opacity: 1; transform: none; }
+}
+
+.reveal-stage::after {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(closest-side, rgba(214, 150, 90, 0.34), transparent 70%);
+  animation: coin-warm 2.4s 0.55s cubic-bezier(0.3, 0, 0.35, 1) both;
+}
+
+@keyframes coin-warm {
+  0%   { opacity: 0; transform: scale(0.82); }
+  38%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.34; transform: scale(1.04); }
+}
+
+} /* end @layer components */

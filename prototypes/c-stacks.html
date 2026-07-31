@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · C · The Stacks</title>
+<style>
+  :root{
+    --bg:#0c0d0f; --ink:#f1efea; --dim:#8a8781; --faint:#57554f;
+    --line:rgba(241,239,234,.09);
+    --serif:ui-serif,Georgia,'Iowan Old Style','Times New Roman',serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,'Segoe UI',Inter,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:120px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 40px}
+
+  header{padding:60px 0 0}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  h1{font:400 48px/1.02 var(--serif);letter-spacing:-.025em;margin:16px 0 0}
+  h1 .at{color:var(--faint)}
+  .meta{margin-top:16px;font:400 12px/1 var(--mono);color:var(--dim);display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .meta b{color:var(--ink);font-weight:500}
+  .pub{color:#8fb488;border:1px solid rgba(143,180,136,.28);padding:5px 9px;border-radius:999px;
+       font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+  .hint{margin-top:34px;padding-bottom:16px;border-bottom:1px solid var(--line);
+    font:400 12px/1 var(--mono);color:var(--faint);letter-spacing:.03em}
+
+  .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(226px,1fr));gap:8px 4px;margin-top:20px}
+
+  .stack{padding:34px 18px 22px;border-radius:8px;cursor:pointer;transition:background .2s}
+  .stack:hover{background:rgba(255,255,255,.022)}
+
+  /* the pile: coins overlap until fanned */
+  .pile{height:126px;position:relative;display:flex;justify-content:center;align-items:flex-start}
+  .cwrap{position:absolute;transition:transform .42s cubic-bezier(.2,.75,.25,1), filter .3s;perspective:600px}
+  .coin{width:88px;height:88px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .cwrap.flipped .coin{transform:rotateY(180deg)}
+
+  .side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.20), inset 0 3px 7px rgba(255,255,255,.25),
+               inset 0 -3px 9px rgba(0,0,0,.5), 0 10px 22px -8px rgba(0,0,0,.9)}
+  .face{background:
+      conic-gradient(from 38deg, rgba(255,255,255,.30), rgba(0,0,0,.26) 22%, rgba(255,255,255,.22) 47%,
+                     rgba(0,0,0,.30) 71%, rgba(255,255,255,.28) 100%),
+      radial-gradient(circle at 33% 26%, var(--lt), var(--md) 54%, var(--dk) 100%)}
+  .face::after{content:'';position:absolute;inset:6px;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.18)}
+  .glyph{font-size:31px;color:rgba(255,255,255,.92);position:relative;z-index:1;
+    text-shadow:0 1px 0 rgba(255,255,255,.45),0 -1px 2px rgba(0,0,0,.65)}
+  .back{transform:rotateY(180deg);flex-direction:column;gap:2px;text-align:center;padding:14px;
+    background:conic-gradient(from 200deg, rgba(255,255,255,.16), rgba(0,0,0,.28) 30%, rgba(255,255,255,.12) 60%, rgba(0,0,0,.26) 100%),
+               radial-gradient(circle at 40% 30%, #3a362f, #201f1b 62%, #131210 100%)}
+  .back .bs{font:500 8px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#cdc4b4}
+  .back .bn{font:500 15px/1 var(--mono);color:#fff;margin:3px 0}
+  .back .bd{font:400 8px/1 var(--mono);color:#8e867a}
+
+  .backed .face{background:radial-gradient(circle at 40% 34%, rgba(255,255,255,.07), transparent 62%);
+    box-shadow:inset 0 0 0 2px var(--md), inset 0 0 16px rgba(0,0,0,.55)}
+  .backed .face::after{display:none}
+  .backed .glyph{color:var(--lt);text-shadow:none}
+
+  .label{text-align:center;margin-top:20px}
+  .label .s{font:400 19px/1.25 var(--serif);letter-spacing:-.015em;display:block}
+  .label .c{font:400 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--faint);
+    display:block;margin-top:8px}
+  .label .runs{display:grid;grid-template-rows:0fr;font:400 11px/1.6 var(--sans);
+    color:var(--dim);opacity:0;transition:opacity .28s,grid-template-rows .32s cubic-bezier(.2,.75,.25,1)}
+  .label .runs > span{overflow:hidden;min-height:0;padding-top:9px}
+  .stack.open .label .runs{grid-template-rows:1fr;opacity:1}
+  .priv{color:#9a8fb0}
+
+  .empty{padding:130px 0;text-align:center;border-top:1px solid var(--line);margin-top:20px}
+  .empty .ph{display:flex;gap:0;justify-content:center;margin-bottom:42px}
+  .empty .ph div{width:88px;height:88px;border-radius:50%;border:1px dashed var(--faint);opacity:.35;margin-left:-30px}
+  .empty .ph div:first-child{margin-left:0}
+  .empty h2{font:400 27px/1.3 var(--serif);margin-bottom:12px}
+  .empty p{color:var(--dim);font-size:14px;line-height:1.65;max-width:430px;margin:0 auto}
+
+  .tog{position:fixed;right:18px;bottom:18px;display:flex;gap:1px;background:var(--line);border-radius:7px;overflow:hidden;z-index:99}
+  .tog button{background:#17181a;color:var(--dim);border:0;padding:9px 15px;font:500 10px/1 var(--mono);
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .tog button.on{background:var(--ink);color:#0c0d0f}
+  .hide{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Ovation</div>
+    <h1><span class="at">@</span>trey</h1>
+    <div class="meta">
+      <span><b>14</b> coins</span><span><b>12</b> sellers</span><span>since <b>Oct 2025</b></span>
+      <span class="pub">● public</span>
+    </div>
+  </header>
+
+  <div id="loaded">
+    <div class="hint">Grouped by seller. Stacks of more than one mean you came back. Click to fan a stack out, click a coin to flip it.</div>
+    <div class="shelf" id="shelf"></div>
+  </div>
+
+  <div class="empty hide" id="empty">
+    <div class="ph"><div></div><div></div><div></div></div>
+    <h2>No stacks yet.</h2>
+    <p>Buy from a seller and their coin starts your first stack. Buy from them again and the stack grows, which is the only loyalty program that looks like something.</p>
+  </div>
+</div>
+
+<div class="tog">
+  <button class="on" onclick="setState('loaded',this)">Loaded</button>
+  <button onclick="setState('empty',this)">Empty</button>
+</div>
+
+<script>
+const COINS = [
+  { seller:'Kettle & Co.',      run:'launch',      n:12,  of:100, date:'Jun 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Kettle & Co.',      run:'pre-seed',    n:35,  of:50,  date:'Mar 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false },
+  { seller:'Ferrous',           run:'pre-seed',    n:2,   of:50,  date:'Oct 2025', tint:'#B7410E', glyph:'▰', kind:'owned',  state:'soldout', private:false },
+  { seller:'Orbit',             run:'founding',    n:3,   of:25,  date:'Jan 2026', tint:'#3B5BA5', glyph:'◆', kind:'owned',  state:'soldout', private:false },
+  { seller:'Lumen',             run:'pre-seed',    n:7,   of:50,  date:'Dec 2025', tint:'#D4A017', glyph:'✦', kind:'owned',  state:'soldout', private:false },
+  { seller:'Casa Verde Dive',   run:'season pass', n:22,  of:40,  date:'Jul 2026', tint:'#1B9AAA', glyph:'⌇', kind:'owned',  state:'open',    private:false },
+  { seller:'Ninth St Roasters', run:'first roast', n:61,  of:150, date:'May 2026', tint:'#6F4E37', glyph:'⬮', kind:'owned',  state:'open',    private:false },
+  { seller:'Arc',               run:'founding',    n:19,  of:30,  date:'Nov 2025', tint:'#5C6B73', glyph:'◐', kind:'owned',  state:'soldout', private:false },
+  { seller:'Mossbook',          run:'v1',          n:88,  of:200, date:'Feb 2026', tint:'#4A7C59', glyph:'⬡', kind:'owned',  state:'soldout', private:false },
+  { seller:'Tidepool',          run:'early',       n:401, of:500, date:'Apr 2026', tint:'#2E7D7B', glyph:'≈', kind:'owned',  state:'open',    private:false },
+  { seller:'Pallet',            run:'v1',          n:130, of:300, date:'Jul 2026', tint:'#8A8253', glyph:'◬', kind:'owned',  state:'open',    private:false },
+  { seller:'Understory',        run:'pre-seed',    n:9,   of:50,  date:'Jul 2026', tint:'#356859', glyph:'❀', kind:'owned',  state:'open',    private:true  },
+  { seller:'Halvard',           run:'pre-seed',    n:14,  of:50,  date:'May 2026', tint:'#7B4B94', glyph:'✲', kind:'backed', state:'open',    private:true  },
+  { seller:'Wren',              run:'founding',    n:5,   of:25,  date:'Jul 2026', tint:'#A8324A', glyph:'❈', kind:'backed', state:'open',    private:true  },
+];
+
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16), cl=v=>Math.max(0,Math.min(255,v));
+  return '#'+(((cl((n>>16)+amt))<<16)|((cl(((n>>8)&255)+amt))<<8)|cl((n&255)+amt)).toString(16).padStart(6,'0');
+}
+
+// group by seller, preserving order of first appearance
+const groups=[];
+COINS.forEach(c=>{
+  let g=groups.find(g=>g.seller===c.seller);
+  if(!g){ g={seller:c.seller, items:[]}; groups.push(g); }
+  g.items.push(c);
+});
+
+document.getElementById('shelf').innerHTML = groups.map(g=>{
+  const anyPriv=g.items.some(i=>i.private);
+  const coins=g.items.map((c,i)=>`
+    <div class="cwrap ${c.kind==='backed'?'backed':''}" data-i="${i}"
+         style="--lt:${shade(c.tint,62)};--md:${c.tint};--dk:${shade(c.tint,-58)};
+                transform:translateX(${i*-13}px) translateY(${i*5}px) scale(${1-i*.035});z-index:${9-i}">
+      <div class="coin">
+        <div class="side face"><span class="glyph">${c.glyph}</span></div>
+        <div class="side back">
+          <span class="bs">${c.seller}</span>
+          <span class="bn">${c.n} / ${c.of}</span>
+          <span class="bd">${c.run} · ${c.date}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  const runs=g.items.map(i=>`${i.run} #${i.n}`).join(' · ');
+  return `
+  <div class="stack" data-n="${g.items.length}" onclick="fan(this,event)">
+    <div class="pile">${coins}</div>
+    <div class="label">
+      <span class="s ${anyPriv?'priv':''}">${g.seller}</span>
+      <span class="c">${g.items.length} coin${g.items.length>1?'s':''}${anyPriv?' · private':''}</span>
+      <span class="runs"><span>${runs}</span></span>
+    </div>
+  </div>`;
+}).join('');
+
+function fan(el,e){
+  const cw=e.target.closest('.cwrap');
+  if(cw && el.classList.contains('open')){ cw.classList.toggle('flipped'); return; }
+  const open=el.classList.toggle('open');
+  el.querySelectorAll('.cwrap').forEach((c,i)=>{
+    c.style.transform = open
+      ? `translateX(${(i-(el.dataset.n-1)/2)*66}px) translateY(0) scale(1)`
+      : `translateX(${i*-13}px) translateY(${i*5}px) scale(${1-i*.035})`;
+    if(!open) c.classList.remove('flipped');
+  });
+}
+
+function setState(s,btn){
+  document.querySelectorAll('.tog button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('loaded').classList.toggle('hide',s==='empty');
+  document.getElementById('empty').classList.toggle('hide',s!=='empty');
+}
+</script>
+</body>
+</html>

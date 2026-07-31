@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "project": {
+    "catalog": "prod",
+    "initializedAt": "2026-07-30T23:16:33.987Z",
+    "merchantDisplayName": null,
+    "merchantId": "acct_1M4KAZFLX7j6GBFO",
+    "projectId": "project_61V8R8JqY0fW1o5eI16PIsrVJOSQC4gS1YGQGCXIu1cO",
+    "projectName": "chant"
+  },
+  "providers": {
+    "auth0": {
+      "accountRequestId": "fprvcnn_61V8R8ln3XzmZVmL316PIsrVJOSQC4gS1YGQGCXIuPom",
+      "configuration": {},
+      "linkedAt": "2026-07-30T23:16:11.919Z",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T23:16:11.919Z",
+      "status": "complete"
+    },
+    "neon": {
+      "accountRequestId": "fprvcnn_61V8RVyvC5wuptRhm16PIsrVJOSQC4gS1YGQGCXIuGmu",
+      "configuration": {},
+      "linkedAt": "2026-07-30T23:40:10.412Z",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T23:40:10.412Z",
+      "status": "complete"
+    }
+  },
+  "resources": {
+    "auth0-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-30T23:17:01.482Z",
+      "lastRevealedAt": "2026-07-30T23:17:01.975Z",
+      "lastStatus": "complete",
+      "name": "auth0-plan",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "resourceId": "fres_61V8R9Wo3WSWHFhWc16PIsrVJOSQC4gS1YGQGCXIu7e4",
+      "serviceId": "free"
+    },
+    "neon-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-30T23:41:09.863Z",
+      "lastRevealedAt": "2026-07-30T23:41:10.178Z",
+      "lastStatus": "complete",
+      "name": "neon-plan",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "resourceId": "fres_61V8RWvdM8ZufSYRB16PIsrVJOSQC4gS1YGQGCXIuXbU",
+      "serviceId": "free"
+    },
+    "neon-postgres": {
+      "configuration": {},
+      "createdAt": "2026-07-30T23:41:13.460Z",
+      "lastRevealedAt": "2026-07-30T23:41:13.780Z",
+      "lastStatus": "complete",
+      "name": "neon-postgres",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "resourceId": "fres_61V8RWyF29J9oonLH16PIsrVJOSQC4gS1YGQGCXIuEWO",
+      "serviceId": "postgres"
+    },
+    "Ovation Web": {
+      "configuration": {
+        "name": "Ovation Web",
+        "app_type": "regular_web",
+        "callbacks": [
+          "http://localhost:3000/auth/callback"
+        ],
+        "allowed_logout_urls": [
+          "http://localhost:3000"
+        ],
+        "web_origins": [
+          "http://localhost:3000"
+        ]
+      },
+      "createdAt": "2026-07-30T23:17:16.945Z",
+      "lastRevealedAt": "2026-07-30T23:20:32.639Z",
+      "lastStatus": "complete",
+      "name": "Ovation Web",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "resourceId": "fres_61V8R9lTsgGbMUuxy16PIsrVJOSQC4gS1YGQGCXIuFaC",
+      "serviceId": "client"
+    }
+  },
+  "managedProjectVariableEnvKeys": {
+    ".env": [
+      "APP_BASE_URL",
+      "AUTH0_SECRET",
+      "STRIPE_SECRET_KEY"
+    ]
+  }
+}

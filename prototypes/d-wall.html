@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ovation · D · The Wall</title>
+<style>
+  :root{
+    --bg:#0a0a0b; --ink:#f5f2ec; --dim:#8e8b84; --faint:#5a5751;
+    --line:rgba(245,242,236,.08);
+    --serif:ui-serif,Georgia,'Iowan Old Style','Times New Roman',serif;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,-apple-system,'Segoe UI',Inter,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;padding-bottom:130px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 44px}
+
+  header{padding:66px 0 0;display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap}
+  .who .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  h1{font:400 52px/1 var(--serif);letter-spacing:-.03em;margin:16px 0 0}
+  h1 .at{color:var(--faint)}
+  .stats{font:400 12px/1.9 var(--mono);color:var(--dim);text-align:right}
+  .stats b{color:var(--ink);font-weight:500}
+  .pub{display:inline-block;margin-top:6px;color:#8fb488;border:1px solid rgba(143,180,136,.28);
+    padding:5px 9px;border-radius:999px;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+
+  /* ---------- hero: the most recent coin, large ---------- */
+  .hero{margin-top:52px;padding:52px 0 54px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:270px 1fr;gap:52px;align-items:center}
+  .hero .stage{display:grid;place-items:center;perspective:1000px}
+  .hero .coin{width:230px;height:230px}
+  .hero .glyph{font-size:82px}
+  .hero .kicker{font:500 10px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+  .hero h2{font:400 40px/1.1 var(--serif);letter-spacing:-.025em;margin:16px 0 0}
+  .hero .note{font:400 15px/1.65 var(--sans);color:var(--dim);margin-top:14px;max-width:42ch}
+  .hero .facts{display:flex;gap:34px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+  .hero .fact .k{font:500 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .hero .fact .v{font:500 20px/1 var(--mono);margin-top:9px}
+  .hero .fact .v small{color:var(--faint);font-size:13px}
+
+  /* ---------- the rest: looser, asymmetric ---------- */
+  .rest{margin-top:56px}
+  .rest .cap{font:500 10px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);
+    padding-bottom:26px}
+  .rows{display:flex;flex-wrap:wrap;gap:46px 38px;align-items:flex-start}
+  .item{width:132px;text-align:center;cursor:pointer}
+  .item:nth-child(4n+2){margin-top:30px}
+  .item:nth-child(5n+3){margin-top:14px}
+  .item .stage{perspective:700px;display:grid;place-items:center}
+  .item .coin{width:112px;height:112px;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+  .item:hover .coin{transform:translateY(-6px)}
+  .item.flipped .coin,.item.flipped:hover .coin{transform:rotateY(180deg)}
+  .item .glyph{font-size:39px}
+  .item .nm{font:400 14px/1.3 var(--serif);display:block;margin-top:15px;letter-spacing:-.01em}
+  .item .rn{font:400 9.5px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    display:block;margin-top:5px}
+  .item.private .nm{color:var(--dim)}
+  .item.soldout .rn{color:#a8724e}
+
+  /* ---------- shared coin ---------- */
+  .coin{position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .side{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;display:grid;place-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.20), inset 0 4px 10px rgba(255,255,255,.26),
+               inset 0 -5px 12px rgba(0,0,0,.5), 0 16px 34px -12px rgba(0,0,0,.95)}
+  .face{background:
+      conic-gradient(from 38deg, rgba(255,255,255,.30), rgba(0,0,0,.26) 22%, rgba(255,255,255,.22) 47%,
+                     rgba(0,0,0,.30) 71%, rgba(255,255,255,.28) 100%),
+      radial-gradient(circle at 33% 26%, var(--lt), var(--md) 54%, var(--dk) 100%)}
+  .face::after{content:'';position:absolute;inset:7%;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.18)}
+  .glyph{color:rgba(255,255,255,.93);position:relative;z-index:1;line-height:1;
+    text-shadow:0 2px 0 rgba(255,255,255,.4),0 -2px 3px rgba(0,0,0,.65)}
+  .back{transform:rotateY(180deg);flex-direction:column;gap:3px;text-align:center;padding:12%;
+    background:conic-gradient(from 200deg, rgba(255,255,255,.16), rgba(0,0,0,.28) 30%, rgba(255,255,255,.12) 60%, rgba(0,0,0,.26) 100%),
+               radial-gradient(circle at 40% 30%, #3c382f, #211f1b 62%, #131210 100%)}
+  .back .bs{font:500 8.5px/1.25 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#cec5b5}
+  .back .bn{font:500 16px/1 var(--mono);color:#fff;margin:3px 0}
+  .back .bd{font:400 8.5px/1 var(--mono);color:#8f877b}
+  .hero .back .bs{font-size:12px}.hero .back .bn{font-size:32px}.hero .back .bd{font-size:12px}
+
+  .backed .face{background:radial-gradient(circle at 40% 34%, rgba(255,255,255,.07), transparent 62%);
+    box-shadow:inset 0 0 0 2px var(--md), inset 0 0 20px rgba(0,0,0,.55)}
+  .backed .face::after{display:none}
+  .backed .glyph{color:var(--lt);text-shadow:none}
+
+  .empty{padding:110px 0 120px;text-align:center;border-top:1px solid var(--line);margin-top:52px}
+  .empty .stage{perspective:900px;display:grid;place-items:center;margin-bottom:46px}
+  .empty .ring{width:230px;height:230px;border-radius:50%;border:1px dashed var(--faint);opacity:.4}
+  .empty h2{font:400 30px/1.25 var(--serif);margin-bottom:14px;letter-spacing:-.02em}
+  .empty p{color:var(--dim);font-size:15px;line-height:1.65;max-width:440px;margin:0 auto}
+
+  .tog{position:fixed;right:18px;bottom:18px;display:flex;gap:1px;background:var(--line);border-radius:7px;overflow:hidden;z-index:99}
+  .tog button{background:#161617;color:var(--dim);border:0;padding:9px 15px;font:500 10px/1 var(--mono);
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .tog button.on{background:var(--ink);color:#0a0a0b}
+  .hide{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="who">
+      <div class="eyebrow">Ovation</div>
+      <h1><span class="at">@</span>trey</h1>
+    </div>
+    <div class="stats">
+      <div><b>14</b> coins across <b>12</b> sellers</div>
+      <div>collecting since <b>Oct 2025</b></div>
+      <span class="pub">● public</span>
+    </div>
+  </header>
+
+  <div id="loaded">
+    <section class="hero" id="hero"></section>
+    <section class="rest">
+      <div class="cap">Everything else</div>
+      <div class="rows" id="rows"></div>
+    </section>
+  </div>
+
+  <div class="empty hide" id="empty">
+    <div class="stage"><div class="ring"></div></div>
+    <h2>Nothing on the wall yet.</h2>
+    <p>The first thing you buy on Ovation lands here, big. One coin is enough to have a wall, which is the point of building it this way.</p>
+  </div>
+</div>
+
+<div class="tog">
+  <button class="on" onclick="setState('loaded',this)">Loaded</button>
+  <button onclick="setState('empty',this)">Empty</button>
+</div>
+
+<script>
+const COINS = [
+  { seller:'Casa Verde Dive',   run:'season pass', n:22,  of:40,  date:'Jul 2026', tint:'#1B9AAA', glyph:'⌇', kind:'owned',  state:'open',    private:false, note:'Playa Guiones, Costa Rica. Four dives, one very bad sunburn, and the only coin here that came with a tan.' },
+  { seller:'Wren',              run:'founding',    n:5,   of:25,  date:'Jul 2026', tint:'#A8324A', glyph:'❈', kind:'backed', state:'open',    private:true,  note:'Two designers, no website.' },
+  { seller:'Understory',        run:'pre-seed',    n:9,   of:50,  date:'Jul 2026', tint:'#356859', glyph:'❀', kind:'owned',  state:'open',    private:true,  note:'Forestry data.' },
+  { seller:'Pallet',            run:'v1',          n:130, of:300, date:'Jul 2026', tint:'#8A8253', glyph:'◬', kind:'owned',  state:'open',    private:false, note:'Shipping calculator.' },
+  { seller:'Kettle & Co.',      run:'launch',      n:12,  of:100, date:'Jun 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false, note:'The one that shipped.' },
+  { seller:'Halvard',           run:'pre-seed',    n:14,  of:50,  date:'May 2026', tint:'#7B4B94', glyph:'✲', kind:'backed', state:'open',    private:true,  note:'Nothing to sell yet.' },
+  { seller:'Ninth St Roasters', run:'first roast', n:61,  of:150, date:'May 2026', tint:'#6F4E37', glyph:'⬮', kind:'owned',  state:'open',    private:false, note:'One origin at a time.' },
+  { seller:'Tidepool',          run:'early',       n:401, of:500, date:'Apr 2026', tint:'#2E7D7B', glyph:'≈', kind:'owned',  state:'open',    private:false, note:'Swell forecasting.' },
+  { seller:'Kettle & Co.',      run:'pre-seed',    n:35,  of:50,  date:'Mar 2026', tint:'#C87137', glyph:'▲', kind:'owned',  state:'open',    private:false, note:'Countertop fermentation.' },
+  { seller:'Mossbook',          run:'v1',          n:88,  of:200, date:'Feb 2026', tint:'#4A7C59', glyph:'⬡', kind:'owned',  state:'soldout', private:false, note:'Stone paper notebooks.' },
+  { seller:'Orbit',             run:'founding',    n:3,   of:25,  date:'Jan 2026', tint:'#3B5BA5', glyph:'◆', kind:'owned',  state:'soldout', private:false, note:'A calendar that hides.' },
+  { seller:'Lumen',             run:'pre-seed',    n:7,   of:50,  date:'Dec 2025', tint:'#D4A017', glyph:'✦', kind:'owned',  state:'soldout', private:false, note:'Daylight desk lamp.' },
+  { seller:'Arc',               run:'founding',    n:19,  of:30,  date:'Nov 2025', tint:'#5C6B73', glyph:'◐', kind:'owned',  state:'soldout', private:false, note:'Ambient status displays.' },
+  { seller:'Ferrous',           run:'pre-seed',    n:2,   of:50,  date:'Oct 2025', tint:'#B7410E', glyph:'▰', kind:'owned',  state:'soldout', private:false, note:'Two people in a garage.' },
+];
+
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16), cl=v=>Math.max(0,Math.min(255,v));
+  return '#'+(((cl((n>>16)+amt))<<16)|((cl(((n>>8)&255)+amt))<<8)|cl((n&255)+amt)).toString(16).padStart(6,'0');
+}
+const tint=c=>`--lt:${shade(c.tint,62)};--md:${c.tint};--dk:${shade(c.tint,-58)}`;
+const coinEl=c=>`<div class="coin">
+    <div class="side face"><span class="glyph">${c.glyph}</span></div>
+    <div class="side back">
+      <span class="bs">${c.seller}</span><span class="bn">${c.n} / ${c.of}</span>
+      <span class="bd">${c.run} · ${c.date}</span>
+    </div></div>`;
+
+const h=COINS[0];
+document.getElementById('hero').innerHTML=`
+  <div class="stage ${h.kind==='backed'?'backed':''}" style="${tint(h)}"
+       onclick="this.querySelector('.coin').style.transform=this.querySelector('.coin').style.transform?'':'rotateY(180deg)'">
+    ${coinEl(h)}
+  </div>
+  <div class="txt">
+    <div class="kicker">Most recent</div>
+    <h2>${h.seller}</h2>
+    <p class="note">${h.note}</p>
+    <div class="facts">
+      <div class="fact"><div class="k">Coin</div><div class="v">${h.n}<small> / ${h.of}</small></div></div>
+      <div class="fact"><div class="k">Run</div><div class="v" style="font-size:15px">${h.run}</div></div>
+      <div class="fact"><div class="k">Acquired</div><div class="v" style="font-size:15px">${h.date}</div></div>
+    </div>
+  </div>`;
+
+document.getElementById('rows').innerHTML=COINS.slice(1).map(c=>`
+  <div class="item ${c.kind==='backed'?'backed':''} ${c.private?'private':''} ${c.state==='soldout'?'soldout':''}"
+       style="${tint(c)}" onclick="this.classList.toggle('flipped')">
+    <div class="stage">${coinEl(c)}</div>
+    <span class="nm">${c.seller}</span>
+    <span class="rn">${c.run} · #${c.n}${c.state==='soldout'?' · closed':''}</span>
+  </div>`).join('');
+
+function setState(s,btn){
+  document.querySelectorAll('.tog button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('loaded').classList.toggle('hide',s==='empty');
+  document.getElementById('empty').classList.toggle('hide',s!=='empty');
+}
+</script>
+</body>
+</html>
