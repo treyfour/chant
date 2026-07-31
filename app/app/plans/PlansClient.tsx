@@ -182,9 +182,11 @@ export function PlansClient({
         {role === "member" && (
           <div className="mt-6 rounded-[13px] px-5 py-4 text-[13px]"
             style={{ background: "var(--paper)", color: "var(--dim)" }}>
-            Viewing as <b style={{ color: "var(--ink)" }}>Member</b>. Add coin and Retire are
-            disabled by the permissions on the Auth0 token, not by a flag in our database.
-            The API refuses them too — the button state is not the security boundary.
+            Viewing as <b style={{ color: "var(--ink)" }}>Member</b> — read only. Add coin and
+            Retire are disabled by the permissions on the Auth0 token, not by a flag in our
+            database. The API refuses them with 403 too; the button state is not the security
+            boundary.{" "}
+            <a href="/auth/login" style={{ color: "var(--accent)" }}>Sign in</a> to act as Owner.
           </div>
         )}
 

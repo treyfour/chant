@@ -17,13 +17,24 @@ export async function viewerRole(demoOverride?: string | null): Promise<MemberRo
   if (demoOverride === "member") return "member";
 
   const session = await auth0.getSession();
-  const claims = (session?.user ?? {}) as Record<string, unknown>;
+
+  // No session → "member", i.e. READ-ONLY. Anything else hands full Owner write
+  // access to anonymous visitors on a public URL, which is exactly what an
+  // earlier version did: `roles.length === 0` matched the signed-out case and
+  // an unauthenticated POST /api/runs succeeded.
+  //
+  // Read-only rather than a hard 401 is deliberate: reviewers should be able to
+  // look at the dashboard without an account, but never mutate it.
+  if (!session?.user) return "member";
+
+  const claims = session.user as Record<string, unknown>;
   const roles =
     (claims["https://ovation.app/roles"] as string[] | undefined) ??
     (claims["org_roles"] as string[] | undefined) ??
     [];
 
-  return roles.includes("owner") || roles.length === 0 ? "owner" : "member";
+  // Signed in with no org roles claim → treat as Owner of the demo org.
+  return roles.length === 0 || roles.includes("owner") ? "owner" : "member";
 }
 
 export function permissionsFor(role: MemberRole): Permission[] {
